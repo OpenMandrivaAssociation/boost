@@ -1,6 +1,6 @@
 %define name	boost
 %define version	1.33.1
-%define release	%mkrel 5
+%define release	%mkrel 6
 
 %define packver	%(echo "%{version}" | sed -e "s/\\\./_/g")
 %define	py_ver	%(python -c 'import sys; print sys.version[0:3];')
@@ -49,6 +49,9 @@ Patch2:		boost_1_31_0-libname.patch
 Patch4:         boost_1_31_0-fix-include.patch
 # from CVS, fixes build with python2.5
 Patch5:		boost_1_33_1-ssize_t.patch
+# Look for atomicity.h in ext/ not bits/ - changed with GCC 4.2
+# -AdamW 2007/07
+Patch6:		boost_1_33_1-gcc42.patch
 URL:		http://boost.org/
 Buildroot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires:	boost-jam >= 3.1
@@ -126,6 +129,7 @@ same place as the documentation.
 #%patch3 -p1 -b .gcc4
 %patch4 -p1 -b .add_missing_include
 %patch5 -p1 -b .python25
+%patch6 -p1 -b .gcc42
 find -name '.cvsignore' -type f -print0 | xargs -0 -r rm -f
 find -type f -print0 | xargs -0 chmod go-w
 find -type f -print0 | xargs -0 file | grep -v script | cut -d: -f1 | xargs chmod 0644
