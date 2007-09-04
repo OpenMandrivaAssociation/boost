@@ -1,6 +1,6 @@
 %define name	boost
-%define version	1.33.1
-%define release	%mkrel 6
+%define version	1.34.1
+%define release	%mkrel 1
 
 %define packver	%(echo "%{version}" | sed -e "s/\\\./_/g")
 %define	py_ver	%(python -c 'import sys; print sys.version[0:3];')
@@ -34,6 +34,8 @@
 #define	major		1
 %define	libname_orig	libboost
 %define	libname		%mklibname boost %{major}
+%define	libnamedevel	%mklibname boost -d
+%define	libnamestaticdevel	%mklibname boost -d -s
 
 Summary:	Portable C++ libraries
 Name:		%{name}
@@ -41,17 +43,11 @@ Version:	%{version}
 Release:	%{release}
 License:	BSD style
 Group:		Development/C++
-Source0:	%{name}_%{packver}.tar.bz2
-Patch0:		boost_1_31_0-soname.patch
-#Patch1:		boost_1_31_0-compiler.patch
-Patch2:		boost_1_31_0-libname.patch
-#Patch3:		boost-1.32.0-gcc41-known-compiler.patch
-Patch4:         boost_1_31_0-fix-include.patch
-# from CVS, fixes build with python2.5
-Patch5:		boost_1_33_1-ssize_t.patch
-# Look for atomicity.h in ext/ not bits/ - changed with GCC 4.2
-# -AdamW 2007/07
-Patch6:		boost_1_33_1-gcc42.patch
+Source0:	http://umn.dl.sourceforge.net/sourceforge/boost/boost_1_34_1.tar.bz2
+Patch0:		boost-configure.patch
+Patch1:		boost-gcc-soname.patch
+Patch2:		boost-use-rpm-optflags.patch
+Patch3:		boost-run-tests.patch
 URL:		http://boost.org/
 Buildroot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires:	boost-jam >= 3.1
@@ -77,42 +73,39 @@ libraries. The emphasis is on libraries which work well with the C++
 Standard Library. This package contains only the shared libraries
 needed for running programs dynamically linked against Boost.
 
-%package -n	%{libname}-devel
+%package -n	%{libnamedevel}
 Summary:	The libraries and headers needed for Boost development
 Group:		Development/C++
 Requires:	%{libname} = %{version}-%{release}
-Provides:	%{_lib}%{name}-devel = %{version}-%{release}
-Provides:	%{libname_orig}-devel = %{version}-%{release}
+Obsoletes:      %{mklibname boost 1}-devel < %{version}-%{release}
 Provides:	%{name}-devel = %{version}-%{release}
 
-%description -n	%{libname}-devel
+%description -n	%{libnamedevel}
 Boost is a collection of free peer-reviewed portable C++ source
 libraries. The emphasis is on libraries which work well with the C++
 Standard Library. This package contains documentation, headers and
 shared library symlinks needed for Boost development.
 
-%package -n	%{libname}-static-devel
+%package -n	%{libnamestaticdevel}
 Summary:	Static libraries for Boost development
 Group:		Development/C++
-Requires:	%{libname}-devel = %{version}-%{release}
-Provides:	%{_lib}%{name}-static-devel = %{version}-%{release}
-Provides:	%{libname_orig}-static-devel = %{version}-%{release}
+Requires:	%{libnamedevel} = %{version}-%{release}
+Obsoletes:	%{mklibname boost 1}-static-devel < %{version}-%{release}
 Provides:	%{name}-static-devel = %{version}-%{release}
 
-%description -n	%{libname}-static-devel
+%description -n	%{libnamestaticdevel}
 Boost is a collection of free peer-reviewed portable C++ source
 libraries. The emphasis is on libraries which work well with the C++
 Standard Library. This package contains only the static libraries
 needed for Boost development.
 
-%package -n	%{libname}-examples
+%package -n	 %{name}-examples
 Summary:	The examples for the Boost libraries
 Group:		Development/C++
-Provides:	%{_lib}%{name}-examples = %{version}-%{release}
-Provides:	%{libname_orig}-examples = %{version}-%{release}
-Provides:	%{name}-examples = %{version}-%{release}
+Obsoletes:	%{libname}-examples < %{version}-%{release}
+Provides:	%{libname}-examples = %{version}-%{release}
 
-%description -n	%{libname}-examples
+%description -n	 %{name}-examples
 Boost is a collection of free peer-reviewed portable C++ source
 libraries. The emphasis is on libraries which work well with the C++
 Standard Library. This package contains examples, installed in the
@@ -120,16 +113,10 @@ same place as the documentation.
 
 %prep
 %setup -q -n boost_%{packver}
-%patch0 -p1 -b .soname
-#%patch1 -p1 -b .compiler
-
-# This prevents multiple version of same library to be built, but this can
-# be a good thing for boost, which uses such broken building process (IMHO)
-%patch2 -p1 -b .libname
-#%patch3 -p1 -b .gcc4
-%patch4 -p1 -b .add_missing_include
-%patch5 -p1 -b .python25
-%patch6 -p1 -b .gcc42
+%patch0 -p0
+%patch1 -p0
+%patch2 -p0
+%patch3 -p0
 find -name '.cvsignore' -type f -print0 | xargs -0 -r rm -f
 find -type f -print0 | xargs -0 chmod go-w
 find -type f -print0 | xargs -0 file | grep -v script | cut -d: -f1 | xargs chmod 0644
@@ -202,20 +189,17 @@ rm -rf %{buildroot}
 %doc LICENSE_1_0.txt
 %{_libdir}/libboost_*.so.*
 
-%files -n %{libname}-devel
+%files -n %{libnamedevel}
 %defattr(-,root,root)
 %doc packagedoc/*
 %{_libdir}/libboost_*.so
 %{_includedir}/boost
 %multiarch %{multiarch_includedir}/boost
 
-%files -n %{libname}-static-devel
+%files -n %{libnamestaticdevel}
 %defattr(-,root,root)
 %{_libdir}/libboost_*.a
 
-%files -n %{libname}-examples
+%files -n %{name}-examples
 %defattr(-,root,root)
 %doc examples/*
-
-
-
