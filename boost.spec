@@ -1,6 +1,6 @@
 %define name	boost
 %define version	1.34.1
-%define release	%mkrel 1
+%define release	%mkrel 2
 
 %define packver	%(echo "%{version}" | sed -e "s/\\\./_/g")
 
