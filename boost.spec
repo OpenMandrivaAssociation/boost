@@ -53,6 +53,7 @@ Group:		Development/C++
 Requires:	%{libname} = %{version}-%{release}
 Obsoletes:      %{mklibname boost 1}-devel < %{version}-%{release}
 Provides:	%{name}-devel = %{version}-%{release}
+Provides:	lib%{name}-devel = %{version}-%{release}
 
 %description -n	%{libnamedevel}
 Boost is a collection of free peer-reviewed portable C++ source
