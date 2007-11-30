@@ -1,6 +1,6 @@
 %define name	boost
 %define version	1.34.1
-%define release	%mkrel 2
+%define release	%mkrel 3
 
 %define packver	%(echo "%{version}" | sed -e "s/\\\./_/g")
 
@@ -117,6 +117,11 @@ rm -rf %{buildroot}
 %{boost_bjam} --prefix=%{buildroot}%{_prefix} --libdir=%{buildroot}%{_libdir} install
 
 %multiarch_includes %{buildroot}%{_includedir}/boost/python/detail/wrap_python.hpp
+
+# (anssi 11/2007) The threading library was previously available, apparently
+# wrongly, as libboost_thread.so. We create a compatibility symlink (Debian
+# has one as well)
+ln -s libboost_thread-mt.so %{buildroot}%{_libdir}/libboost_thread.so
 
 %clean
 rm -rf %{buildroot}
