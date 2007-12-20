@@ -22,6 +22,7 @@ Patch3:		boost-run-tests.patch
 # use version in soname with --layout=system as well
 Patch4:		boost-layout-system.patch
 URL:		http://boost.org/
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires:	boost-jam >= 3.1
 BuildRequires:	libbzip2-devel
 BuildRequires:	libpython-devel
