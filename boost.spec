@@ -1,6 +1,6 @@
 %define name	boost
 %define version	1.34.1
-%define release	%mkrel 3
+%define release	%mkrel 4
 
 %define packver	%(echo "%{version}" | sed -e "s/\\\./_/g")
 
@@ -17,6 +17,7 @@ Release:	%{release}
 License:	BSD-like
 Group:		Development/C++
 Source0:	http://umn.dl.sourceforge.net/sourceforge/boost/boost_%{packver}.tar.bz2
+Patch0:		boost-CVE-2008-0171+0172.patch
 Patch2:		boost-use-rpm-optflags.patch
 Patch3:		boost-run-tests.patch
 # use version in soname with --layout=system as well
@@ -88,6 +89,7 @@ same place as the documentation.
 
 %prep
 %setup -q -n boost_%{packver}
+%patch0 -p1
 %patch2 -p0
 %patch3 -p0
 %patch4 -p1
