@@ -1,7 +1,3 @@
-%define name	boost
-%define version	1.34.1
-%define release	%mkrel 4
-
 %define packver	%(echo "%{version}" | sed -e "s/\\\./_/g")
 
 %define	major		%{version}
@@ -11,24 +7,25 @@
 %define	libnamestaticdevel	%mklibname boost -d -s
 
 Summary:	Portable C++ libraries
-Name:		%{name}
-Version:	%{version}
-Release:	%{release}
+Name:		boost
+Version:	1.34.1
+Release:	%mkrel 5
 License:	BSD-like
 Group:		Development/C++
+URL:		http://boost.org/
 Source0:	http://umn.dl.sourceforge.net/sourceforge/boost/boost_%{packver}.tar.bz2
 Patch0:		boost-CVE-2008-0171+0172.patch
 Patch2:		boost-use-rpm-optflags.patch
 Patch3:		boost-run-tests.patch
 # use version in soname with --layout=system as well
 Patch4:		boost-layout-system.patch
-URL:		http://boost.org/
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
+Patch5:		boost-gcc43.patch
 BuildRequires:	boost-jam >= 3.1
 BuildRequires:	libbzip2-devel
 BuildRequires:	libpython-devel
 BuildRequires:	libz-devel
 BuildRequires:	icu-devel
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 Boost is a collection of free peer-reviewed portable C++ source
@@ -88,11 +85,14 @@ Standard Library. This package contains examples, installed in the
 same place as the documentation.
 
 %prep
+
 %setup -q -n boost_%{packver}
 %patch0 -p1
 %patch2 -p0
 %patch3 -p0
 %patch4 -p1
+%patch5 -p1
+
 find -name '.cvsignore' -type f -print0 | xargs -0 -r rm -f
 find -type f -print0 | xargs -0 chmod go-w
 find -type f -print0 | xargs -0 file | grep -v script | cut -d: -f1 | xargs chmod 0644
