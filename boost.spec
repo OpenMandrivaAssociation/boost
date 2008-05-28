@@ -20,6 +20,8 @@ Patch3:		boost-run-tests.patch
 Patch4:		boost-layout-system.patch
 # Based on: <http://svn.boost.org/trac/boost/attachment/ticket/1615/0001-date_time-gcc-4.3-fix.patch?format=raw>
 Patch5:		boost-date_time-gcc-4.3-fix.patch
+# Based on: <http://svn.boost.org/trac/boost/attachment/ticket/1715/serialization_gcc43.patch?format=raw>
+Patch6:		boost-serialization_gcc43.patch
 BuildRequires:	boost-jam >= 3.1
 BuildRequires:	libbzip2-devel
 BuildRequires:	libpython-devel
@@ -90,6 +92,7 @@ same place as the documentation.
 %patch3 -p0
 %patch4 -p0
 %patch5 -p0
+%patch6 -p0
 
 find -name '.cvsignore' -type f -print0 | xargs -0 -r rm -f
 find -type f -print0 | xargs -0 chmod go-w
