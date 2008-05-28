@@ -9,7 +9,7 @@
 Summary:	Portable C++ libraries
 Name:		boost
 Version:	1.35.0
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	BSD-like
 Group:		Development/C++
 URL:		http://boost.org/
@@ -18,6 +18,8 @@ Patch2:		boost-use-rpm-optflags.patch
 Patch3:		boost-run-tests.patch
 # use version in soname with --layout=system as well
 Patch4:		boost-layout-system.patch
+# Based on: <http://svn.boost.org/trac/boost/attachment/ticket/1615/0001-date_time-gcc-4.3-fix.patch?format=raw>
+Patch5:		boost-date_time-gcc-4.3-fix.patch
 BuildRequires:	boost-jam >= 3.1
 BuildRequires:	libbzip2-devel
 BuildRequires:	libpython-devel
@@ -83,11 +85,11 @@ Standard Library. This package contains examples, installed in the
 same place as the documentation.
 
 %prep
-
 %setup -q -n boost_%{packver}
 %patch2 -p0
 %patch3 -p0
 %patch4 -p0
+%patch5 -p0
 
 find -name '.cvsignore' -type f -print0 | xargs -0 -r rm -f
 find -type f -print0 | xargs -0 chmod go-w
