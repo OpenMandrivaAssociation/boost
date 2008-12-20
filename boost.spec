@@ -8,7 +8,7 @@
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.36.0
+Version:	1.37.0
 Release:	%mkrel 1
 License:	BSD-like
 Group:		Development/C++
@@ -109,7 +109,8 @@ mkdir examples
 find libs -type f \( -name "*.?pp" ! -path "*test*" ! -path "*src*" ! -path "*tools*" -o -path "*example*" \) -exec cp --parents {} examples/ \;
 
 %build
-export RPM_OPT_FLAGS="$RPM_OPT_FLAGS -O3"
+%setup_compile_flags
+export RPM_OPT_FLAGS="%{optflags} -O3"
 # gcc.jam patched to optimization=speed => $RPM_OPT_FLAGS
 %define boost_bjam bjam %{_smp_mflags} -d2 --layout=system --toolset=gcc variant=release threading=single,multi optimization=speed debug-symbols=on -sHAVE_ICU=1
 
