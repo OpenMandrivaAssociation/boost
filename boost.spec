@@ -9,8 +9,8 @@
 Summary:	Portable C++ libraries
 Name:		boost
 Version:	1.37.0
-Release:	%mkrel 1
-License:	BSD-like
+Release:	%mkrel 2
+License:	Boost
 Group:		Development/C++
 URL:		http://boost.org/
 Source0:	http://umn.dl.sourceforge.net/sourceforge/boost/boost_%{packver}.tar.bz2
