@@ -9,7 +9,7 @@
 Summary:	Portable C++ libraries
 Name:		boost
 Version:	1.37.0
-Release:	%mkrel 2
+Release:	%mkrel 3
 License:	Boost
 Group:		Development/C++
 URL:		http://boost.org/
@@ -109,10 +109,8 @@ find libs -type f \( -name "*.?pp" ! -path "*test*" ! -path "*src*" ! -path "*to
 # (tpg) compile with our optflags
 sed -i -e 's/OPT_FLAGS/%{optflags} -O3/g' tools/build/v2/tools/gcc.jam
 
-%define _disable_ld_no_undefined 1
-
 # gcc.jam patched to optimization=speed => OPT_FLAGS
-%define boost_bjam bjam %{_smp_mflags} -d2 --layout=system --toolset=gcc variant=release threading=single,multi optimization=speed linkflags="%{ldflags}" debug-symbols=on -sHAVE_ICU=1
+%define boost_bjam bjam %{_smp_mflags} -d2 --layout=system --toolset=gcc variant=release threading=single,multi optimization=speed linkflags="%{ldflags} -lpython%{py_ver}" debug-symbols=on -sHAVE_ICU=1
 
 %{boost_bjam} --prefix=%{_prefix} --libdir=%{_libdir}
 
