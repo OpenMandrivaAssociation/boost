@@ -20,6 +20,9 @@ Patch3:		boost-run-tests.patch
 Patch4:		boost-layout-system.patch
 # Based on: <http://svn.boost.org/trac/boost/attachment/ticket/1615/0001-date_time-gcc-4.3-fix.patch?format=raw>
 Patch5:		boost-date_time-gcc-4.3-fix.patch
+# (tpg) https://svn.boost.org/trac/boost/ticket/2469
+# will be fixed in next release
+Patch6:		boost_1_37_0-wrong-BOOST_NO_EXCEPTIONS-define.patch
 BuildRequires:	boost-jam >= 3.1
 BuildRequires:	libbzip2-devel
 BuildRequires:	libpython-devel
@@ -90,6 +93,7 @@ same place as the documentation.
 %patch3 -p0
 %patch4 -p0
 %patch5 -p0
+%patch6 -p1
 
 find -name '.cvsignore' -type f -print0 | xargs -0 -r rm -f
 find -type f -print0 | xargs -0 chmod go-w
