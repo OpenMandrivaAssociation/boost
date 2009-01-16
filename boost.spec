@@ -9,7 +9,7 @@
 Summary:	Portable C++ libraries
 Name:		boost
 Version:	1.37.0
-Release:	%mkrel 3
+Release:	%mkrel 4
 License:	Boost
 Group:		Development/C++
 URL:		http://boost.org/
