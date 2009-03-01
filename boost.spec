@@ -8,8 +8,8 @@
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.37.0
-Release:	%mkrel 4
+Version:	1.38.0
+Release:	%mkrel 1
 License:	Boost
 Group:		Development/C++
 URL:		http://boost.org/
@@ -19,7 +19,7 @@ Patch3:		boost-run-tests.patch
 # use version in soname with --layout=system as well
 Patch4:		boost-layout-system.patch
 # Based on: <http://svn.boost.org/trac/boost/attachment/ticket/1615/0001-date_time-gcc-4.3-fix.patch?format=raw>
-Patch5:		boost-date_time-gcc-4.3-fix.patch
+#Patch5:		boost-date_time-gcc-4.3-fix.patch
 # (tpg) https://svn.boost.org/trac/boost/ticket/2469
 # will be fixed in next release
 Patch6:		boost_1_37_0-wrong-BOOST_NO_EXCEPTIONS-define.patch
@@ -92,7 +92,7 @@ same place as the documentation.
 %patch2 -p1
 %patch3 -p0
 %patch4 -p0
-%patch5 -p0
+#%patch5 -p0
 %patch6 -p1
 
 find -name '.cvsignore' -type f -print0 | xargs -0 -r rm -f
