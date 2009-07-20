@@ -18,11 +18,11 @@ Patch0:		boost-1.39.0-use-cxxflags.patch
 Patch1:		boost-1.39.0-soname.patch
 
 # Fedora patches
-Patch100:		boost-run-tests.patch
-Patch101:		boost-unneccessary_iostreams.patch
-Patch102:		boost-bitset.patch
-Patch103:		boost-function_template.patch
-Patch104:		boost-fs_gcc44.patch
+Patch100:	boost-run-tests.patch
+Patch101:	boost-unneccessary_iostreams.patch
+Patch102:	boost-bitset.patch
+Patch103:	boost-function_template.patch
+Patch104:	boost-fs_gcc44.patch
 
 BuildRequires:	boost-jam >= 3.1
 BuildRequires:	libbzip2-devel
@@ -147,7 +147,7 @@ rm -rf %{buildroot}
 %{_libdir}/libboost_*.so.%{version}
 
 %files -n %{libnamedevel}
-%defattr(-,root,root)
+%defattr(644, root,root, 755)
 %doc packagedoc/*
 %{_libdir}/libboost_*.so
 %{_includedir}/boost
