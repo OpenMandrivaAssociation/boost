@@ -29,6 +29,7 @@ BuildRequires:	libbzip2-devel
 BuildRequires:	libpython-devel
 BuildRequires:	libz-devel
 BuildRequires:	icu-devel
+BuildRequires:	openmpi-devel
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
@@ -98,6 +99,8 @@ same place as the documentation.
 %patch102 -p0
 %patch103 -p0
 %patch104 -p0
+
+echo "using mpi ;" >> tools/build/v2/user-config.jam
 
 find -name '.cvsignore' -type f -print0 | xargs -0 -r rm -f
 find -type f -print0 | xargs -0 chmod go-w
