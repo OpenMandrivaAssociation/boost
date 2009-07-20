@@ -1,6 +1,6 @@
-%define packver	%(echo "%{version}" | sed -e "s/\\\./_/g")
+%define packver %(echo "%{version}" | sed -e "s/\\\./_/g")
 
-%define	major %{version}
+%define	major	5
 %define	libname_orig libboost
 %define	libname %mklibname boost %{major}
 %define	libnamedevel %mklibname boost -d
@@ -8,21 +8,22 @@
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.38.0
-Release:	%mkrel 2
+Version:	1.39.0
+Release:	%mkrel 1
 License:	Boost
 Group:		Development/C++
 URL:		http://boost.org/
 Source0:	http://umn.dl.sourceforge.net/sourceforge/boost/boost_%{packver}.tar.bz2
-Patch2:		%{name}_1_37_0-use-rpm-optflags.patch
-Patch3:		boost-run-tests.patch
-# use version in soname with --layout=system as well
-Patch4:		boost-layout-system.patch
-# Based on: <http://svn.boost.org/trac/boost/attachment/ticket/1615/0001-date_time-gcc-4.3-fix.patch?format=raw>
-#Patch5:		boost-date_time-gcc-4.3-fix.patch
-# (tpg) https://svn.boost.org/trac/boost/ticket/2469
-# will be fixed in next release
-Patch6:		boost_1_37_0-wrong-BOOST_NO_EXCEPTIONS-define.patch
+Patch0:		boost-1.39.0-use-cxxflags.patch
+Patch1:		boost-1.39.0-soname.patch
+
+# Fedora patches
+Patch100:		boost-run-tests.patch
+Patch101:		boost-unneccessary_iostreams.patch
+Patch102:		boost-bitset.patch
+Patch103:		boost-function_template.patch
+Patch104:		boost-fs_gcc44.patch
+
 BuildRequires:	boost-jam >= 3.1
 BuildRequires:	libbzip2-devel
 BuildRequires:	libpython-devel
@@ -89,11 +90,14 @@ same place as the documentation.
 
 %prep
 %setup -q -n boost_%{packver}
-%patch2 -p1
-%patch3 -p0
-%patch4 -p0
-#%patch5 -p0
-%patch6 -p1
+%patch0 -p1 -b .cxxflags~
+%patch1 -p1 -b .soname~
+
+%patch100 -p0
+%patch101 -p0
+%patch102 -p0
+%patch103 -p0
+%patch104 -p0
 
 find -name '.cvsignore' -type f -print0 | xargs -0 -r rm -f
 find -type f -print0 | xargs -0 chmod go-w
@@ -110,11 +114,7 @@ mkdir examples
 find libs -type f \( -name "*.?pp" ! -path "*test*" ! -path "*src*" ! -path "*tools*" -o -path "*example*" \) -exec cp --parents {} examples/ \;
 
 %build
-# (tpg) compile with our optflags
-sed -i -e 's/OPT_FLAGS/%{optflags} -O3/g' tools/build/v2/tools/gcc.jam
-
-# gcc.jam patched to optimization=speed => OPT_FLAGS
-%define boost_bjam bjam %{_smp_mflags} -d2 --layout=system --toolset=gcc variant=release threading=single,multi optimization=speed linkflags="%{ldflags} -lpython%{py_ver}" debug-symbols=on -sHAVE_ICU=1
+%define boost_bjam bjam %{_smp_mflags} -d2 --layout=system --soname-version=%{major} --toolset=gcc variant=release threading=single,multi optimization=speed linkflags="%{ldflags} -lpython%{py_ver}" debug-symbols=on -sHAVE_ICU=1 -sCXXFLAGS="%{optflags} -O3"
 
 %{boost_bjam} --prefix=%{_prefix} --libdir=%{_libdir}
 
@@ -144,6 +144,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 %doc LICENSE_1_0.txt
 %{_libdir}/libboost_*.so.%{major}
+%{_libdir}/libboost_*.so.%{version}
 
 %files -n %{libnamedevel}
 %defattr(-,root,root)
