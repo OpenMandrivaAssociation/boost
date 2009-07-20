@@ -30,6 +30,7 @@ BuildRequires:	libpython-devel
 BuildRequires:	libz-devel
 BuildRequires:	icu-devel
 BuildRequires:	openmpi-devel
+BuildRequires:	expat-devel
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
@@ -38,7 +39,7 @@ libraries. The emphasis is on libraries which work well with the C++
 Standard Library. This package contains only the shared libraries
 needed for running programs using Boost.
 
-%package -n %{libname}
+%package -n	%{libname}
 Summary:	The shared libraries needed for running programs using Boost
 Group:		System/Libraries
 Provides:	%{libname_orig} = %{version}-%{release}
@@ -50,7 +51,7 @@ libraries. The emphasis is on libraries which work well with the C++
 Standard Library. This package contains only the shared libraries
 needed for running programs dynamically linked against Boost.
 
-%package -n %{libnamedevel}
+%package -n	%{libnamedevel}
 Summary:	The libraries and headers needed for Boost development
 Group:		Development/C++
 Requires:	%{libname} = %{version}-%{release}
@@ -64,7 +65,7 @@ libraries. The emphasis is on libraries which work well with the C++
 Standard Library. This package contains documentation, headers and
 shared library symlinks needed for Boost development.
 
-%package -n %{libnamestaticdevel}
+%package -n	%{libnamestaticdevel}
 Summary:	Static libraries for Boost development
 Group:		Development/C++
 Requires:	%{libnamedevel} = %{version}-%{release}
@@ -77,13 +78,13 @@ libraries. The emphasis is on libraries which work well with the C++
 Standard Library. This package contains only the static libraries
 needed for Boost development.
 
-%package -n %{name}-examples
+%package -n	%{name}-examples
 Summary:	The examples for the Boost libraries
 Group:		Development/C++
 Obsoletes:	%{libname}-examples < %{version}-%{release}
 Provides:	%{libname}-examples = %{version}-%{release}
 
-%description -n %{name}-examples
+%description -n	%{name}-examples
 Boost is a collection of free peer-reviewed portable C++ source
 libraries. The emphasis is on libraries which work well with the C++
 Standard Library. This package contains examples, installed in the
@@ -117,7 +118,7 @@ mkdir examples
 find libs -type f \( -name "*.?pp" ! -path "*test*" ! -path "*src*" ! -path "*tools*" -o -path "*example*" \) -exec cp --parents {} examples/ \;
 
 %build
-%define boost_bjam bjam %{_smp_mflags} -d2 --layout=system --soname-version=%{major} --toolset=gcc variant=release threading=single,multi optimization=speed linkflags="%{ldflags} -lpython%{py_ver}" debug-symbols=on -sHAVE_ICU=1 -sCXXFLAGS="%{optflags} -O3"
+%define boost_bjam bjam %{_smp_mflags} -d2 --layout=system --soname-version=%{major} --toolset=gcc variant=release threading=single,multi optimization=speed linkflags="%{ldflags} -lpython%{py_ver}" debug-symbols=on -sHAVE_ICU=1 -sEXPAT_INCLUDE=%{_includedir} -sEXPAT_LIBPATH=%{_libdir} -sCXXFLAGS="%{optflags} -O3"
 
 %{boost_bjam} --prefix=%{_prefix} --libdir=%{_libdir}
 
