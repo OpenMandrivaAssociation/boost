@@ -1,5 +1,8 @@
 %define packver %(echo "%{version}" | sed -e "s/\\\./_/g")
 
+# notice that this also sets the ABI major of the library created, whenever
+# updating to a newer version, be sure to check which %sonamever Fedora
+# uses and update accordingly.
 %define	major	5
 %define	libname_orig libboost
 %define	libname %mklibname boost %{major}
