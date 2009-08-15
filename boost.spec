@@ -32,7 +32,7 @@ BuildRequires:	libbzip2-devel
 BuildRequires:	libpython-devel
 BuildRequires:	libz-devel
 BuildRequires:	icu-devel
-BuildRequires:	openmpi-devel
+#BuildRequires:	openmpi-devel
 BuildRequires:	expat-devel
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
