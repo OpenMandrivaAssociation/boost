@@ -12,13 +12,14 @@
 Summary:	Portable C++ libraries
 Name:		boost
 Version:	1.39.0
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	Boost
 Group:		Development/C++
 URL:		http://boost.org/
 Source0:	http://umn.dl.sourceforge.net/sourceforge/boost/boost_%{packver}.tar.bz2
 Patch0:		boost-1.39.0-use-cxxflags.patch
 Patch1:		boost-1.39.0-soname.patch
+Patch2:         boost-1.39.0-pyside.patch
 
 # Fedora patches
 Patch100:	boost-run-tests.patch
@@ -97,6 +98,7 @@ same place as the documentation.
 %setup -q -n boost_%{packver}
 %patch0 -p1 -b .cxxflags~
 %patch1 -p1 -b .soname~
+%patch2 -p0 -b .pyside~
 
 %patch100 -p0
 %patch101 -p0
