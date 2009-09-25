@@ -123,7 +123,11 @@ mkdir examples
 find libs -type f \( -name "*.?pp" ! -path "*test*" ! -path "*src*" ! -path "*tools*" -o -path "*example*" \) -exec cp --parents {} examples/ \;
 
 %build
+%ifnarch %arm %mips
 %define boost_bjam bjam %{_smp_mflags} -d2 --layout=system --soname-version=%{major} --toolset=gcc variant=release threading=single,multi optimization=speed linkflags="%{ldflags} -lpython%{py_ver}" debug-symbols=on -sHAVE_ICU=1 -sEXPAT_INCLUDE=%{_includedir} -sEXPAT_LIBPATH=%{_libdir} -sCXXFLAGS="%{optflags} -O3"
+%else
+%define boost_bjam bjam %{_smp_mflags} -d2 --layout=system --soname-version=%{major} --toolset=gcc variant=release threading=single,multi optimization=speed linkflags="%{ldflags} -lpython%{py_ver}" debug-symbols=on -sHAVE_ICU=1 -sEXPAT_INCLUDE=%{_includedir} -sEXPAT_LIBPATH=%{_libdir} -sCXXFLAGS="%{optflags} -O3" --disable-long-double
+%endif
 
 %{boost_bjam} --prefix=%{_prefix} --libdir=%{_libdir}
 
