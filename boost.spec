@@ -21,7 +21,7 @@ BuildRequires:	icu-devel
 BuildRequires:	cmake
 #BuildRequires:	openmpi-devel
 BuildRequires:	expat-devel
-BuildRequires:	doxygen
+BuildRequires:	doxygen xsltproc
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
