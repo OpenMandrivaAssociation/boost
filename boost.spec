@@ -1,40 +1,27 @@
-%define packver %(echo "%{version}" | sed -e "s/\\\./_/g")
+%define cmake_pl 0
 
-# notice that this also sets the ABI major of the library created, whenever
-# updating to a newer version, be sure to check which %sonamever Fedora
-# uses and update accordingly.
-%define	major	5
-%define	libname_orig libboost
-%define	libname %mklibname boost %{major}
+# From the version 13 of Fedora, the Boost libraries are delivered
+# with sonames equal to the Boost version (e.g., 1.41.0). 
+%define	libname %mklibname boost %{version}
 %define	libnamedevel %mklibname boost -d
 %define	libnamestaticdevel %mklibname boost -d -s
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.39.0
-Release:	%mkrel 3
+Version:	1.41.0
+Release:	%mkrel 1
 License:	Boost
 Group:		Development/C++
 URL:		http://boost.org/
-Source0:	http://umn.dl.sourceforge.net/sourceforge/boost/boost_%{packver}.tar.bz2
-Patch0:		boost-1.39.0-use-cxxflags.patch
-Patch1:		boost-1.39.0-soname.patch
-Patch2:         boost-1.39.0-pyside.patch
-
-# Fedora patches
-Patch100:	boost-run-tests.patch
-Patch101:	boost-unneccessary_iostreams.patch
-Patch102:	boost-bitset.patch
-Patch103:	boost-function_template.patch
-Patch104:	boost-fs_gcc44.patch
-
-BuildRequires:	boost-jam >= 3.1
-BuildRequires:	libbzip2-devel
-BuildRequires:	libpython-devel
-BuildRequires:	libz-devel
+Source0:	http://sodium.resophonic.com/boost-cmake/%{version}.cmake%{cmake_pl}/boost-%{version}.cmake%{cmake_pl}.tar.gz
+BuildRequires:	bzip2-devel
+BuildRequires:	python-devel
+BuildRequires:	zlib-devel
 BuildRequires:	icu-devel
+BuildRequires:	cmake
 #BuildRequires:	openmpi-devel
 BuildRequires:	expat-devel
+BuildRequires:	doxygen
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
@@ -46,7 +33,7 @@ needed for running programs using Boost.
 %package -n	%{libname}
 Summary:	The shared libraries needed for running programs using Boost
 Group:		System/Libraries
-Provides:	%{libname_orig} = %{version}-%{release}
+Provides:	libboost = %{version}-%{release}
 Provides:	%{name} = %{version}-%{release}
 
 %description -n	%{libname}
@@ -66,8 +53,20 @@ Provides:	lib%{name}-devel = %{version}-%{release}
 %description -n	%{libnamedevel}
 Boost is a collection of free peer-reviewed portable C++ source
 libraries. The emphasis is on libraries which work well with the C++
-Standard Library. This package contains documentation, headers and
-shared library symlinks needed for Boost development.
+Standard Library. This package contains headers and shared library
+symlinks needed for Boost development.
+
+%package -n     %{libnamedevel}-doc
+Summary:        The libraries and headers needed for Boost development
+Group:          Development/C++
+Provides:       %{name}-devel-doc = %{version}-%{release}
+Conflicts:      %{_lib}boost-devel < 1.41.0
+
+%description -n %{libnamedevel}-doc
+Boost is a collection of free peer-reviewed portable C++ source
+libraries. The emphasis is on libraries which work well with the C++
+Standard Library. This package contains documentation needed for Boost
+development.
 
 %package -n	%{libnamestaticdevel}
 Summary:	Static libraries for Boost development
@@ -95,22 +94,7 @@ Standard Library. This package contains examples, installed in the
 same place as the documentation.
 
 %prep
-%setup -q -n boost_%{packver}
-%patch0 -p1 -b .cxxflags~
-%patch1 -p1 -b .soname~
-%patch2 -p0 -b .pyside~
-
-%patch100 -p0
-%patch101 -p0
-%patch102 -p0
-%patch103 -p0
-%patch104 -p0
-
-echo "using mpi ;" >> tools/build/v2/user-config.jam
-
-find -name '.cvsignore' -type f -print0 | xargs -0 -r rm -f
-find -type f -print0 | xargs -0 chmod go-w
-find -type f -print0 | xargs -0 file | grep -v script | cut -d: -f1 | xargs -d"\n" chmod 0644
+%setup -q -n boost-%{version}.cmake%{cmake_pl}
 
 # Preparing the docs
 mkdir packagedoc
@@ -123,25 +107,18 @@ mkdir examples
 find libs -type f \( -name "*.?pp" ! -path "*test*" ! -path "*src*" ! -path "*tools*" -o -path "*example*" \) -exec cp --parents {} examples/ \;
 
 %build
-%define boost_jam_common_flags %{_smp_mflags} -d2 --layout=system --soname-version=%{major} --toolset=gcc variant=release threading=single,multi optimization=speed linkflags="%{ldflags} -lpython%{py_ver}" debug-symbols=on -sHAVE_ICU=1 -sEXPAT_INCLUDE=%{_includedir} -sEXPAT_LIBPATH=%{_libdir} -sCXXFLAGS="%{optflags} -O3"
-%ifnarch %arm %mips
-%define boost_bjam bjam %{boost_jam_common_flags}
-%else
-%define boost_bjam bjam %{boost_jam_common_flags} --disable-long-double
-%endif
-
-%{boost_bjam} --prefix=%{_prefix} --libdir=%{_libdir}
+%cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DENABLE_SINGLE_THREADED=YES \
+	-DINSTALL_VERSIONED=OFF -DWITH_MPI=OFF
+%make
 
 %install
 rm -rf %{buildroot}
-%{boost_bjam} --prefix=%{buildroot}%{_prefix} --libdir=%{buildroot}%{_libdir} install
+%makeinstall_std -C build
 
-%multiarch_includes %{buildroot}%{_includedir}/boost/python/detail/wrap_python.hpp
-
-# (anssi 11/2007) The threading library was previously available, apparently
-# wrongly, as libboost_thread.so. We create a compatibility symlink (Debian
-# has one as well)
-ln -s libboost_thread-mt.so %{buildroot}%{_libdir}/libboost_thread.so
+# Kill any debug library versions that may show up un-invited.
+rm -f %{buildroot}%{_libdir}/*-d.*
+# Remove cmake configuration files used to build the Boost libraries
+rm -f %{buildroot}%{_libdir}/Boost*.cmake 
 
 %clean
 rm -rf %{buildroot}
@@ -157,15 +134,17 @@ rm -rf %{buildroot}
 %files -n %{libname}
 %defattr(-,root,root)
 %doc LICENSE_1_0.txt
-%{_libdir}/libboost_*.so.%{major}
 %{_libdir}/libboost_*.so.%{version}
 
 %files -n %{libnamedevel}
 %defattr(644, root,root, 755)
-%doc packagedoc/*
 %{_libdir}/libboost_*.so
 %{_includedir}/boost
-%multiarch %{multiarch_includedir}/boost
+%{_datadir}/%{name}-%{version}/cmake/*.cmake
+
+%files -n %{libnamedevel}-doc
+%defattr(-,root,root)
+%doc packagedoc/*
 
 %files -n %{libnamestaticdevel}
 %defattr(-,root,root)
