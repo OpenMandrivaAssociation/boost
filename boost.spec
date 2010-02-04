@@ -9,12 +9,13 @@
 Summary:	Portable C++ libraries
 Name:		boost
 Version:	1.41.0
-Release:	%mkrel 2
+Release:	%mkrel 3
 License:	Boost
 Group:		Development/C++
 URL:		http://boost.org/
 Source0:	http://sodium.resophonic.com/boost-cmake/%{version}.cmake%{cmake_pl}/boost-%{version}.cmake%{cmake_pl}.tar.gz
 Patch0:		boost-1.41.0-mapnik.patch
+Patch1:		boost-1.41.0-fix-serialization.patch
 BuildRequires:	bzip2-devel
 BuildRequires:	python-devel
 BuildRequires:	zlib-devel
@@ -97,6 +98,7 @@ same place as the documentation.
 %prep
 %setup -q -n boost-%{version}.cmake%{cmake_pl}
 %patch0 -p0
+%patch1 -p1
 
 # Preparing the docs
 mkdir packagedoc
