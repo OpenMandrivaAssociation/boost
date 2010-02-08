@@ -57,14 +57,16 @@ Group:		System/Libraries
 EOF
 done)}
 # (Anssi 01/2010) splitted expand contents due to rpm bug failing build,
-# triggered by a too long expanded string. If necessary in the future, do
-# the same split for %%files as well.
+# triggered by a too long expanded string.
 %{expand:%(for lib in %boostlibs; do lib2=${lib/-/_}; cat <<EOF
 %%description -n %%{libname$lib2}
 Boost is a collection of free peer-reviewed portable C++ source
 libraries. The emphasis is on libraries which work well with the C++
 Standard Library. This package contains the shared library needed for
 running programs dynamically linked against Boost $lib.
+EOF
+done)}
+%{expand:%(for lib in %boostlibs; do lib2=${lib/-/_}; cat <<EOF
 %%files -n %%{libname$lib2}
 %%defattr(-,root,root)
 %%doc LICENSE_1_0.txt
