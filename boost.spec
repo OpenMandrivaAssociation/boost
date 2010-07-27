@@ -15,7 +15,7 @@
 Summary:	Portable C++ libraries
 Name:		boost
 Version:	1.43.0
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	Boost
 Group:		Development/C++
 URL:		http://boost.org/
@@ -175,7 +175,7 @@ for file in %{buildroot}%{_libdir}/*.so; do
 	cp -a $file ${file%.so}-mt.so
 done
 for file in %{buildroot}%{_libdir}/*.a; do
-	ln -s $file ${file%.a}-mt.a
+	ln -s $(basename $file) ${file%.a}-mt.a
 done
 
 # Kill any debug library versions that may show up un-invited.
