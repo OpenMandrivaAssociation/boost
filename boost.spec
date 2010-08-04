@@ -28,7 +28,6 @@ BuildRequires:	boost-jam
 %endif
 # (anssi) in bjam mode, use CXXFLAGS when optimization=speed
 Patch0:		boost-use-cxxflags.patch
-Patch1:		boost-fix-serialization.patch
 BuildRequires:	bzip2-devel
 BuildRequires:	python-devel
 BuildRequires:	zlib-devel
