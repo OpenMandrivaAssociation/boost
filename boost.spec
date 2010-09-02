@@ -15,7 +15,7 @@
 Summary:	Portable C++ libraries
 Name:		boost
 Version:	1.44.0
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	Boost
 Group:		Development/C++
 URL:		http://boost.org/
@@ -93,6 +93,7 @@ Summary:        The libraries and headers needed for Boost development
 Group:          Development/C++
 Provides:       %{name}-devel-doc = %{version}-%{release}
 Conflicts:      %{_lib}boost-devel < 1.41.0
+BuildArch: noarch
 
 %description -n %{libnamedevel}-doc
 Boost is a collection of free peer-reviewed portable C++ source
