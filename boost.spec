@@ -15,7 +15,7 @@
 Summary:	Portable C++ libraries
 Name:		boost
 Version:	1.44.0
-Release:	%mkrel 3
+Release:	%mkrel 4
 License:	Boost
 Group:		Development/C++
 URL:		http://boost.org/
@@ -28,6 +28,7 @@ BuildRequires:	boost-jam
 %endif
 # (anssi) in bjam mode, use CXXFLAGS when optimization=speed
 Patch0:		boost-use-cxxflags.patch
+Patch1:		boost-serialize_nvp.patch
 BuildRequires:	bzip2-devel
 BuildRequires:	python-devel
 BuildRequires:	zlib-devel
