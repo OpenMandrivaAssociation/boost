@@ -1,10 +1,6 @@
 %define cmake_build 0
 
-%if %cmake_build
-%define cmake_pl 0
-%else
 %define packver %(echo "%{version}" | sed -e "s/\\\./_/g")
-%endif
 
 # From the version 13 of Fedora, the Boost libraries are delivered
 # with sonames equal to the Boost version (e.g., 1.41.0). 
@@ -14,21 +10,21 @@
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.44.0
-Release:	%mkrel 4
+Version:	1.46.1
+Release:	%mkrel 1
 License:	Boost
 Group:		Development/C++
 URL:		http://boost.org/
+Source0:	http://umn.dl.sourceforge.net/sourceforge/boost/boost_%{packver}.tar.bz2
 %if %cmake_build
-Source0:	http://sodium.resophonic.com/boost-cmake/%{version}.cmake%{cmake_pl}/boost-%{version}.cmake%{cmake_pl}.tar.gz
 BuildRequires:	cmake
 %else
-Source0:	http://umn.dl.sourceforge.net/sourceforge/boost/boost_%{packver}.tar.bz2
 BuildRequires:	boost-jam
 %endif
 # (anssi) in bjam mode, use CXXFLAGS when optimization=speed
 Patch0:		boost-use-cxxflags.patch
-Patch1:		boost-serialize_nvp.patch
+# (fwang) this patch comes from fedora
+Patch1:		boost-1.46.1-cmakeify-full.patch
 BuildRequires:	bzip2-devel
 BuildRequires:	python-devel
 BuildRequires:	zlib-devel
@@ -71,7 +67,7 @@ done)}
 %%files -n %%{libname$lib2}
 %%defattr(-,root,root)
 %%doc LICENSE_1_0.txt
-%{_libdir}/libboost_$lib.so.%{version}
+%{_libdir}/libboost_$lib*.so.%{version}
 EOF
 done)}
 
@@ -128,11 +124,7 @@ Standard Library. This package contains examples, installed in the
 same place as the documentation.
 
 %prep
-%if %cmake_build
-%setup -q -n boost-%{version}.cmake%{cmake_pl}
-%else
 %setup -q -n boost_%{packver}
-%endif
 %apply_patches
 
 # Preparing the docs
@@ -153,14 +145,14 @@ find libs -type f \( -name "*.?pp" ! -path "*test*" ! -path "*src*" ! -path "*to
 
 %else
 
-%define boost_jam_common_flags %{_smp_mflags} -d2 --layout=system --toolset=gcc variant=release threading=multi optimization=speed linkflags="%{ldflags} -lpython%{py_ver}" debug-symbols=on -sHAVE_ICU=1 -sEXPAT_INCLUDE=%{_includedir} -sEXPAT_LIBPATH=%{_libdir} -sCXXFLAGS="%{optflags} -O3"
+%define boost_jam_common_flags %{_smp_mflags} -d2 --layout=system --toolset=gcc variant=release threading=multi optimization=speed linkflags="%{ldflags} -lpython%{py_ver}" debug-symbols=on -sHAVE_ICU=1 -sEXPAT_INCLUDE=%{_includedir} -sEXPAT_LIBPATH=%{_libdir} -sCXXFLAGS="%{optflags} -O3" link=shared runtime-link=shared
 %ifnarch %arm %mips
 %define boost_bjam bjam %{boost_jam_common_flags}
 %else
 %define boost_bjam bjam %{boost_jam_common_flags} --disable-long-double
 %endif
-
-%{boost_bjam} --prefix=%{_prefix} --libdir=%{_libdir}
+./bootstrap.sh --prefix=%{_prefix} --libdir=%{_libdir}
+./%{boost_bjam} --prefix=%{_prefix} --libdir=%{_libdir}
 %endif
 
 %install
@@ -168,9 +160,10 @@ rm -rf %{buildroot}
 %if %cmake_build
 %makeinstall_std -C build
 %else
-%{boost_bjam} --prefix=%{buildroot}%{_prefix} --libdir=%{buildroot}%{_libdir} install
+./%{boost_bjam} --prefix=%{buildroot}%{_prefix} --libdir=%{buildroot}%{_libdir} install
 %endif
 
+%if !%cmake_build
 # (Anssi 01/2010) add compatibility symlinks:
 for file in %{buildroot}%{_libdir}/*.so; do
 	cp -a $file ${file%.so}-mt.so
@@ -178,9 +171,10 @@ done
 for file in %{buildroot}%{_libdir}/*.a; do
 	ln -s $(basename $file) ${file%.a}-mt.a
 done
+%endif
 
 # Kill any debug library versions that may show up un-invited.
-rm -f %{buildroot}%{_libdir}/*-d.*
+rm -f %{buildroot}%{_libdir}/*-d.* %{buildroot}%{_libdir}/*-d-mt.*
 # Remove cmake configuration files used to build the Boost libraries
 rm -f %{buildroot}%{_libdir}/Boost*.cmake 
 
@@ -214,6 +208,3 @@ rm -rf %{buildroot}
 %files -n %{name}-examples
 %defattr(-,root,root)
 %doc examples/*
-
-
-
