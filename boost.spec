@@ -42,7 +42,11 @@ libraries. The emphasis is on libraries which work well with the C++
 Standard Library. This package contains only the shared libraries
 needed for running programs using Boost.
 
+%ifarch %arm %mips
+%define boostlibs date_time filesystem graph iostreams math_c99 math_c99f math_tr1 math_tr1f prg_exec_monitor program_options python regex serialization signals system thread unit_test_framework wave wserialization random
+%else
 %define boostlibs date_time filesystem graph iostreams math_c99 math_c99f math_c99l math_tr1 math_tr1f math_tr1l prg_exec_monitor program_options python regex serialization signals system thread unit_test_framework wave wserialization random
+%endif
 
 # (Anssi 01/2010) dashes are converted to underscores for macros ($lib2);
 # The sed script adds _ when library name ends in number.
