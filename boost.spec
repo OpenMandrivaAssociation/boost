@@ -10,12 +10,12 @@
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.46.1
-Release:	%mkrel 6
+Version:	1.47.0
+Release:	%mkrel 1
 License:	Boost
 Group:		Development/C++
 URL:		http://boost.org/
-Source0:	http://umn.dl.sourceforge.net/sourceforge/boost/boost_%{packver}.tar.bz2
+Source0:	http://sourceforge.net/projects/boost/files/boost/%{version}/boost_1_47_0.tar.bz2
 %if %cmake_build
 BuildRequires:	cmake
 %else
@@ -25,8 +25,8 @@ BuildRequires:	boost-jam
 Patch0:		boost-use-cxxflags.patch
 # (fwang) this patch comes from fedora
 Patch1:		boost-1.46.1-cmakeify-full.patch
-# (fwang) this patch comes from fedora, fetched from upstream, to fix latest lightpark build
-Patch2:		boost-1.46.0-spirit.patch
+# (leonardoc) this patch comes from fedora
+Patch2:		boost-1.47.0-exceptions.patch
 BuildRequires:	bzip2-devel
 BuildRequires:	python-devel
 BuildRequires:	zlib-devel
@@ -198,6 +198,7 @@ rm -rf %{buildroot}
 %files -n %{libnamedevel}
 %defattr(644, root,root, 755)
 %{_libdir}/libboost_*.so
+%{_libdir}/libboost_*
 %{_includedir}/boost
 %if %cmake_build
 %{_datadir}/%{name}-%{version}/cmake/*.cmake
