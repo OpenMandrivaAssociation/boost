@@ -10,12 +10,12 @@
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.47.0
+Version:	1.48.0
 Release:	%mkrel 1
 License:	Boost
 Group:		Development/C++
 URL:		http://boost.org/
-Source0:	http://sourceforge.net/projects/boost/files/boost/%{version}/boost_1_47_0.tar.bz2
+Source0:	http://sourceforge.net/projects/boost/files/boost/%{version}/boost_1_48_0.tar.bz2
 %if %cmake_build
 BuildRequires:	cmake
 %else
@@ -24,7 +24,7 @@ BuildRequires:	boost-jam
 # (anssi) in bjam mode, use CXXFLAGS when optimization=speed
 Patch0:		boost-use-cxxflags.patch
 # (fwang) this patch comes from fedora
-Patch1:		boost-1.46.1-cmakeify-full.patch
+Patch1:		boost-1.48.0-cmakeify-full.patch
 # (leonardoc) this patch comes from fedora
 Patch2:		boost-1.47.0-exceptions.patch
 BuildRequires:	bzip2-devel
@@ -43,9 +43,9 @@ Standard Library. This package contains only the shared libraries
 needed for running programs using Boost.
 
 %ifarch %arm %mips
-%define boostlibs date_time filesystem graph iostreams math_c99 math_c99f math_tr1 math_tr1f prg_exec_monitor program_options python regex serialization signals system thread unit_test_framework wave wserialization random
+%define boostlibs date_time filesystem graph iostreams math_c99 math_c99f math_tr1 math_tr1f prg_exec_monitor program_options python regex serialization signals system thread unit_test_framework wave wserialization random chrono locale timer
 %else
-%define boostlibs date_time filesystem graph iostreams math_c99 math_c99f math_c99l math_tr1 math_tr1f math_tr1l prg_exec_monitor program_options python regex serialization signals system thread unit_test_framework wave wserialization random
+%define boostlibs date_time filesystem graph iostreams math_c99 math_c99f math_c99l math_tr1 math_tr1f math_tr1l prg_exec_monitor program_options python regex serialization signals system thread unit_test_framework wave wserialization random chrono locale timer
 %endif
 
 # (Anssi 01/2010) dashes are converted to underscores for macros ($lib2);
@@ -73,7 +73,7 @@ done)}
 %%files -n %%{libname$lib2}
 %%defattr(-,root,root)
 %%doc LICENSE_1_0.txt
-%{_libdir}/libboost_$lib*.so.%{version}
+%{_libdir}/libboost_$lib.so.%{version}
 EOF
 done)}
 
@@ -198,7 +198,6 @@ rm -rf %{buildroot}
 %files -n %{libnamedevel}
 %defattr(644, root,root, 755)
 %{_libdir}/libboost_*.so
-%{_libdir}/libboost_*
 %{_includedir}/boost
 %if %cmake_build
 %{_datadir}/%{name}-%{version}/cmake/*.cmake
