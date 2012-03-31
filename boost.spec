@@ -10,12 +10,12 @@
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.48.0
-Release:	%mkrel 2
+Version:	1.49.0
+Release:	1
 License:	Boost
 Group:		Development/C++
 URL:		http://boost.org/
-Source0:	http://sourceforge.net/projects/boost/files/boost/%{version}/boost_1_48_0.tar.bz2
+Source0:	http://sourceforge.net/projects/boost/files/boost/%{version}/boost_%(echo %version |sed -e 's,\.,_,g').tar.bz2
 %if %cmake_build
 BuildRequires:	cmake
 %else
@@ -27,8 +27,6 @@ Patch0:		boost-use-cxxflags.patch
 Patch1:		boost-1.48.0-cmakeify-full.patch
 # (leonardoc) this patch comes from fedora
 Patch2:		boost-1.47.0-exceptions.patch
-# (abondrov) https://svn.boost.org/trac/boost/ticket/6131
-Patch3:		boost-1.48.0-fix-boost-foreach.patch
 BuildRequires:	bzip2-devel
 BuildRequires:	python-devel
 BuildRequires:	zlib-devel
@@ -185,6 +183,8 @@ done
 rm -f %{buildroot}%{_libdir}/*-d.* %{buildroot}%{_libdir}/*-d-mt.*
 # Remove cmake configuration files used to build the Boost libraries
 rm -f %{buildroot}%{_libdir}/Boost*.cmake 
+# Fix packaged backup files in examples
+find . %buildroot -name "*.*~" |xargs rm -f
 
 %clean
 rm -rf %{buildroot}
