@@ -11,7 +11,7 @@
 Summary:	Portable C++ libraries
 Name:		boost
 Version:	1.49.0
-Release:	1
+Release:	2
 License:	Boost
 Group:		Development/C++
 URL:		http://boost.org/
@@ -30,7 +30,7 @@ Patch2:		boost-1.47.0-exceptions.patch
 BuildRequires:	bzip2-devel
 BuildRequires:	python-devel
 BuildRequires:	zlib-devel
-BuildRequires:	icu-devel
+BuildRequires:	icu-devel >= 49.0
 #BuildRequires:	openmpi-devel
 BuildRequires:	expat-devel
 BuildRequires:	doxygen xsltproc
