@@ -10,8 +10,8 @@
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.49.0
-Release:	2
+Version:	1.50.0
+Release:	1
 License:	Boost
 Group:		Development/C++
 URL:		http://boost.org/
@@ -25,8 +25,6 @@ BuildRequires:	boost-jam
 Patch0:		boost-use-cxxflags.patch
 # (fwang) this patch comes from fedora
 Patch1:		boost-1.48.0-cmakeify-full.patch
-# (leonardoc) this patch comes from fedora
-Patch2:		boost-1.47.0-exceptions.patch
 BuildRequires:	bzip2-devel
 BuildRequires:	python-devel
 BuildRequires:	zlib-devel
