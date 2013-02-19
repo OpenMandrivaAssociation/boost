@@ -10,7 +10,7 @@
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.52.0
+Version:	1.53.0
 Release:	1
 License:	Boost
 Group:		Development/C++
