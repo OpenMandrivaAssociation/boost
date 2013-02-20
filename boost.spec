@@ -75,7 +75,7 @@ creating static and shared libraries, making pieces of executable, and other
 chores -- whether you're using GCC, MSVC, or a dozen more supported
 C++ compilers -- on Windows, OSX, Linux and commercial UNIX systems.
 
-%define boostlibs chrono date_time filesystem graph iostreams locale math prg_exec_monitor program_options python random regex serialization signals system thread timer unit_test_framework wave wserialization context
+%define boostlibs chrono date_time filesystem graph iostreams locale math prg_exec_monitor program_options python random regex serialization signals system thread timer unit_test_framework wave wserialization context atomic
 
 # (Anssi 01/2010) dashes are converted to underscores for macros ($lib2);
 # The sed script adds _ when library name ends in number.
