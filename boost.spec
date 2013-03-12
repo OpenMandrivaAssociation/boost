@@ -11,17 +11,11 @@
 Summary:	Portable C++ libraries
 Name:		boost
 Version:	1.53.0
-Release:	1
+Release:	2
 License:	Boost
 Group:		Development/C++
-URL:		http://boost.org/
+Url:		http://boost.org/
 Source0:	http://download.sourceforge.net/boost/boost_%{packver}.tar.bz2
-BuildRequires:	bzip2-devel
-BuildRequires:	python-devel
-BuildRequires:	zlib-devel
-BuildRequires:	icu-devel
-BuildRequires:	expat-devel
-BuildRequires:	doxygen xsltproc
 
 # https://svn.boost.org/trac/boost/ticket/6150
 Patch4: boost-1.50.0-fix-non-utf8-files.patch
@@ -53,6 +47,14 @@ Patch12: boost-1.50.0-polygon.patch
 # https://bugzilla.redhat.com/show_bug.cgi?id=828856
 # https://bugzilla.redhat.com/show_bug.cgi?id=828857
 Patch15: boost-1.50.0-pool.patch
+
+BuildRequires:	doxygen
+BuildRequires:	xsltproc
+BuildRequires:	bzip2-devel
+BuildRequires:	pkgconfig(expat)
+BuildRequires:	pkgconfig(icu-uc)
+BuildRequires:	pkgconfig(python)
+BuildRequires:	pkgconfig(zlib)
 
 %description
 Boost is a collection of free peer-reviewed portable C++ source
