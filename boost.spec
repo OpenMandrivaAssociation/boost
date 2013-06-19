@@ -2,6 +2,7 @@
 %define	libname %mklibname boost %{version}
 %define	libnamedevel %mklibname boost -d
 %define	libnamestaticdevel %mklibname boost -d -s
+%define coredevel %mklibname boost-core -d
 
 # --no-undefined breaks build of CMakeified Boost.{Chrono,Locale,Timer}.
 # Without --no-undefined, corresponding libraries lose their dependency on Boost.System.
@@ -107,10 +108,44 @@ done)}
 EOF
 done)}
 
+%{expand:%(for lib in %boostlibs; do lib2=${lib/-/_}; cat <<EOF
+%%global devname$lib2 %%mklibname -d boost_$(echo $lib | sed 's,[0-9]$,&_,')
+%%package -n %%{devname$lib2}
+Summary:	Development files for Boost $lib
+Group:		Development/C++
+Requires:	%{libname$lib2} = %EVRD
+Requires:	%{coredevel} = %EVRD
+EOF
+done)}
+# (Anssi 01/2010) splitted expand contents due to rpm bug failing build,
+# triggered by a too long expanded string.
+%{expand:%(for lib in %boostlibs; do lib2=${lib/-/_}; cat <<EOF
+%%description -n %%{devname$lib2}
+Boost is a collection of free peer-reviewed portable C++ source
+libraries. The emphasis is on libraries which work well with the C++
+Standard Library. This package contains the shared library needed for
+running programs dynamically linked against Boost $lib.
+EOF
+done)}
+%{expand:%(for lib in %boostlibs; do lib2=${lib/-/_}; cat <<EOF
+%%files -n %%{devname$lib2}
+%{_libdir}/libboost_$lib*.so
+%optional %{_includedir}/boost/$lib
+%optional %{_includedir}/boost/$lib.hpp
+EOF
+done)}
+
+%package -n	%{coredevel}
+Summary:	Core development files needed by all or most Boost components
+Group:		Development/C++
+
+%description -n	%{coredevel}
+Core development files needed by all or most Boost components
+
 %package -n	%{libnamedevel}
 Summary:	The libraries and headers needed for Boost development
 Group:		Development/C++
-Requires:	%{expand:%(for lib in %boostlibs; do echo -n "%%{libname${lib/-/_}} = %{version}-%{release} "; done)}
+Requires:	%{expand:%(for lib in %boostlibs; do echo -n "%%{devname${lib/-/_}} = %{version}-%{release} "; done)}
 Obsoletes:	%{mklibname boost 1}-devel < %{version}-%{release}
 Provides:	%{name}-devel = %{version}-%{release}
 Provides:	lib%{name}-devel = %{version}-%{release}
@@ -220,9 +255,192 @@ echo ============================= install Boost.Build ==================
 rm -f %{buildroot}/%{_bindir}/bjam
 rm -f %{buildroot}/%{_mandir}/man1/bjam.1*
 
+%files -n %{coredevel}
+%dir %{_includedir}/boost
+%{_includedir}/boost/accumulators
+%{_includedir}/boost/algorithm
+%{_includedir}/boost/aligned_storage.hpp
+%{_includedir}/boost/any.hpp
+%{_includedir}/boost/archive
+%{_includedir}/boost/array.hpp
+%{_includedir}/boost/asio.hpp
+%{_includedir}/boost/asio
+%{_includedir}/boost/assert.hpp
+%{_includedir}/boost/assign.hpp
+%{_includedir}/boost/assign
+%{_includedir}/boost/bimap.hpp
+%{_includedir}/boost/bimap
+%{_includedir}/boost/bind.hpp
+%{_includedir}/boost/bind
+%{_includedir}/boost/blank.hpp
+%{_includedir}/boost/blank_fwd.hpp
+%{_includedir}/boost/call_traits.hpp
+%{_includedir}/boost/cast.hpp
+%{_includedir}/boost/cerrno.hpp
+%{_includedir}/boost/checked_delete.hpp
+%{_includedir}/boost/circular_buffer.hpp
+%{_includedir}/boost/circular_buffer
+%{_includedir}/boost/circular_buffer_fwd.hpp
+%{_includedir}/boost/compatibility
+%{_includedir}/boost/compressed_pair.hpp
+%{_includedir}/boost/concept
+%{_includedir}/boost/concept_archetype.hpp
+%{_includedir}/boost/concept_check.hpp
+%{_includedir}/boost/concept_check
+%{_includedir}/boost/config.hpp
+%{_includedir}/boost/config
+%{_includedir}/boost/container
+%{_includedir}/boost/coroutine
+%{_includedir}/boost/crc.hpp
+%{_includedir}/boost/cregex.hpp
+%{_includedir}/boost/cstdint.hpp
+%{_includedir}/boost/cstdlib.hpp
+%{_includedir}/boost/current_function.hpp
+%{_includedir}/boost/detail
+%{_includedir}/boost/dynamic_bitset.hpp
+%{_includedir}/boost/dynamic_bitset
+%{_includedir}/boost/dynamic_bitset_fwd.hpp
+%{_includedir}/boost/enable_shared_from_this.hpp
+%{_includedir}/boost/exception.hpp
+%{_includedir}/boost/exception
+%{_includedir}/boost/exception_ptr.hpp
+%{_includedir}/boost/flyweight.hpp
+%{_includedir}/boost/flyweight
+%{_includedir}/boost/foreach.hpp
+%{_includedir}/boost/foreach_fwd.hpp
+%{_includedir}/boost/format.hpp
+%{_includedir}/boost/format
+%{_includedir}/boost/function.hpp
+%{_includedir}/boost/function
+%{_includedir}/boost/function_equal.hpp
+%{_includedir}/boost/function_output_iterator.hpp
+%{_includedir}/boost/function_types
+%{_includedir}/boost/functional.hpp
+%{_includedir}/boost/functional
+%{_includedir}/boost/fusion
+%{_includedir}/boost/generator_iterator.hpp
+%{_includedir}/boost/geometry.hpp
+%{_includedir}/boost/geometry
+%{_includedir}/boost/get_pointer.hpp
+%{_includedir}/boost/gil
+%{_includedir}/boost/heap
+%{_includedir}/boost/icl
+%{_includedir}/boost/implicit_cast.hpp
+%{_includedir}/boost/indirect_reference.hpp
+%{_includedir}/boost/integer.hpp
+%{_includedir}/boost/integer
+%{_includedir}/boost/integer_fwd.hpp
+%{_includedir}/boost/integer_traits.hpp
+%{_includedir}/boost/interprocess
+%{_includedir}/boost/intrusive
+%{_includedir}/boost/intrusive_ptr.hpp
+%{_includedir}/boost/io
+%{_includedir}/boost/io_fwd.hpp
+%{_includedir}/boost/is_placeholder.hpp
+%{_includedir}/boost/iterator.hpp
+%{_includedir}/boost/iterator
+%{_includedir}/boost/iterator_adaptors.hpp
+%{_includedir}/boost/lambda
+%{_includedir}/boost/last_value.hpp
+%{_includedir}/boost/lexical_cast.hpp
+%{_includedir}/boost/limits.hpp
+%{_includedir}/boost/local_function.hpp
+%{_includedir}/boost/local_function
+%{_includedir}/boost/lockfree
+%{_includedir}/boost/logic
+%{_includedir}/boost/make_shared.hpp
+%{_includedir}/boost/math_fwd.hpp
+%{_includedir}/boost/mem_fn.hpp
+%{_includedir}/boost/memory_order.hpp
+%{_includedir}/boost/move
+%{_includedir}/boost/mpi.hpp
+%{_includedir}/boost/mpi
+%{_includedir}/boost/mpl
+%{_includedir}/boost/msm
+%{_includedir}/boost/multi_array.hpp
+%{_includedir}/boost/multi_array
+%{_includedir}/boost/multi_index
+%{_includedir}/boost/multi_index_container.hpp
+%{_includedir}/boost/multi_index_container_fwd.hpp
+%{_includedir}/boost/multiprecision
+%{_includedir}/boost/next_prior.hpp
+%{_includedir}/boost/non_type.hpp
+%{_includedir}/boost/noncopyable.hpp
+%{_includedir}/boost/nondet_random.hpp
+%{_includedir}/boost/none.hpp
+%{_includedir}/boost/none_t.hpp
+%{_includedir}/boost/numeric
+%{_includedir}/boost/operators.hpp
+%{_includedir}/boost/optional.hpp
+%{_includedir}/boost/optional
+%{_includedir}/boost/parameter.hpp
+%{_includedir}/boost/parameter
+%{_includedir}/boost/pending
+%{_includedir}/boost/phoenix.hpp
+%{_includedir}/boost/phoenix
+%{_includedir}/boost/pointee.hpp
+%{_includedir}/boost/pointer_cast.hpp
+%{_includedir}/boost/pointer_to_other.hpp
+%{_includedir}/boost/polygon
+%{_includedir}/boost/pool
+%{_includedir}/boost/preprocessor.hpp
+%{_includedir}/boost/preprocessor
+%{_includedir}/boost/progress.hpp
+%{_includedir}/boost/property_map
+%{_includedir}/boost/property_tree
+%{_includedir}/boost/proto
+%{_includedir}/boost/ptr_container
+%{_includedir}/boost/range.hpp
+%{_includedir}/boost/range
+%{_includedir}/boost/ratio.hpp
+%{_includedir}/boost/ratio
+%{_includedir}/boost/rational.hpp
+%{_includedir}/boost/ref.hpp
+%{_includedir}/boost/regex.h
+%{_includedir}/boost/regex_fwd.hpp
+%{_includedir}/boost/scope_exit.hpp
+%{_includedir}/boost/scoped_array.hpp
+%{_includedir}/boost/scoped_ptr.hpp
+%{_includedir}/boost/shared_array.hpp
+%{_includedir}/boost/shared_container_iterator.hpp
+%{_includedir}/boost/shared_ptr.hpp
+%{_includedir}/boost/signal.hpp
+%{_includedir}/boost/signals2.hpp
+%{_includedir}/boost/signals2
+%{_includedir}/boost/smart_ptr.hpp
+%{_includedir}/boost/smart_ptr
+%{_includedir}/boost/spirit.hpp
+%{_includedir}/boost/spirit
+%{_includedir}/boost/statechart
+%{_includedir}/boost/static_assert.hpp
+%{_includedir}/boost/strong_typedef.hpp
+%{_includedir}/boost/swap.hpp
+%{_includedir}/boost/test
+%{_includedir}/boost/throw_exception.hpp
+%{_includedir}/boost/token_functions.hpp
+%{_includedir}/boost/token_iterator.hpp
+%{_includedir}/boost/tokenizer.hpp
+%{_includedir}/boost/tr1
+%{_includedir}/boost/tuple
+%{_includedir}/boost/type.hpp
+%{_includedir}/boost/type_traits.hpp
+%{_includedir}/boost/type_traits
+%{_includedir}/boost/typeof
+%{_includedir}/boost/units
+%{_includedir}/boost/unordered
+%{_includedir}/boost/unordered_map.hpp
+%{_includedir}/boost/unordered_set.hpp
+%{_includedir}/boost/utility.hpp
+%{_includedir}/boost/utility
+%{_includedir}/boost/uuid
+%{_includedir}/boost/variant.hpp
+%{_includedir}/boost/variant
+%{_includedir}/boost/version.hpp
+%{_includedir}/boost/visit_each.hpp
+%{_includedir}/boost/weak_ptr.hpp
+%{_includedir}/boost/xpressive
+
 %files -n %{libnamedevel}
-%{_libdir}/libboost_*.so
-%{_includedir}/boost
 
 %files -n %{libnamedevel}-doc
 %doc packagedoc/*
