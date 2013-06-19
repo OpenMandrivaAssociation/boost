@@ -12,7 +12,7 @@
 Summary:	Portable C++ libraries
 Name:		boost
 Version:	1.53.0
-Release:	4
+Release:	5
 License:	Boost
 Group:		Development/C++
 Url:		http://boost.org/
@@ -113,6 +113,7 @@ done)}
 %%package -n %%{devname$lib2}
 Summary:	Development files for Boost $lib
 Group:		Development/C++
+Provides:	boost-$lib-devel = %EVRD
 Requires:	%{libname$lib2} = %EVRD
 Requires:	%{coredevel} = %EVRD
 EOF
@@ -146,6 +147,7 @@ done)}
 %%package -n %%{devname$lib2}
 Summary:	Development files for Boost $lib
 Group:		Development/C++
+Provides:	boost-$lib-devel = %EVRD
 Requires:	%{coredevel} = %EVRD
 EOF
 done)}
