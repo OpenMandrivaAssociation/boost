@@ -1,0 +1,2 @@
+# For examples in boost-build
+addFilter("E: devel-file-in-non-devel-package")

@@ -11,12 +11,13 @@
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.53.0
-Release:	9
+Version:	1.55.0
+Release:	1
 License:	Boost
 Group:		Development/C++
 Url:		http://boost.org/
 Source0:	http://download.sourceforge.net/boost/boost_%{packver}.tar.bz2
+Source100:	%{name}.rpmlintrc
 
 # https://svn.boost.org/trac/boost/ticket/6150
 Patch4: boost-1.50.0-fix-non-utf8-files.patch
@@ -29,14 +30,6 @@ Patch5: boost-1.48.0-add-bjam-man-page.patch
 # https://bugzilla.redhat.com/show_bug.cgi?id=756005
 # https://svn.boost.org/trac/boost/ticket/6131
 Patch7: boost-1.50.0-foreach.patch
-# https://bugzilla.redhat.com/show_bug.cgi?id=781859
-# The following tickets have still to be fixed by upstream.
-# https://svn.boost.org/trac/boost/ticket/6406 fixed, but only in Boost-1.51.0
-# https://svn.boost.org/trac/boost/ticket/6408
-# https://svn.boost.org/trac/boost/ticket/6410
-# https://svn.boost.org/trac/boost/ticket/6413
-# https://svn.boost.org/trac/boost/ticket/6415
-Patch9: boost-1.50.0-attribute.patch
 
 # https://bugzilla.redhat.com/show_bug.cgi?id=783660
 # https://svn.boost.org/trac/boost/ticket/6459 fixed
@@ -78,7 +71,7 @@ creating static and shared libraries, making pieces of executable, and other
 chores -- whether you're using GCC, MSVC, or a dozen more supported
 C++ compilers -- on Windows, OSX, Linux and commercial UNIX systems.
 
-%define boostlibs chrono date_time filesystem graph iostreams locale math prg_exec_monitor program_options python random regex serialization signals system thread timer unit_test_framework wave wserialization context atomic
+%define boostlibs chrono coroutine date_time filesystem graph iostreams locale log math prg_exec_monitor program_options python random regex serialization signals system thread timer unit_test_framework wave wserialization context atomic
 
 # (Anssi 01/2010) dashes are converted to underscores for macros ($lib2);
 # The sed script adds _ when library name ends in number.
@@ -132,6 +125,7 @@ done)}
 %%files -n %%{devname$lib2}
 %{_libdir}/libboost_$lib*.so
 %optional %{_includedir}/boost/$lib
+%optional %{_includedir}/boost/$lib.h
 %optional %{_includedir}/boost/$lib.hpp
 %optional %{_includedir}/boost/${lib}_fwd.hpp
 %if "$lib2" == "unit_test_framework"
@@ -140,7 +134,7 @@ done)}
 EOF
 done)}
 
-%define develonly accumulators algorithm archive asio assign bimap bind circular_buffer container coroutine dynamic_bitset exception flyweight format function functional fusion geometry integer mpi mpl msm multi_array multi_index multiprecision optional parameter phoenix preprocessor range ratio signals2 smart_ptr spirit tr1 tuple type_traits units unordered utility uuid variant xpressive
+%define develonly accumulators algorithm archive asio assign attributes bimap bind circular_buffer container dynamic_bitset exception flyweight format function functional fusion geometry integer mpi mpl msm multi_array multi_index multiprecision optional parameter phoenix predef preprocessor range ratio signals2 smart_ptr spirit tr1 tti tuple type_erasure type_traits units unordered utility uuid variant xpressive
 
 %{expand:%(for lib in %develonly; do lib2=${lib/-/_}; cat <<EOF
 %%global devname$lib2 %%mklibname -d boost_$(echo $lib | sed 's,[0-9]$,&_,')
@@ -164,6 +158,7 @@ done)}
 %{expand:%(for lib in %develonly; do lib2=${lib/-/_}; cat <<EOF
 %%files -n %%{devname$lib2}
 %optional %{_includedir}/boost/$lib
+%optional %{_includedir}/boost/$lib.h
 %optional %{_includedir}/boost/$lib.hpp
 %optional %{_includedir}/boost/${lib}_fwd.hpp
 %if "$lib" == "unordered"
@@ -238,7 +233,6 @@ same place as the documentation.
 %patch4 -p1
 %patch5 -p1
 %patch7 -p2
-%patch9 -p0
 %patch10 -p1
 %patch12 -p3
 %patch15 -p0
@@ -378,7 +372,6 @@ rm -f %{buildroot}/%{_mandir}/man1/bjam.1*
 %{_includedir}/boost/ptr_container
 %{_includedir}/boost/rational.hpp
 %{_includedir}/boost/ref.hpp
-%{_includedir}/boost/regex.h
 %{_includedir}/boost/scope_exit.hpp
 %{_includedir}/boost/scoped_array.hpp
 %{_includedir}/boost/scoped_ptr.hpp
