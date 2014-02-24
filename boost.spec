@@ -3,6 +3,9 @@
 %define	libnamedevel %mklibname boost -d
 %define	libnamestaticdevel %mklibname boost -d -s
 %define coredevel %mklibname boost-core -d
+%ifarch aarch64
+%bcond_with context
+%endif
 
 # --no-undefined breaks build of CMakeified Boost.{Chrono,Locale,Timer}.
 # Without --no-undefined, corresponding libraries lose their dependency on Boost.System.
@@ -256,6 +259,9 @@ EOF
 ./bootstrap.sh --with-toolset=gcc --with-icu --prefix=%{_prefix} --libdir=%{_libdir}
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
 	--prefix=%{_prefix} --libdir=%{_libdir} \
+%if !%{with context}
+        --without-context --without-coroutine \
+%endif
 	linkflags="%{ldflags} -lpython%{py_ver} -lstdc++ -lm" \
 	-sHAVE_ICU=1 \
 	link=shared threading=multi debug-symbols=off --layout=system
@@ -268,6 +274,9 @@ echo ============================= build Boost.Build ==================
 %install
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
 	--prefix=%{buildroot}%{_prefix} --libdir=%{buildroot}%{_libdir} \
+%if !%{with context}
+        --without-context --without-coroutine \
+%endif
 	link=shared \
 	install
 
