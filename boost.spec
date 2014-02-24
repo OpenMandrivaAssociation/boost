@@ -126,7 +126,7 @@ EOF
 done)}
 %{expand:%(for lib in %boostlibs; do lib2=${lib/-/_}; cat <<EOF
 %%files -n %%{devname$lib2}
-%{_libdir}/libboost_$lib*.so
+%optional %{_libdir}/libboost_$lib*.so
 %optional %{_includedir}/boost/$lib
 %optional %{_includedir}/boost/$lib.h
 %optional %{_includedir}/boost/$lib.hpp
