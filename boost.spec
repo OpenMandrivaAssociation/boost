@@ -3,8 +3,11 @@
 %define	libnamedevel %mklibname boost -d
 %define	libnamestaticdevel %mklibname boost -d -s
 %define coredevel %mklibname boost-core -d
+
 %ifarch aarch64
 %bcond_with context
+%else
+%bcond_without context
 %endif
 
 # --no-undefined breaks build of CMakeified Boost.{Chrono,Locale,Timer}.
