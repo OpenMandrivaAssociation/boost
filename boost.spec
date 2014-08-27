@@ -77,7 +77,7 @@ creating static and shared libraries, making pieces of executable, and other
 chores -- whether you're using GCC, MSVC, or a dozen more supported
 C++ compilers -- on Windows, OSX, Linux and commercial UNIX systems.
 
-%define boostlibs chrono coroutine date_time filesystem graph iostreams locale log math prg_exec_monitor program_options python random regex serialization signals system thread timer unit_test_framework wave wserialization context atomic
+%define boostlibs chrono coroutine date_time filesystem graph iostreams locale log math prg_exec_monitor program_options python random regex serialization signals system thread timer unit_test_framework wave wserialization context atomic container
 
 # (Anssi 01/2010) dashes are converted to underscores for macros ($lib2);
 # The sed script adds _ when library name ends in number.
@@ -140,7 +140,7 @@ done)}
 EOF
 done)}
 
-%define develonly accumulators algorithm archive asio assign attributes bimap bind circular_buffer container dynamic_bitset exception flyweight format function functional fusion geometry integer mpi mpl msm multi_array multi_index multiprecision optional parameter phoenix predef preprocessor range ratio signals2 smart_ptr spirit tr1 tti tuple type_erasure type_traits units unordered utility uuid variant xpressive
+%define develonly accumulators algorithm archive asio assign attributes bimap bind circular_buffer dynamic_bitset exception flyweight format function functional fusion geometry integer mpi mpl msm multi_array multi_index multiprecision optional parameter phoenix predef preprocessor range ratio signals2 smart_ptr spirit tr1 tti tuple type_erasure type_traits units unordered utility uuid variant xpressive align core type_index
 
 %{expand:%(for lib in %develonly; do lib2=${lib/-/_}; cat <<EOF
 %%global devname$lib2 %%mklibname -d boost_$(echo $lib | sed 's,[0-9]$,&_,')
@@ -271,7 +271,7 @@ EOF
 
 # Taken from the Fedora .src.rpm.
 echo ============================= build Boost.Build ==================
-(cd tools/build/v2
+(cd tools/build/
  ./bootstrap.sh --with-toolset=gcc)
 
 %install
@@ -284,11 +284,11 @@ echo ============================= build Boost.Build ==================
 	install
 
 echo ============================= install Boost.Build ==================
-(cd tools/build/v2
+(cd tools/build/
  ./b2 --prefix=%{buildroot}%{_prefix} install
  # Fix some permissions
- chmod -x %{buildroot}%{_datadir}/boost-build/build/alias.py
- chmod +x %{buildroot}%{_datadir}/boost-build/tools/doxproc.py
+ chmod -x %{buildroot}%{_datadir}/boost-build/src/build/alias.py
+ chmod +x %{buildroot}%{_datadir}/boost-build/src/tools/doxproc.py
  # We don't want to distribute this
  rm -f %{buildroot}%{_bindir}/b2
  # Not a real file
@@ -306,6 +306,9 @@ rm -f %{buildroot}/%{_mandir}/man1/bjam.1*
 %{_includedir}/boost/array.hpp
 %{_includedir}/boost/assert.hpp
 %{_includedir}/boost/blank.hpp
+%{_includedir}/boost/cstdfloat.hpp
+%{_includedir}/boost/make_unique.hpp
+%{_includedir}/boost/polymorphic_cast.hpp
 %{_includedir}/boost/blank_fwd.hpp
 %{_includedir}/boost/call_traits.hpp
 %{_includedir}/boost/cast.hpp
