@@ -17,8 +17,8 @@
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.55.0
-Release:	4
+Version:	1.56.0
+Release:	1
 License:	Boost
 Group:		Development/C++
 Url:		http://boost.org/
@@ -259,7 +259,7 @@ cat > ./tools/build/v2/user-config.jam << EOF
 using gcc : %gcc_ver : gcc : <cflags>"%optflags -I%{_includedir}/python%{py_ver}" <cxxflags>"%optflags -I%{_includedir}/python%{py_ver}" <linkflags>"%ldflags" ;
 using python : %py_ver : %{_bindir}/python%{py_ver} : %{_includedir}/python%{py_ver} : %{_libdir} ;
 EOF
-./bootstrap.sh --with-toolset=gcc --with-icu --prefix=%{_prefix} --libdir=%{_libdir}
+./bootstrap.sh --with-toolset=gcc --with-icu --prefix=%{_prefix} --libdir=%{_libdir} --with-python=%{__python2}
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
 	--prefix=%{_prefix} --libdir=%{_libdir} \
 %if !%{with context}
