@@ -256,8 +256,8 @@ find libs -type f \( -name "*.?pp" ! -path "*test*" ! -path "*src*" ! -path "*to
 %build
 %define gcc_ver %(rpm -q --queryformat="%%{VERSION}" gcc)
 cat > ./tools/build/v2/user-config.jam << EOF
-using gcc : %gcc_ver : gcc : <cflags>"%optflags -I%{_includedir}/python%{py_ver}" <cxxflags>"%optflags -I%{_includedir}/python%{py_ver}" <linkflags>"%ldflags" ;
-using python : %py_ver : %{_bindir}/python%{py_ver} : %{_includedir}/python%{py_ver} : %{_libdir} ;
+using gcc : %gcc_ver : gcc : <cflags>"%optflags -I%{_includedir}/python%{py2_ver}" <cxxflags>"%optflags -I%{_includedir}/python%{py2_ver}" <linkflags>"%ldflags" ;
+using python : %py2_ver : %{_bindir}/python%{py2_ver} : %{_includedir}/python%{py2_ver} : %{_libdir} ;
 EOF
 ./bootstrap.sh --with-toolset=gcc --with-icu --prefix=%{_prefix} --libdir=%{_libdir} --with-python=%{__python2}
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
@@ -265,7 +265,7 @@ EOF
 %if !%{with context}
         --without-context --without-coroutine \
 %endif
-	linkflags="%{ldflags} -lpython%{py_ver} -lstdc++ -lm" \
+	linkflags="%{ldflags} -lpython%{py2_ver} -lstdc++ -lm" \
 	-sHAVE_ICU=1 \
 	link=shared threading=multi debug-symbols=off --layout=system
 
