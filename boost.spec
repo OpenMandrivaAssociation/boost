@@ -246,12 +246,14 @@ same place as the documentation.
 # Preparing the docs
 mkdir packagedoc
 find -type f -not -path '*packagedoc*' \( -name '*.html' -o -name '*.htm' -o -name '*.css' -o -name '*.gif' -o -name '*.jpg' -o -name '*.png' -o -name '*README*' \) -exec cp --parents {} packagedoc/ \;
+chmod +rx packagedoc/*
 
 # Preparing the examples: All .hpp or .cpp files that are not in
 # directories called test, src, or tools, as well as all files of any
 # type in directories called example or examples.
 mkdir examples
 find libs -type f \( -name "*.?pp" ! -path "*test*" ! -path "*src*" ! -path "*tools*" -o -path "*example*" \) -exec cp --parents {} examples/ \;
+chmod +rx examples/*
 
 %build
 %define gcc_ver %(rpm -q --queryformat="%%{VERSION}" gcc)
@@ -267,7 +269,7 @@ EOF
 %endif
 	linkflags="%{ldflags} -lpython%{py2_ver} -lstdc++ -lm" \
 	-sHAVE_ICU=1 \
-	link=shared threading=multi debug-symbols=off --layout=system
+	link=shared threading=multi debug-symbols=on --layout=system
 
 # Taken from the Fedora .src.rpm.
 echo ============================= build Boost.Build ==================
