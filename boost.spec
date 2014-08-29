@@ -246,16 +246,20 @@ same place as the documentation.
 # Preparing the docs
 mkdir packagedoc
 find -type f -not -path '*packagedoc*' \( -name '*.html' -o -name '*.htm' -o -name '*.css' -o -name '*.gif' -o -name '*.jpg' -o -name '*.png' -o -name '*README*' \) -exec cp --parents {} packagedoc/ \;
-chmod +rx packagedoc/*
+find packagedoc -type d -exec chmod +rx {} \;
 
 # Preparing the examples: All .hpp or .cpp files that are not in
 # directories called test, src, or tools, as well as all files of any
 # type in directories called example or examples.
 mkdir examples
 find libs -type f \( -name "*.?pp" ! -path "*test*" ! -path "*src*" ! -path "*tools*" -o -path "*example*" \) -exec cp --parents {} examples/ \;
-chmod +rx examples/*
+find examples -type d -exec chmod +rx {} \;
 
 %build
+%if %mdvver < 201500
+%define py2_ver %py_ver
+%endif
+
 %define gcc_ver %(rpm -q --queryformat="%%{VERSION}" gcc)
 cat > ./tools/build/v2/user-config.jam << EOF
 using gcc : %gcc_ver : gcc : <cflags>"%optflags -I%{_includedir}/python%{py2_ver}" <cxxflags>"%optflags -I%{_includedir}/python%{py2_ver}" <linkflags>"%ldflags" ;
@@ -282,7 +286,7 @@ echo ============================= build Boost.Build ==================
 %if !%{with context}
         --without-context --without-coroutine \
 %endif
-	link=shared \
+	link=shared debug-symbols=on \
 	install
 
 echo ============================= install Boost.Build ==================
