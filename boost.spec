@@ -78,16 +78,16 @@ chores -- whether you're using GCC, MSVC, or a dozen more supported
 C++ compilers -- on Windows, OSX, Linux and commercial UNIX systems.
 
 %define boostlibsbase chrono date_time filesystem graph iostreams locale log math prg_exec_monitor program_options python random regex serialization signals system thread timer unit_test_framework wave wserialization atomic container
-
-%if !%{with context}
-%define boostlibs %{boostlibsbase}
-%else
 %define boostlibs %{boostlibsbase} coroutine context
+%if !%{with context}
+%define boostbinlibs %{boostlibsbase} 
+%else
+%define boostbinlibs %{boostlibs}
 %endif
 
 # (Anssi 01/2010) dashes are converted to underscores for macros ($lib2);
 # The sed script adds _ when library name ends in number.
-%{expand:%(for lib in %boostlibs; do lib2=${lib/-/_}; cat <<EOF
+%{expand:%(for lib in %boostbinlibs; do lib2=${lib/-/_}; cat <<EOF
 %%global libname$lib2 %%mklibname boost_$(echo $lib | sed 's,[0-9]$,&_,') %{version}
 %%package -n %%{libname$lib2}
 Summary:	Boost $lib shared library
