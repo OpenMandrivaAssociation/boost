@@ -98,7 +98,7 @@ EOF
 done)}
 # (Anssi 01/2010) splitted expand contents due to rpm bug failing build,
 # triggered by a too long expanded string.
-%{expand:%(for lib in %boostlibs; do lib2=${lib/-/_}; cat <<EOF
+%{expand:%(for lib in %boostbinlibs; do lib2=${lib/-/_}; cat <<EOF
 %%description -n %%{libname$lib2}
 Boost is a collection of free peer-reviewed portable C++ source
 libraries. The emphasis is on libraries which work well with the C++
@@ -106,14 +106,14 @@ Standard Library. This package contains the shared library needed for
 running programs dynamically linked against Boost $lib.
 EOF
 done)}
-%{expand:%(for lib in %boostlibs; do lib2=${lib/-/_}; cat <<EOF
+%{expand:%(for lib in %boostbinlibs; do lib2=${lib/-/_}; cat <<EOF
 %%files -n %%{libname$lib2}
 %%doc LICENSE_1_0.txt
 %{_libdir}/libboost_$lib*.so.%{version}
 EOF
 done)}
 
-%{expand:%(for lib in %boostlibs; do lib2=${lib/-/_}; cat <<EOF
+%{expand:%(for lib in %boostbinlibs; do lib2=${lib/-/_}; cat <<EOF
 %%global devname$lib2 %%mklibname -d boost_$(echo $lib | sed 's,[0-9]$,&_,')
 %%package -n %%{devname$lib2}
 Summary:	Development files for Boost $lib
@@ -125,7 +125,7 @@ EOF
 done)}
 # (Anssi 01/2010) splitted expand contents due to rpm bug failing build,
 # triggered by a too long expanded string.
-%{expand:%(for lib in %boostlibs; do lib2=${lib/-/_}; cat <<EOF
+%{expand:%(for lib in %boostbinlibs; do lib2=${lib/-/_}; cat <<EOF
 %%description -n %%{devname$lib2}
 Boost is a collection of free peer-reviewed portable C++ source
 libraries. The emphasis is on libraries which work well with the C++
@@ -133,7 +133,7 @@ Standard Library. This package contains the shared library needed for
 running programs dynamically linked against Boost $lib.
 EOF
 done)}
-%{expand:%(for lib in %boostlibs; do lib2=${lib/-/_}; cat <<EOF
+%{expand:%(for lib in %boostbinlibs; do lib2=${lib/-/_}; cat <<EOF
 %%files -n %%{devname$lib2}
 %optional %{_libdir}/libboost_$lib*.so
 %optional %{_includedir}/boost/$lib
@@ -190,7 +190,7 @@ Core development files needed by all or most Boost components
 %package -n	%{libnamedevel}
 Summary:	The libraries and headers needed for Boost development
 Group:		Development/C++
-Requires:	%{expand:%(for lib in %boostlibs %develonly; do echo -n "%%{devname${lib/-/_}} = %{version}-%{release} "; done)}
+Requires:	%{expand:%(for lib in %boostbinlibs %develonly; do echo -n "%%{devname${lib/-/_}} = %{version}-%{release} "; done)}
 Obsoletes:	%{mklibname boost 1}-devel < %{version}-%{release}
 Provides:	%{name}-devel = %{version}-%{release}
 Provides:	lib%{name}-devel = %{version}-%{release}
