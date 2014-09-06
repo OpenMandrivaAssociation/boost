@@ -5,7 +5,7 @@
 %define coredevel %mklibname boost-core -d
 
 %ifarch aarch64
-%bcond_without context
+%bcond_with context
 %else
 %bcond_without context
 %endif
