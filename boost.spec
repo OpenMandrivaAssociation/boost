@@ -15,10 +15,13 @@
 # This is totally wrong, but it's rather a CMake'ification bug.
 %define _disable_ld_no_undefined 1
 
+# (tpg) save 50 MiB
+%bcond_with docs
+
 Summary:	Portable C++ libraries
 Name:		boost
 Version:	1.56.0
-Release:	2
+Release:	3
 License:	Boost
 Group:		Development/C++
 Url:		http://boost.org/
@@ -55,6 +58,9 @@ BuildRequires:	pkgconfig(expat)
 BuildRequires:	pkgconfig(icu-uc)
 BuildRequires:	pkgconfig(python)
 BuildRequires:	pkgconfig(zlib)
+%if !%{with docs}
+Obsoletes:	%{libnamedevel}-doc <= %{EVRD}
+%endif
 
 %description
 Boost is a collection of free peer-reviewed portable C++ source
@@ -206,6 +212,7 @@ libraries. The emphasis is on libraries which work well with the C++
 Standard Library. This package contains headers and shared library
 symlinks needed for Boost development.
 
+%if %{with docs}
 %package -n	%{libnamedevel}-doc
 Summary:	The libraries and headers needed for Boost development
 Group:	Development/C++
@@ -220,6 +227,7 @@ Boost is a collection of free peer-reviewed portable C++ source
 libraries. The emphasis is on libraries which work well with the C++
 Standard Library. This package contains documentation needed for Boost
 development.
+%endif
 
 %package -n	%{libnamestaticdevel}
 Summary:	Static libraries for Boost development
@@ -427,8 +435,10 @@ rm -f %{buildroot}/%{_mandir}/man1/bjam.1*
 
 %files -n %{libnamedevel}
 
+%if %{with docs}
 %files -n %{libnamedevel}-doc
 %doc packagedoc/*
+%endif
 
 %files -n %{libnamestaticdevel}
 %{_libdir}/libboost_*.a
