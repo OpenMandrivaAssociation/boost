@@ -20,8 +20,8 @@
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.56.0
-Release:	3
+Version:	1.57.0
+Release:	1
 License:	Boost
 Group:		Development/C++
 Url:		http://boost.org/
@@ -157,7 +157,7 @@ done)}
 %else
 %define arm64devel %nil
 %endif
-%define develonly accumulators algorithm archive asio assign attributes bimap bind circular_buffer dynamic_bitset exception flyweight format function functional fusion geometry integer mpi mpl msm multi_array multi_index multiprecision optional parameter phoenix predef preprocessor range ratio signals2 smart_ptr spirit tr1 tti tuple type_erasure type_traits units unordered utility uuid variant xpressive align core type_index %{arm64devel}
+%define develonly accumulators algorithm archive asio assign attributes bimap bind circular_buffer dynamic_bitset exception flyweight format function functional fusion geometry integer lexical_cast mpi mpl msm multi_array multi_index multiprecision optional parameter phoenix predef preprocessor range ratio signals2 smart_ptr spirit tr1 tti tuple type_erasure type_traits units unordered utility uuid variant xpressive align core type_index %{arm64devel}
 
 %{expand:%(for lib in %develonly; do lib2=${lib/-/_}; cat <<EOF
 %%global devname$lib2 %%mklibname -d boost_$(echo $lib | sed 's,[0-9]$,&_,')
@@ -379,7 +379,6 @@ rm -f %{buildroot}/%{_mandir}/man1/bjam.1*
 %{_includedir}/boost/iterator_adaptors.hpp
 %{_includedir}/boost/lambda
 %{_includedir}/boost/last_value.hpp
-%{_includedir}/boost/lexical_cast.hpp
 %{_includedir}/boost/limits.hpp
 %{_includedir}/boost/local_function.hpp
 %{_includedir}/boost/local_function
