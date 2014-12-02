@@ -21,7 +21,7 @@
 Summary:	Portable C++ libraries
 Name:		boost
 Version:	1.57.0
-Release:	2
+Release:	3
 License:	Boost
 Group:		Development/C++
 Url:		http://boost.org/
@@ -273,6 +273,10 @@ find packagedoc -type d -exec chmod +rx {} \;
 mkdir examples
 find libs -type f \( -name "*.?pp" ! -path "*test*" ! -path "*src*" ! -path "*tools*" -o -path "*example*" \) -exec cp --parents {} examples/ \;
 find examples -type d -exec chmod +rx {} \;
+# http://www.linuxfromscratch.org/blfs/view/svn/general/boost.html
+# http://osdir.com/ml/blfs-dev/2014-11/msg00142.html
+# this fixed needed for kdepim4 and qt-gstreamer
+sed -e '1 i#ifndef Q_MOC_RUN' -e '$ a#endif' -i boost/type_traits/detail/has_binary_operator.hpp
 
 %build
 %if %mdvver < 201500
