@@ -21,7 +21,7 @@
 Summary:	Portable C++ libraries
 Name:		boost
 Version:	1.57.0
-Release:	4
+Release:	5
 License:	Boost
 Group:		Development/C++
 Url:		http://boost.org/
@@ -50,6 +50,8 @@ Patch12: boost-1.50.0-polygon.patch
 # https://bugzilla.redhat.com/show_bug.cgi?id=828856
 # https://bugzilla.redhat.com/show_bug.cgi?id=828857
 Patch15: boost-1.50.0-pool.patch
+
+Patch16: 0001-Add-missing-include-to-signals2-trackable.hpp.patch
 
 BuildRequires:	doxygen
 BuildRequires:	xsltproc
@@ -261,6 +263,7 @@ same place as the documentation.
 %patch10 -p1
 %patch12 -p3
 %patch15 -p0
+%patch16 -p1
 
 # Preparing the docs
 mkdir packagedoc
