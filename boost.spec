@@ -263,7 +263,7 @@ same place as the documentation.
 %patch10 -p1
 %patch12 -p3
 %patch15 -p0
-%patch16 -p1
+%patch16 -p2
 
 # Preparing the docs
 mkdir packagedoc
