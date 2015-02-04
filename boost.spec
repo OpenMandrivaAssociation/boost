@@ -21,7 +21,7 @@
 Summary:	Portable C++ libraries
 Name:		boost
 Version:	1.57.0
-Release:	5
+Release:	6
 License:	Boost
 Group:		Development/C++
 Url:		http://boost.org/
@@ -58,7 +58,8 @@ BuildRequires:	xsltproc
 BuildRequires:	bzip2-devel
 BuildRequires:	pkgconfig(expat)
 BuildRequires:	pkgconfig(icu-uc)
-BuildRequires:	pkgconfig(python)
+BuildRequires:	pkgconfig(python3)
+BuildRequires:	pkgconfig(python2)
 BuildRequires:	pkgconfig(zlib)
 %if !%{with docs}
 Obsoletes:	%{libnamedevel}-doc <= %{EVRD}
@@ -299,7 +300,7 @@ EOF
 %endif
 	linkflags="%{ldflags} -lpython%{py2_ver} -lstdc++ -lm" \
 	-sHAVE_ICU=1 \
-	link=shared threading=multi debug-symbols=on --layout=system
+	threading=multi debug-symbols=on --layout=system pch=off
 
 # Taken from the Fedora .src.rpm.
 echo ============================= build Boost.Build ==================
@@ -312,7 +313,7 @@ echo ============================= build Boost.Build ==================
 %if !%{with context}
         --without-context --without-coroutine \
 %endif
-	link=shared debug-symbols=on \
+	debug-symbols=on pch=off \
 	install
 
 echo ============================= install Boost.Build ==================
