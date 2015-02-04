@@ -295,7 +295,7 @@ sed -e '1 i#ifndef Q_MOC_RUN' -e '$ a#endif' -i boost/type_traits/detail/has_bin
 
 cat > ./tools/build/src/user-config.jam << EOF
 using gcc : : : <compileflags>"%{optflags} -fno-strict-aliasing" ;
-using python : %{py3_ver} : %{__python3} : %{py3_incdir} : "%{_libdir} : : : m ;
+using python : %{py3_ver} : %{__python3} : %{py3_incdir} : %{_libdir} : : : m ;
 EOF
 ./bootstrap.sh --with-toolset=gcc --with-icu --prefix=%{_prefix} --libdir=%{_libdir}
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
