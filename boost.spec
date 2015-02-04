@@ -268,6 +268,7 @@ same place as the documentation.
 %patch12 -p3
 %patch15 -p0
 %patch16 -p2
+%patch17 -p1
 
 # Preparing the docs
 mkdir packagedoc
@@ -290,8 +291,8 @@ sed -e '1 i#ifndef Q_MOC_RUN' -e '$ a#endif' -i boost/type_traits/detail/has_bin
 %define py2_ver %py_ver
 %endif
 
-cat > ./tools/build/v2/user-config.jam << EOF
-using gcc : : g++ : <compileflags>"%{optflags} -I%{_includedir}/python%{py2_ver} -I%{py3_incdir}" <linkflags>"%{ldflags} -lpython%{py2_ver} -lpython%{py3_ver}m" ;
+cat > ./tools/build/src/user-config.jam << EOF
+using gcc : : : <compileflags>"%{optflags} -I%{_includedir}/python%{py2_ver} -I%{py3_incdir}" <linkflags>"%{ldflags} -lpython%{py2_ver} -lpython%{py3_ver}m" ;
 using python : %{py3_ver} : %{__python3} : %{py3_incdir} : %{_libdir} ;
 EOF
 ./bootstrap.sh --with-toolset=gcc --with-icu --prefix=%{_prefix} --libdir=%{_libdir}
