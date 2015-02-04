@@ -59,6 +59,7 @@ BuildRequires:	bzip2-devel
 BuildRequires:	pkgconfig(expat)
 BuildRequires:	pkgconfig(icu-uc)
 BuildRequires:	pkgconfig(python3)
+BuildRequires:	pkgconfig(python2)
 BuildRequires:	pkgconfig(zlib)
 #BuildRequires:	openmpi-devel
 %if !%{with docs}
@@ -287,10 +288,9 @@ sed -e '1 i#ifndef Q_MOC_RUN' -e '$ a#endif' -i boost/type_traits/detail/has_bin
 %define py2_ver %py_ver
 %endif
 
-%define gcc_ver %(rpm -q --queryformat="%%{VERSION}" gcc)
 cat > ./tools/build/v2/user-config.jam << EOF
-using gcc : : g++ : <compileflags>"%optflags -I%{_includedir}/python%{py_ver} -I%{_includedir}/python%{py3_ver}" <linkflags>"%ldflags -lpython%{py_ver} -lpython%{py3_ver}" ;
-using python : %py3_ver : %{_bindir}/python%{py3_ver} : %{_includedir}/python%{py3_ver} : %{_libdir} ;
+using gcc : : g++ : <compileflags>"%{optflags} -I%{_includedir}/python%{py2_ver} -I%{_includedir}/python%{py3_ver}" <linkflags>"%{ldflags} -lpython%{py2_ver} -lpython%{py3_ver}" ;
+using python : %{py3_ver} : %{_bindir}/python%{py3_ver} : %{_includedir}/python%{py3_ver} : %{_libdir} ;
 EOF
 ./bootstrap.sh --with-toolset=gcc --with-icu --prefix=%{_prefix} --libdir=%{_libdir}
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
