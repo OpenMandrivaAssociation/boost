@@ -60,7 +60,7 @@ BuildRequires:	pkgconfig(expat)
 BuildRequires:	pkgconfig(icu-uc)
 BuildRequires:	pkgconfig(python3)
 BuildRequires:	pkgconfig(zlib)
-BuildRequires:	openmpi-devel
+#BuildRequires:	openmpi-devel
 %if !%{with docs}
 Obsoletes:	%{libnamedevel}-doc <= %{EVRD}
 %endif
@@ -291,10 +291,9 @@ sed -e '1 i#ifndef Q_MOC_RUN' -e '$ a#endif' -i boost/type_traits/detail/has_bin
 cat > ./tools/build/v2/user-config.jam << EOF
 using gcc : : g++ : <compileflags>"%optflags -I%{_includedir}/python%{py_ver} -I%{_includedir}/python%{py3_ver}" <linkflags>"%ldflags -lpython%{py_ver} -lpython%{py3_ver}" ;
 using python : %py3_ver : %{_bindir}/python%{py3_ver} : %{_includedir}/python%{py3_ver} : %{_libdir} ;
-using mpi ;
 EOF
 ./bootstrap.sh --with-toolset=gcc --with-icu --prefix=%{_prefix} --libdir=%{_libdir}
-./b2 -d+2 -q %{?_smp_mflags} \
+./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
 	--prefix=%{_prefix} --libdir=%{_libdir} \
 %if !%{with context}
         --without-context --without-coroutine \
@@ -312,7 +311,7 @@ echo ============================= build Boost.Build ==================
  ./bootstrap.sh --with-toolset=gcc)
 
 %install
-./b2 -d+2 -q %{?_smp_mflags} \
+./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
 	--prefix=%{buildroot}%{_prefix} --libdir=%{buildroot}%{_libdir} \
 %if !%{with context}
         --without-context --without-coroutine \
