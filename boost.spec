@@ -289,17 +289,20 @@ sed -e '1 i#ifndef Q_MOC_RUN' -e '$ a#endif' -i boost/type_traits/detail/has_bin
 
 %define gcc_ver %(rpm -q --queryformat="%%{VERSION}" gcc)
 cat > ./tools/build/v2/user-config.jam << EOF
-using gcc : %gcc_ver : gcc : <cflags>"%optflags -I%{_includedir}/python%{py2_ver}" <cxxflags>"%optflags -I%{_includedir}/python%{py2_ver}" <linkflags>"%ldflags" ;
-using python : %py2_ver : %{_bindir}/python%{py2_ver} : %{_includedir}/python%{py2_ver} : %{_libdir} ;
+using gcc : : g++ : <compileflags>"%optflags -I%{_includedir}/python%{py_ver} -I%{_includedir}/python%{py3_ver}" <linkflags>"%ldflags -lpython%{py_ver} -lpython%{py3_ver}" ;
+using python : %py3_ver : %{_bindir}/python%{py3_ver} : %{_includedir}/python%{py3_ver} : %{_libdir} ;
 EOF
-./bootstrap.sh --with-toolset=gcc --with-icu --prefix=%{_prefix} --libdir=%{_libdir} --with-python=%{__python2}
+./bootstrap.sh --with-toolset=gcc --with-icu --prefix=%{_prefix} --libdir=%{_libdir}
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
 	--prefix=%{_prefix} --libdir=%{_libdir} \
 %if !%{with context}
         --without-context --without-coroutine \
 %endif
-	linkflags="%{ldflags} -lpython%{py2_ver} -lstdc++ -lm" \
+	linkflags="%{ldflags} -lstdc++ -lm" \
 	-sHAVE_ICU=1 \
+%ifarch %ix86
+	instruction-set=i586 \
+%endif
 	threading=multi debug-symbols=on --layout=system pch=off
 
 # Taken from the Fedora .src.rpm.
