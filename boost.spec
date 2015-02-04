@@ -297,7 +297,8 @@ cat > ./tools/build/src/user-config.jam << EOF
 using gcc : : : <compileflags>"%{optflags} -fno-strict-aliasing" ;
 using python : %{py3_ver} : %{__python3} : %{py3_incdir} : %{_libdir} : : : m ;
 EOF
-./bootstrap.sh --with-toolset=gcc --with-icu --prefix=%{_prefix} --libdir=%{_libdir}
+
+./bootstrap.sh --with-toolset=gcc --with-icu --prefix=%{_prefix} --libdir=%{_libdir} --with-python=%{__python2}
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
 	--prefix=%{_prefix} --libdir=%{_libdir} \
 %if !%{with context}
