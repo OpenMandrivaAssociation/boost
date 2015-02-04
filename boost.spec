@@ -54,6 +54,7 @@ Patch15: boost-1.50.0-pool.patch
 Patch16: 0001-Add-missing-include-to-signals2-trackable.hpp.patch
 
 Patch17: boost-1.57.0-python-libpython_dep.patch
+Patch18: boost-1.57.0-python-abi_letters.patch
 
 BuildRequires:	doxygen
 BuildRequires:	xsltproc
@@ -89,7 +90,7 @@ creating static and shared libraries, making pieces of executable, and other
 chores -- whether you're using GCC, MSVC, or a dozen more supported
 C++ compilers -- on Windows, OSX, Linux and commercial UNIX systems.
 
-%define boostlibsbase chrono date_time filesystem graph iostreams locale log math prg_exec_monitor program_options python random regex serialization signals system thread timer unit_test_framework wave wserialization atomic container
+%define boostlibsbase chrono date_time filesystem graph iostreams locale log math prg_exec_monitor program_options python python2 random regex serialization signals system thread timer unit_test_framework wave wserialization atomic container
 %define boostlibs %{boostlibsbase} coroutine context
 %if !%{with context}
 %define boostbinlibs %{boostlibsbase}
@@ -269,6 +270,7 @@ same place as the documentation.
 %patch15 -p0
 %patch16 -p2
 %patch17 -p1
+%patch18 -p1
 
 # Preparing the docs
 mkdir packagedoc
@@ -292,8 +294,8 @@ sed -e '1 i#ifndef Q_MOC_RUN' -e '$ a#endif' -i boost/type_traits/detail/has_bin
 %endif
 
 cat > ./tools/build/src/user-config.jam << EOF
-using gcc : : : <compileflags>"%{optflags} -I%{_includedir}/python%{py2_ver} -I%{py3_incdir}" <linkflags>"%{ldflags} -lpython%{py2_ver} -lpython%{py3_ver}m" ;
-using python : %{py3_ver} : %{__python3} : %{py3_incdir} : %{_libdir} ;
+using gcc : : : <compileflags>"%{optflags} -fno-strict-aliasing" ;
+using python : %{py3_ver} : %{__python3} : %{py3_incdir} : "%{_libdir} : : : m ;
 EOF
 ./bootstrap.sh --with-toolset=gcc --with-icu --prefix=%{_prefix} --libdir=%{_libdir}
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
@@ -306,7 +308,7 @@ EOF
 %ifarch %ix86
 	instruction-set=i586 \
 %endif
-	threading=multi debug-symbols=on --layout=system pch=off
+	threading=multi debug-symbols=on --layout=system pch=off python=%{__python2}
 
 # Taken from the Fedora .src.rpm.
 echo ============================= build Boost.Build ==================
@@ -319,7 +321,7 @@ echo ============================= build Boost.Build ==================
 %if !%{with context}
         --without-context --without-coroutine \
 %endif
-	debug-symbols=on pch=off \
+	debug-symbols=on pch=off python=%{__python2} \
 	install
 
 echo ============================= install Boost.Build ==================
