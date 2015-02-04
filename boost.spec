@@ -298,7 +298,7 @@ EOF
 %if !%{with context}
         --without-context --without-coroutine \
 %endif
-	linkflags="%{ldflags} -lstdc++ -lm" \
+	linkflags="%{ldflags} -lpython%{py2_ver} -lpython%{py3_ver} -lstdc++ -lm" \
 	-sHAVE_ICU=1 \
 %ifarch %ix86
 	instruction-set=i586 \
