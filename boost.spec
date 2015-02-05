@@ -156,7 +156,7 @@ done)}
 %optional %{_libdir}/libboost_$lib.so
 %else
 %optional %{_libdir}/libboost_$lib*.so
-%fi
+%endif
 %optional %{_includedir}/boost/$lib
 %optional %{_includedir}/boost/$lib.h
 %optional %{_includedir}/boost/$lib.hpp
