@@ -309,7 +309,7 @@ EOF
 %ifarch %ix86
 	instruction-set=i586 \
 %endif
-	threading=multi debug-symbols=on --layout=system pch=off python=%{__python2}
+	threading=multi debug-symbols=on --layout=system pch=off
 
 # Taken from the Fedora .src.rpm.
 echo ============================= build Boost.Build ==================
@@ -322,7 +322,7 @@ echo ============================= build Boost.Build ==================
 %if !%{with context}
         --without-context --without-coroutine \
 %endif
-	debug-symbols=on pch=off python=%{__python2} \
+	debug-symbols=on pch=off \
 	install
 
 echo ============================= install Boost.Build ==================
