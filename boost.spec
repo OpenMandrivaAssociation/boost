@@ -152,7 +152,11 @@ EOF
 done)}
 %{expand:%(for lib in %boostbinlibs; do lib2=${lib/-/_}; cat <<EOF
 %%files -n %%{devname$lib2}
+%if "$lib" == "python"
+%optional %{_libdir}/libboost_$lib.so
+%else
 %optional %{_libdir}/libboost_$lib*.so
+%fi
 %optional %{_includedir}/boost/$lib
 %optional %{_includedir}/boost/$lib.h
 %optional %{_includedir}/boost/$lib.hpp
