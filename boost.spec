@@ -90,7 +90,7 @@ creating static and shared libraries, making pieces of executable, and other
 chores -- whether you're using GCC, MSVC, or a dozen more supported
 C++ compilers -- on Windows, OSX, Linux and commercial UNIX systems.
 
-%define boostlibsbase chrono date_time filesystem graph iostreams locale log math prg_exec_monitor program_options python3 random regex serialization signals system thread timer unit_test_framework wave wserialization atomic container
+%define boostlibsbase chrono date_time filesystem graph iostreams locale log math prg_exec_monitor program_options python python3 random regex serialization signals system thread timer unit_test_framework wave wserialization atomic container
 %define boostlibs %{boostlibsbase} coroutine context
 %if !%{with context}
 %define boostbinlibs %{boostlibsbase}
