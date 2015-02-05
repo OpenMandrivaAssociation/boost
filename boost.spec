@@ -90,7 +90,7 @@ creating static and shared libraries, making pieces of executable, and other
 chores -- whether you're using GCC, MSVC, or a dozen more supported
 C++ compilers -- on Windows, OSX, Linux and commercial UNIX systems.
 
-%define boostlibsbase chrono date_time filesystem graph iostreams locale log math prg_exec_monitor program_options python python2 random regex serialization signals system thread timer unit_test_framework wave wserialization atomic container
+%define boostlibsbase chrono date_time filesystem graph iostreams locale log math prg_exec_monitor program_options python3 random regex serialization signals system thread timer unit_test_framework wave wserialization atomic container
 %define boostlibs %{boostlibsbase} coroutine context
 %if !%{with context}
 %define boostbinlibs %{boostlibsbase}
@@ -300,7 +300,7 @@ EOF
 
 ./bootstrap.sh --with-toolset=gcc --with-icu --prefix=%{_prefix} --libdir=%{_libdir} --with-python=%{__python2}
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
-	--prefix=%{_prefix} --libdir=%{_libdir} \
+	--prefix=%{_prefix} --libdir=%{_libdir} --layout=system \
 %if !%{with context}
         --without-context --without-coroutine \
 %endif
@@ -309,7 +309,7 @@ EOF
 %ifarch %ix86
 	instruction-set=i586 \
 %endif
-	threading=multi debug-symbols=on --layout=system pch=off
+	threading=multi debug-symbols=on pch=off python=%{py2_ver}
 
 # Taken from the Fedora .src.rpm.
 echo ============================= build Boost.Build ==================
@@ -322,7 +322,7 @@ echo ============================= build Boost.Build ==================
 %if !%{with context}
         --without-context --without-coroutine \
 %endif
-	debug-symbols=on pch=off \
+	debug-symbols=on pch=off python=%{py2_ver} \
 	install
 
 echo ============================= install Boost.Build ==================
