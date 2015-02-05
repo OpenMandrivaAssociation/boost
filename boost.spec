@@ -105,7 +105,7 @@ C++ compilers -- on Windows, OSX, Linux and commercial UNIX systems.
 %%package -n %%{libname$lib2}
 Summary:	Boost $lib shared library
 # no one should require this, but provided anyway for maximum compatibility:
-Provides:	boost = %version-%release
+Provides:	boost = %{EVRD}
 Group:		System/Libraries
 EOF
 done)}
@@ -122,7 +122,11 @@ done)}
 %{expand:%(for lib in %boostbinlibs; do lib2=${lib/-/_}; cat <<EOF
 %%files -n %%{libname$lib2}
 %%doc LICENSE_1_0.txt
+%if "$lib" == "python"
+%{_libdir}/libboost_$lib.so.%{version}
+%else
 %{_libdir}/libboost_$lib*.so.%{version}
+%endif
 EOF
 done)}
 
@@ -131,9 +135,9 @@ done)}
 %%package -n %%{devname$lib2}
 Summary:	Development files for Boost $lib
 Group:		Development/C++
-Provides:	boost-$lib-devel = %EVRD
-Requires:	%{libname$lib2} = %EVRD
-Requires:	%{coredevel} = %EVRD
+Provides:	boost-$lib-devel = %{EVRD}
+Requires:	%{libname$lib2} = %{EVRD}
+Requires:	%{coredevel} = %{EVRD}
 EOF
 done)}
 # (Anssi 01/2010) splitted expand contents due to rpm bug failing build,
@@ -171,8 +175,8 @@ done)}
 %%package -n %%{devname$lib2}
 Summary:	Development files for Boost $lib
 Group:		Development/C++
-Provides:	boost-$lib-devel = %EVRD
-Requires:	%{coredevel} = %EVRD
+Provides:	boost-$lib-devel = %{EVRD}
+Requires:	%{coredevel} = %{EVRD}
 EOF
 done)}
 # (Anssi 01/2010) splitted expand contents due to rpm bug failing build,
@@ -209,9 +213,9 @@ Core development files needed by all or most Boost components
 Summary:	The libraries and headers needed for Boost development
 Group:		Development/C++
 Requires:	%{expand:%(for lib in %boostbinlibs %develonly; do echo -n "%%{devname${lib/-/_}} = %{version}-%{release} "; done)}
-Obsoletes:	%{mklibname boost 1}-devel < %{version}-%{release}
-Provides:	%{name}-devel = %{version}-%{release}
-Provides:	lib%{name}-devel = %{version}-%{release}
+Obsoletes:	%{mklibname boost 1}-devel < %{EVRD}
+Provides:	%{name}-devel = %{EVRD}
+Provides:	lib%{name}-devel = %{EVRD}
 
 %description -n	%{libnamedevel}
 Boost is a collection of free peer-reviewed portable C++ source
@@ -239,9 +243,9 @@ development.
 %package -n	%{libnamestaticdevel}
 Summary:	Static libraries for Boost development
 Group:		Development/C++
-Requires:	%{libnamedevel} = %{version}-%{release}
-Obsoletes:	%{mklibname boost 1}-static-devel < %{version}-%{release}
-Provides:	%{name}-static-devel = %{version}-%{release}
+Requires:	%{libnamedevel} = %{EVRD}
+Obsoletes:	%{mklibname boost 1}-static-devel < %{EVRD}
+Provides:	%{name}-static-devel = %{EVRD}
 
 %description -n	%{libnamestaticdevel}
 Boost is a collection of free peer-reviewed portable C++ source
