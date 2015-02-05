@@ -302,17 +302,16 @@ sed -e '1 i#ifndef Q_MOC_RUN' -e '$ a#endif' -i boost/type_traits/detail/has_bin
 %endif
 
 cat > ./tools/build/src/user-config.jam << EOF
-using gcc : : : <compileflags>"%{optflags} -fno-strict-aliasing" ;
+using clang : : : <compileflags>"%{optflags} -fno-strict-aliasing" <cxxflags>"-std=c++11 -stdlib=libc++" <linkflags>"%{ldflags} -stdlib=libc++ -lm" ;
 using python : %{py3_ver} : %{__python3} : %{py3_incdir} : %{_libdir} : : : m ;
 EOF
 
-./bootstrap.sh --with-toolset=gcc --with-icu --prefix=%{_prefix} --libdir=%{_libdir} --with-python=%{__python2}
+./bootstrap.sh --with-toolset=clang --with-icu --prefix=%{_prefix} --libdir=%{_libdir} --with-python=%{__python2}
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
 	--prefix=%{_prefix} --libdir=%{_libdir} --layout=system \
 %if !%{with context}
         --without-context --without-coroutine \
 %endif
-	linkflags="%{ldflags} -lstdc++ -lm" \
 	-sHAVE_ICU=1 \
 %ifarch %ix86
 	instruction-set=i586 \
@@ -322,7 +321,7 @@ EOF
 # Taken from the Fedora .src.rpm.
 echo ============================= build Boost.Build ==================
 (cd tools/build/
- ./bootstrap.sh --with-toolset=gcc)
+ ./bootstrap.sh --with-toolset=clang)
 
 %install
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
