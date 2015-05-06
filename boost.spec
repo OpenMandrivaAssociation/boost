@@ -20,8 +20,8 @@
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.57.0
-Release:	7
+Version:	1.58.0
+Release:	1
 License:	Boost
 Group:		Development/C++
 Url:		http://boost.org/
@@ -50,8 +50,6 @@ Patch12: boost-1.50.0-polygon.patch
 # https://bugzilla.redhat.com/show_bug.cgi?id=828856
 # https://bugzilla.redhat.com/show_bug.cgi?id=828857
 Patch15: boost-1.50.0-pool.patch
-
-Patch16: 0001-Add-missing-include-to-signals2-trackable.hpp.patch
 
 Patch17: boost-1.57.0-python-libpython_dep.patch
 Patch18: boost-1.57.0-python-abi_letters.patch
@@ -172,7 +170,7 @@ done)}
 %else
 %define arm64devel %nil
 %endif
-%define develonly accumulators algorithm archive asio assign attributes bimap bind circular_buffer dynamic_bitset exception flyweight format function functional fusion geometry integer lexical_cast mpi mpl msm multi_array multi_index multiprecision optional parameter phoenix predef preprocessor range ratio signals2 smart_ptr spirit tr1 tti tuple type_erasure type_traits units unordered utility uuid variant xpressive align core type_index %{arm64devel}
+%define develonly accumulators algorithm archive asio assign attributes bimap bind circular_buffer dynamic_bitset exception flyweight format function functional fusion geometry integer lexical_cast mpi mpl msm multi_array multi_index multiprecision optional parameter phoenix predef preprocessor range ratio signals2 smart_ptr spirit tr1 tti tuple type_erasure type_traits units unordered utility uuid variant xpressive align core type_index sort endian %{arm64devel}
 
 %{expand:%(for lib in %develonly; do lib2=${lib/-/_}; cat <<EOF
 %%global devname$lib2 %%mklibname -d boost_$(echo $lib | sed 's,[0-9]$,&_,')
@@ -276,7 +274,6 @@ same place as the documentation.
 %patch10 -p1
 %patch12 -p3
 %patch15 -p0
-%patch16 -p2
 %patch17 -p1
 %patch18 -p1
 
@@ -361,6 +358,7 @@ rm -f %{buildroot}/%{_mandir}/man1/bjam.1*
 %{_includedir}/boost/cstdfloat.hpp
 %{_includedir}/boost/make_unique.hpp
 %{_includedir}/boost/polymorphic_cast.hpp
+%{_includedir}/boost/polymorphic_pointer_cast.hpp
 %{_includedir}/boost/blank_fwd.hpp
 %{_includedir}/boost/call_traits.hpp
 %{_includedir}/boost/cast.hpp
@@ -379,6 +377,7 @@ rm -f %{buildroot}/%{_mandir}/man1/bjam.1*
 %{_includedir}/boost/cstdint.hpp
 %{_includedir}/boost/cstdlib.hpp
 %{_includedir}/boost/current_function.hpp
+%{_includedir}/boost/cxx11_char_types.hpp
 %{_includedir}/boost/detail
 %{_includedir}/boost/enable_shared_from_this.hpp
 %{_includedir}/boost/exception_ptr.hpp
@@ -447,7 +446,6 @@ rm -f %{buildroot}/%{_mandir}/man1/bjam.1*
 %{_includedir}/boost/signal.hpp
 %{_includedir}/boost/statechart
 %{_includedir}/boost/static_assert.hpp
-%{_includedir}/boost/strong_typedef.hpp
 %{_includedir}/boost/swap.hpp
 %{_includedir}/boost/throw_exception.hpp
 %{_includedir}/boost/token_functions.hpp
