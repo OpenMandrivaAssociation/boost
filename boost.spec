@@ -55,6 +55,9 @@ Patch17:	boost-1.57.0-python-libpython_dep.patch
 Patch18:	boost-1.57.0-python-abi_letters.patch
 # https://bugzilla.redhat.com/show_bug.cgi?id=1190039
 Patch19:	boost-1.57.0-build-optflags.patch
+# drop -m64 -m32 as unrecognized options
+Patch20:	boost-aarch64-flags.patch
+Patch21:	boost-unrecognized-option.patch
 
 BuildRequires:	doxygen
 BuildRequires:	xsltproc
@@ -279,6 +282,8 @@ same place as the documentation.
 %patch17 -p1
 %patch18 -p1
 %patch19 -p1
+%patch20 -p1
+%patch21 -p1
 
 # Preparing the docs
 mkdir packagedoc

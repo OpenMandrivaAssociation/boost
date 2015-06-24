@@ -1,0 +1,15 @@
+Index: boost_1_58_0/tools/build/src/tools/gcc.jam
+===================================================================
+--- boost_1_58_0.orig/tools/build/src/tools/gcc.jam
++++ boost_1_58_0/tools/build/src/tools/gcc.jam
+@@ -453,10 +453,6 @@ rule setup-address-model ( targets * : s
+             local arch = [ feature.get-values architecture : $(properties) ] ;
+             if $(arch) != arm
+             {
+-                if $(model) = 32
+-                {
+-                    option = -m32 ;
+-                }
+             }
+             # For darwin, the model can be 32_64. darwin.jam will handle that
+             # on its own.
