@@ -29,30 +29,32 @@ Source0:	http://download.sourceforge.net/boost/boost_%{packver}.tar.bz2
 Source100:	%{name}.rpmlintrc
 
 # https://svn.boost.org/trac/boost/ticket/6150
-Patch4: boost-1.50.0-fix-non-utf8-files.patch
+Patch4:		boost-1.50.0-fix-non-utf8-files.patch
 
 # Add a manual page for the sole executable, namely bjam, based on the
 # on-line documentation:
 # http://www.boost.org/boost-build2/doc/html/bbv2/overview.html
-Patch5: boost-1.48.0-add-bjam-man-page.patch
+Patch5:		boost-1.48.0-add-bjam-man-page.patch
 
 # https://bugzilla.redhat.com/show_bug.cgi?id=756005
 # https://svn.boost.org/trac/boost/ticket/6131
-Patch7: boost-1.50.0-foreach.patch
+Patch7:		boost-1.50.0-foreach.patch
 
 # https://bugzilla.redhat.com/show_bug.cgi?id=783660
 # https://svn.boost.org/trac/boost/ticket/6459 fixed
-Patch10: boost-1.50.0-long-double-1.patch
+Patch10:	boost-1.50.0-long-double-1.patch
 
 # https://bugzilla.redhat.com/show_bug.cgi?id=784654
-Patch12: boost-1.50.0-polygon.patch
+Patch12:	boost-1.50.0-polygon.patch
 
 # https://bugzilla.redhat.com/show_bug.cgi?id=828856
 # https://bugzilla.redhat.com/show_bug.cgi?id=828857
-Patch15: boost-1.50.0-pool.patch
+Patch15:	boost-1.50.0-pool.patch
 
-Patch17: boost-1.57.0-python-libpython_dep.patch
-Patch18: boost-1.57.0-python-abi_letters.patch
+Patch17:	boost-1.57.0-python-libpython_dep.patch
+Patch18:	boost-1.57.0-python-abi_letters.patch
+# https://bugzilla.redhat.com/show_bug.cgi?id=1190039
+Patch19:	boost-1.57.0-build-optflags.patch
 
 BuildRequires:	doxygen
 BuildRequires:	xsltproc
@@ -276,6 +278,7 @@ same place as the documentation.
 %patch15 -p0
 %patch17 -p1
 %patch18 -p1
+%patch19 -p1
 
 # Preparing the docs
 mkdir packagedoc
@@ -292,6 +295,7 @@ find examples -type d -exec chmod +rx {} \;
 # http://osdir.com/ml/blfs-dev/2014-11/msg00142.html
 # this fixed needed for kdepim4 and qt-gstreamer
 sed -e '1 i#ifndef Q_MOC_RUN' -e '$ a#endif' -i boost/type_traits/detail/has_binary_operator.hpp
+#sed -i 's!-m64!!g' tools/build/src/tools/gcc.jam
 
 %build
 %if %mdvver < 201500
@@ -316,7 +320,7 @@ EOF
 %ifarch %ix86
 	instruction-set=i586 \
 %endif
-	threading=multi debug-symbols=on pch=off python=%{py2_ver}
+	threading=multi debug-symbols=on pch=off variant=release python=%{py2_ver}
 
 # Taken from the Fedora .src.rpm.
 echo ============================= build Boost.Build ==================
