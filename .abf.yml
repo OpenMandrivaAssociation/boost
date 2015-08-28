@@ -1,5 +1,2 @@
-removed_sources:
-  boost_1_56_0.tar.bz2: f94bb008900ed5ba1994a1072140590784b9b5df
-  boost_1_57_0.tar.bz2: e151557ae47afd1b43dc3fac46f8b04a8fe51c12
 sources:
-  boost_1_58_0.tar.bz2: 2fc96c1651ac6fe9859b678b165bd78dc211e881
+  boost_1_59_0.tar.bz2: b94de47108b2cdb0f931833a7a9834c2dd3ca46e

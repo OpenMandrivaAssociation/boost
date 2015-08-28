@@ -20,8 +20,8 @@
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.58.0
-Release:	6
+Version:	1.59.0
+Release:	1
 License:	Boost
 Group:		Development/C++
 Url:		http://boost.org/
@@ -57,7 +57,7 @@ Patch18:	boost-1.57.0-python-abi_letters.patch
 Patch19:	boost-1.57.0-build-optflags.patch
 # drop -m64 -m32 as unrecognized options
 Patch20:	boost-aarch64-flags.patch
-Patch21:	boost-unrecognized-option.patch
+#Patch21:	boost-unrecognized-option.patch
 
 BuildRequires:	doxygen
 BuildRequires:	xsltproc
@@ -175,7 +175,7 @@ done)}
 %else
 %define arm64devel %nil
 %endif
-%define develonly accumulators algorithm archive asio assign attributes bimap bind circular_buffer dynamic_bitset exception flyweight format function functional fusion geometry integer lexical_cast mpi mpl msm multi_array multi_index multiprecision optional parameter phoenix predef preprocessor range ratio signals2 smart_ptr spirit tr1 tti tuple type_erasure type_traits units unordered utility uuid variant xpressive align core type_index sort endian %{arm64devel}
+%define develonly accumulators algorithm archive asio assign attributes bimap bind circular_buffer dynamic_bitset exception flyweight format function functional fusion geometry integer lexical_cast mpi mpl msm multi_array multi_index multiprecision optional parameter phoenix predef preprocessor range ratio signals2 smart_ptr spirit tr1 tti tuple type_erasure type_traits units unordered utility uuid variant xpressive align core type_index sort endian coroutine2 convert %{arm64devel}
 
 %{expand:%(for lib in %develonly; do lib2=${lib/-/_}; cat <<EOF
 %%global devname$lib2 %%mklibname -d boost_$(echo $lib | sed 's,[0-9]$,&_,')
@@ -283,7 +283,7 @@ same place as the documentation.
 %patch18 -p1
 %patch19 -p1
 %patch20 -p1
-%patch21 -p1
+#patch21 -p1
 
 # Preparing the docs
 mkdir packagedoc
@@ -303,18 +303,18 @@ sed -e '1 i#ifndef Q_MOC_RUN' -e '$ a#endif' -i boost/type_traits/detail/has_bin
 #sed -i 's!-m64!!g' tools/build/src/tools/gcc.jam
 
 %build
-%if %mdvver < 201500
-%define py2_ver %py_ver
-%endif
-
 #using clang : : : <compileflags>"%{optflags} -fno-strict-aliasing" <cxxflags>"-std=c++11 -stdlib=libc++" <linkflags>"%{ldflags} -stdlib=libc++ -lm" ;
+# interactive toolset detection
+# in 2015 and cooker we fall in love with clang
+# for 2014 still use gcc
+toolset=`echo %{__cc} | sed 's!/usr/bin/!!'`
 
 cat > ./tools/build/src/user-config.jam << EOF
-using gcc : : : <compileflags>"%{optflags} -fno-strict-aliasing" ;
+using $toolset : : : <compileflags>"%{optflags} -fno-strict-aliasing" <cxxflags>"-std=c++11" <linkflags>"%{ldflags}" ;
 using python : %{py3_ver} : %{__python3} : %{py3_incdir} : %{_libdir} : : : m ;
 EOF
 
-./bootstrap.sh --with-toolset=gcc --with-icu --prefix=%{_prefix} --libdir=%{_libdir} --with-python=%{__python2}
+./bootstrap.sh --with-toolset=$toolset --with-icu --prefix=%{_prefix} --libdir=%{_libdir} --with-python=%{__python3}
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
 	--prefix=%{_prefix} --libdir=%{_libdir} --layout=system \
 %if !%{with context}
@@ -325,12 +325,12 @@ EOF
 %ifarch %ix86
 	instruction-set=i586 \
 %endif
-	threading=multi debug-symbols=on pch=off variant=release python=%{py2_ver}
+	threading=multi debug-symbols=on pch=off variant=release python=%{py3_ver}
 
 # Taken from the Fedora .src.rpm.
 echo ============================= build Boost.Build ==================
 (cd tools/build/
- ./bootstrap.sh --with-toolset=gcc)
+ ./bootstrap.sh --with-toolset=$toolset)
 
 %install
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
@@ -338,7 +338,7 @@ echo ============================= build Boost.Build ==================
 %if !%{with context}
         --without-context --without-coroutine \
 %endif
-	debug-symbols=on pch=off python=%{py2_ver} \
+	debug-symbols=on pch=off python=%{py3_ver} \
 	install
 
 echo ============================= install Boost.Build ==================
@@ -360,6 +360,7 @@ rm -f %{buildroot}/%{_mandir}/man1/bjam.1*
 %files -n %{coredevel}
 %dir %{_includedir}/boost
 %{_includedir}/boost/aligned_storage.hpp
+%{_includedir}/boost/make_default.hpp
 %{_includedir}/boost/any.hpp
 %{_includedir}/boost/array.hpp
 %{_includedir}/boost/assert.hpp
