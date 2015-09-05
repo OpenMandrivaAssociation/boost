@@ -21,7 +21,7 @@
 Summary:	Portable C++ libraries
 Name:		boost
 Version:	1.59.0
-Release:	1
+Release:	2
 License:	Boost
 Group:		Development/C++
 Url:		http://boost.org/
@@ -312,9 +312,10 @@ toolset=`echo %{__cc} | sed 's!/usr/bin/!!'`
 cat > ./tools/build/src/user-config.jam << EOF
 using $toolset : : : <compileflags>"%{optflags} -fno-strict-aliasing" <cxxflags>"-std=c++11" <linkflags>"%{ldflags}" ;
 using python : %{py3_ver} : %{__python3} : %{py3_incdir} : %{_libdir} : : : m ;
+using python : %{py2_ver} : %{__python2} : %{py2_incdir} : %{_libdir} : : : ;
 EOF
 
-./bootstrap.sh --with-toolset=$toolset --with-icu --prefix=%{_prefix} --libdir=%{_libdir} --with-python=%{__python3}
+./bootstrap.sh --with-toolset=$toolset --with-icu --prefix=%{_prefix} --libdir=%{_libdir} --with-python=%{__python2}
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
 	--prefix=%{_prefix} --libdir=%{_libdir} --layout=system \
 %if !%{with context}
@@ -325,7 +326,7 @@ EOF
 %ifarch %ix86
 	instruction-set=i586 \
 %endif
-	threading=multi debug-symbols=on pch=off variant=release python=%{py3_ver}
+	threading=multi debug-symbols=on pch=off variant=release python=%{py2_ver}
 
 # Taken from the Fedora .src.rpm.
 echo ============================= build Boost.Build ==================
@@ -338,7 +339,7 @@ echo ============================= build Boost.Build ==================
 %if !%{with context}
         --without-context --without-coroutine \
 %endif
-	debug-symbols=on pch=off python=%{py3_ver} \
+	debug-symbols=on pch=off python=%{py2_ver} \
 	install
 
 echo ============================= install Boost.Build ==================
