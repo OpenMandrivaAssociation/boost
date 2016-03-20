@@ -14,13 +14,14 @@
 # Without --no-undefined, corresponding libraries lose their dependency on Boost.System.
 # This is totally wrong, but it's rather a CMake'ification bug.
 %define _disable_ld_no_undefined 1
+%define _disable_lto 1
 
 # (tpg) save 50 MiB
 %bcond_with docs
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.59.0
+Version:	1.60.0
 Release:	4
 License:	Boost
 Group:		Development/C++
@@ -94,7 +95,7 @@ chores -- whether you're using GCC, MSVC, or a dozen more supported
 C++ compilers -- on Windows, OSX, Linux and commercial UNIX systems.
 
 %define boostlibsbase chrono date_time filesystem graph iostreams locale log math prg_exec_monitor program_options python python3 random regex serialization signals system thread timer unit_test_framework wave wserialization atomic container
-%define boostlibs %{boostlibsbase} coroutine context
+%define boostlibs %{boostlibsbase} coroutine context type_erasure
 %if !%{with context}
 %define boostbinlibs %{boostlibsbase}
 %else
@@ -175,7 +176,7 @@ done)}
 %else
 %define arm64devel %nil
 %endif
-%define develonly accumulators algorithm archive asio assign attributes bimap bind circular_buffer dynamic_bitset exception flyweight format function functional fusion geometry integer lexical_cast mpi mpl msm multi_array multi_index multiprecision optional parameter phoenix predef preprocessor range ratio signals2 smart_ptr spirit tr1 tti tuple type_erasure type_traits units unordered utility uuid variant xpressive align core type_index sort endian coroutine2 convert %{arm64devel}
+%define develonly accumulators algorithm archive asio assign attributes bimap bind circular_buffer dynamic_bitset exception flyweight format function functional fusion geometry integer lexical_cast mpi mpl msm multi_array multi_index multiprecision optional parameter phoenix predef preprocessor range ratio signals2 smart_ptr spirit tr1 tti tuple type_traits units unordered utility uuid variant vmd xpressive align core type_index sort endian coroutine2 convert %{arm64devel}
 
 %{expand:%(for lib in %develonly; do lib2=${lib/-/_}; cat <<EOF
 %%global devname$lib2 %%mklibname -d boost_$(echo $lib | sed 's,[0-9]$,&_,')
