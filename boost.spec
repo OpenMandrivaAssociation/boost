@@ -59,6 +59,7 @@ Patch19:	boost-1.57.0-build-optflags.patch
 # drop -m64 -m32 as unrecognized options
 Patch20:	boost-aarch64-flags.patch
 #Patch21:	boost-unrecognized-option.patch
+Patch22:	boost-1.60.0-aarch64-clang.patch
 
 BuildRequires:	doxygen
 BuildRequires:	xsltproc
@@ -285,6 +286,12 @@ same place as the documentation.
 %patch19 -p1
 %patch20 -p1
 #patch21 -p1
+
+%ifarch aarch64
+if %{__cc} --version |grep -q clang; then
+%patch22 -p1 -b .clang~
+fi
+%endif
 
 # Preparing the docs
 mkdir packagedoc
