@@ -4,12 +4,6 @@
 %define	libnamestaticdevel %mklibname boost -d -s
 %define coredevel %mklibname boost-core -d
 
-%ifarch aarch64
-%bcond_with context
-%else
-%bcond_without context
-%endif
-
 # --no-undefined breaks build of CMakeified Boost.{Chrono,Locale,Timer}.
 # Without --no-undefined, corresponding libraries lose their dependency on Boost.System.
 # This is totally wrong, but it's rather a CMake'ification bug.
@@ -95,13 +89,8 @@ creating static and shared libraries, making pieces of executable, and other
 chores -- whether you're using GCC, MSVC, or a dozen more supported
 C++ compilers -- on Windows, OSX, Linux and commercial UNIX systems.
 
-%define boostlibsbase chrono date_time filesystem graph iostreams locale log math prg_exec_monitor program_options python python3 random regex serialization signals system thread timer unit_test_framework wave wserialization atomic container
-%define boostlibs %{boostlibsbase} coroutine context type_erasure
-%if !%{with context}
-%define boostbinlibs %{boostlibsbase}
-%else
+%define boostlibs chrono context coroutine date_time filesystem graph iostreams locale log math prg_exec_monitor program_options python python3 random regex serialization signals system thread timer type_erasure unit_test_framework wave wserialization atomic container
 %define boostbinlibs %{boostlibs}
-%endif
 
 # (Anssi 01/2010) dashes are converted to underscores for macros ($lib2);
 # The sed script adds _ when library name ends in number.
@@ -172,12 +161,7 @@ done)}
 EOF
 done)}
 
-%ifarch aarch64
-%define arm64devel coroutine context
-%else
-%define arm64devel %nil
-%endif
-%define develonly accumulators algorithm archive asio assign attributes bimap bind circular_buffer dynamic_bitset exception flyweight format function functional fusion geometry integer lexical_cast mpi mpl msm multi_array multi_index multiprecision optional parameter phoenix predef preprocessor range ratio signals2 smart_ptr spirit tr1 tti tuple type_traits units unordered utility uuid variant vmd xpressive align core type_index sort endian coroutine2 convert %{arm64devel}
+%define develonly accumulators algorithm archive asio assign attributes bimap bind circular_buffer dynamic_bitset exception flyweight format function functional fusion geometry integer lexical_cast mpi mpl msm multi_array multi_index multiprecision optional parameter phoenix predef preprocessor range ratio signals2 smart_ptr spirit tr1 tti tuple type_traits units unordered utility uuid variant vmd xpressive align core type_index sort endian coroutine2 convert
 
 %{expand:%(for lib in %develonly; do lib2=${lib/-/_}; cat <<EOF
 %%global devname$lib2 %%mklibname -d boost_$(echo $lib | sed 's,[0-9]$,&_,')
@@ -326,9 +310,6 @@ EOF
 ./bootstrap.sh --with-toolset=$toolset --with-icu --prefix=%{_prefix} --libdir=%{_libdir} --with-python=%{__python2}
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
 	--prefix=%{_prefix} --libdir=%{_libdir} --layout=system \
-%if !%{with context}
-        --without-context --without-coroutine \
-%endif
 	-sHAVE_ICU=1 \
 	linkflags="%{ldflags} -lstdc++ -lm" \
 %ifarch %ix86
@@ -344,9 +325,6 @@ echo ============================= build Boost.Build ==================
 %install
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
 	--prefix=%{buildroot}%{_prefix} --libdir=%{buildroot}%{_libdir} \
-%if !%{with context}
-        --without-context --without-coroutine \
-%endif
 	debug-symbols=on pch=off python=%{py2_ver} \
 	install
 
