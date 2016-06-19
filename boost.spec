@@ -15,8 +15,8 @@
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.60.0
-Release:	5
+Version:	1.61.0
+Release:	1
 License:	Boost
 Group:		Development/C++
 Url:		http://boost.org/
@@ -161,7 +161,11 @@ done)}
 EOF
 done)}
 
-%define develonly accumulators algorithm archive asio assign attributes bimap bind circular_buffer dynamic_bitset exception flyweight format function functional fusion geometry integer lexical_cast mpi mpl msm multi_array multi_index multiprecision optional parameter phoenix predef preprocessor range ratio signals2 smart_ptr spirit tr1 tti tuple type_traits units unordered utility uuid variant vmd xpressive align core type_index sort endian coroutine2 convert
+# There's no difference between develonly and develonly2. Just had to split
+# them up because there's a limit on how big a %%expand-ed statement
+# can get.
+%define develonly accumulators algorithm archive asio assign attributes bimap bind circular_buffer compute convert dll dynamic_bitset exception flyweight format function functional fusion geometry hana integer lexical_cast metaparse mpi mpl msm multi_array multi_index multiprecision optional parameter phoenix predef preprocessor range ratio signals2 smart_ptr spirit tr1 tti tuple type_traits units unordered utility uuid variant vmd xpressive
+%define develonly2 align core type_index sort endian coroutine2
 
 %{expand:%(for lib in %develonly; do lib2=${lib/-/_}; cat <<EOF
 %%global devname$lib2 %%mklibname -d boost_$(echo $lib | sed 's,[0-9]$,&_,')
@@ -172,8 +176,6 @@ Provides:	boost-$lib-devel = %{EVRD}
 Requires:	%{coredevel} = %{EVRD}
 EOF
 done)}
-# (Anssi 01/2010) splitted expand contents due to rpm bug failing build,
-# triggered by a too long expanded string.
 %{expand:%(for lib in %develonly; do lib2=${lib/-/_}; cat <<EOF
 %%description -n %%{devname$lib2}
 Boost is a collection of free peer-reviewed portable C++ source
@@ -192,6 +194,34 @@ done)}
 %{_includedir}/boost/unordered_map.hpp
 %{_includedir}/boost/unordered_set.hpp
 %endif
+EOF
+done)}
+
+%{expand:%(for lib in %develonly2; do lib2=${lib/-/_}; cat <<EOF
+%%global devname$lib2 %%mklibname -d boost_$(echo $lib | sed 's,[0-9]$,&_,')
+%%package -n %%{devname$lib2}
+Summary:	Development files for Boost $lib
+Group:		Development/C++
+Provides:	boost-$lib-devel = %{EVRD}
+Requires:	%{coredevel} = %{EVRD}
+EOF
+done)}
+# (Anssi 01/2010) splitted expand contents due to rpm bug failing build,
+# triggered by a too long expanded string.
+%{expand:%(for lib in %develonly2; do lib2=${lib/-/_}; cat <<EOF
+%%description -n %%{devname$lib2}
+Boost is a collection of free peer-reviewed portable C++ source
+libraries. The emphasis is on libraries which work well with the C++
+Standard Library. This package contains the shared library needed for
+running programs dynamically linked against Boost $lib.
+EOF
+done)}
+%{expand:%(for lib in %develonly2; do lib2=${lib/-/_}; cat <<EOF
+%%files -n %%{devname$lib2}
+%optional %{_includedir}/boost/$lib
+%optional %{_includedir}/boost/$lib.h
+%optional %{_includedir}/boost/$lib.hpp
+%optional %{_includedir}/boost/${lib}_fwd.hpp
 EOF
 done)}
 
@@ -421,6 +451,7 @@ rm -f %{buildroot}/%{_mandir}/man1/bjam.1*
 %{_includedir}/boost/none_t.hpp
 %{_includedir}/boost/numeric
 %{_includedir}/boost/operators.hpp
+%{_includedir}/boost/operators_v1.hpp
 %{_includedir}/boost/pending
 %{_includedir}/boost/pointee.hpp
 %{_includedir}/boost/pointer_cast.hpp
