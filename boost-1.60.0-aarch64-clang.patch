@@ -1,6 +1,8 @@
---- boost_1_60_0/libs/context/src/asm/jump_arm64_aapcs_elf_gas.S.omv~	2016-03-21 11:50:38.017571560 +0100
-+++ boost_1_60_0/libs/context/src/asm/jump_arm64_aapcs_elf_gas.S	2016-03-21 11:50:42.517563754 +0100
-@@ -51,7 +51,6 @@
+diff --git a/libs/context/src/asm/jump_arm64_aapcs_elf_gas.S b/libs/context/src/asm/jump_arm64_aapcs_elf_gas.S
+index 7f012e6..f14cafc 100644
+--- a/libs/context/src/asm/jump_arm64_aapcs_elf_gas.S
++++ b/libs/context/src/asm/jump_arm64_aapcs_elf_gas.S
+@@ -37,7 +37,6 @@
   *                                                     *
   *******************************************************/
  
@@ -8,9 +10,11 @@
  .text
  .align  2
  .global jump_fcontext
---- boost_1_60_0/libs/context/src/asm/make_arm64_aapcs_elf_gas.S.omv~	2016-03-21 11:50:46.577556589 +0100
-+++ boost_1_60_0/libs/context/src/asm/make_arm64_aapcs_elf_gas.S	2016-03-21 11:50:52.707545546 +0100
-@@ -51,7 +51,6 @@
+diff --git a/libs/context/src/asm/make_arm64_aapcs_elf_gas.S b/libs/context/src/asm/make_arm64_aapcs_elf_gas.S
+index ba8984b..cb1f51a 100644
+--- a/libs/context/src/asm/make_arm64_aapcs_elf_gas.S
++++ b/libs/context/src/asm/make_arm64_aapcs_elf_gas.S
+@@ -37,7 +37,6 @@
   *                                                     *
   *******************************************************/
  
@@ -18,3 +22,15 @@
  .text
  .align  2
  .global make_fcontext
+diff --git a/libs/context/src/asm/ontop_arm64_aapcs_elf_gas.S b/libs/context/src/asm/ontop_arm64_aapcs_elf_gas.S
+index f33599a..72b03eb 100644
+--- a/libs/context/src/asm/ontop_arm64_aapcs_elf_gas.S
++++ b/libs/context/src/asm/ontop_arm64_aapcs_elf_gas.S
+@@ -37,7 +37,6 @@
+  *                                                     *
+  *******************************************************/
+ 
+-.cpu    generic+fp+simd
+ .text
+ .align  2
+ .global ontop_fcontext
