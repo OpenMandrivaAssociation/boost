@@ -16,7 +16,7 @@
 Summary:	Portable C++ libraries
 Name:		boost
 Version:	1.61.0
-Release:	2
+Release:	3
 License:	Boost
 Group:		Development/C++
 Url:		http://boost.org/
@@ -228,7 +228,6 @@ done)}
 %package -n	%{coredevel}
 Summary:	Core development files needed by all or most Boost components
 Group:		Development/C++
-Provides:	%{name}-core-devel = %{EVRD}
 
 %description -n	%{coredevel}
 Core development files needed by all or most Boost components
@@ -239,6 +238,7 @@ Group:		Development/C++
 Requires:	%{expand:%(for lib in %boostbinlibs %develonly; do echo -n "%%{devname${lib/-/_}} = %{version}-%{release} "; done)}
 Obsoletes:	%{mklibname boost 1}-devel < %{EVRD}
 Provides:	%{name}-devel = %{EVRD}
+Requires:	%{coredevel} = %{EVRD}
 Provides:	lib%{name}-devel = %{EVRD}
 
 %description -n	%{libnamedevel}
