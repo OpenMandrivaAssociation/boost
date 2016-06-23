@@ -339,13 +339,14 @@ sed -e '1 i#ifndef Q_MOC_RUN' -e '$ a#endif' -i boost/type_traits/detail/has_bin
 %ifarch %ix86
 export CC=gcc
 export CXX=g++
-%endif
-
+toolset=gcc
+%else
 #using clang : : : <compileflags>"%{optflags} -fno-strict-aliasing" <cxxflags>"-std=c++11 -stdlib=libc++" <linkflags>"%{ldflags} -stdlib=libc++ -lm" ;
 # interactive toolset detection
 # in 2015 and cooker we fall in love with clang
 # for 2014 still use gcc
 toolset=`echo %{__cc} | sed 's!/usr/bin/!!'`
+%endif
 
 cat > ./tools/build/src/user-config.jam << EOF
 using $toolset : : : <compileflags>"%{optflags} -fno-strict-aliasing" <cxxflags>"-std=c++11" <linkflags>"%{ldflags}" ;
