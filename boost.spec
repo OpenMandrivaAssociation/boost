@@ -326,6 +326,21 @@ sed -e '1 i#ifndef Q_MOC_RUN' -e '$ a#endif' -i boost/type_traits/detail/has_bin
 #sed -i 's!-m64!!g' tools/build/src/tools/gcc.jam
 
 %build
+#(tpg) build crashes when compiling with clang on i586
+#-o bin.v2/libs/log/build/clang-linux-3.8.1/release/debug-symbols-on/instruction-set-i586/log-api-unix/pch-off/python-2.7/threading-multi/syslog_backend.o -x c++ libs/log/src/syslog_backend.cpp 
+#1.	<eof> parser at end of file
+#2.	Code generation
+#3.	Running pass 'Function Pass Manager' on module 'libs/log/src/syslog_backend.cpp'.
+#4.	Running pass 'Prologue/Epilogue Insertion & Frame Finalization' on function '@_ZN5boost4asio6detail15task_io_service25post_deferred_completionsERNS1_8op_queueINS1_25task_io_service_operationEEE'
+#clang-3.8: error: unable to execute command: Aborted (core dumped)
+#clang-3.8: error: clang frontend command failed due to signal (use -v to see invocation)
+#clang version 3.8.1 (branches/release_38)
+
+%ifarch %ix86
+export CC=gcc
+export CXX=g++
+%endif
+
 #using clang : : : <compileflags>"%{optflags} -fno-strict-aliasing" <cxxflags>"-std=c++11 -stdlib=libc++" <linkflags>"%{ldflags} -stdlib=libc++ -lm" ;
 # interactive toolset detection
 # in 2015 and cooker we fall in love with clang
