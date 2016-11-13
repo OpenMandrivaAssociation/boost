@@ -15,8 +15,8 @@
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.61.0
-Release:	5
+Version:	1.62.0
+Release:	1
 License:	Boost
 Group:		Development/C++
 Url:		http://boost.org/
@@ -89,8 +89,7 @@ creating static and shared libraries, making pieces of executable, and other
 chores -- whether you're using GCC, MSVC, or a dozen more supported
 C++ compilers -- on Windows, OSX, Linux and commercial UNIX systems.
 
-%define boostlibs chrono context coroutine date_time filesystem graph iostreams locale log math prg_exec_monitor program_options python python3 random regex serialization signals system thread timer type_erasure unit_test_framework wave wserialization atomic container
-%define boostbinlibs %{boostlibs}
+%define boostbinlibs chrono context coroutine date_time fiber filesystem graph iostreams locale log math prg_exec_monitor program_options python python3 random regex serialization signals system thread timer type_erasure unit_test_framework wave wserialization atomic container
 
 # (Anssi 01/2010) dashes are converted to underscores for macros ($lib2);
 # The sed script adds _ when library name ends in number.
@@ -165,7 +164,7 @@ done)}
 # them up because there's a limit on how big a %%expand-ed statement
 # can get.
 %define develonly accumulators algorithm archive asio assign attributes bimap bind circular_buffer compute convert dll dynamic_bitset exception flyweight format function functional fusion geometry hana integer lexical_cast metaparse mpi mpl msm multi_array multi_index multiprecision optional parameter phoenix predef preprocessor range ratio signals2 smart_ptr spirit tr1 tti tuple type_traits units unordered utility uuid variant vmd xpressive
-%define develonly2 align core type_index sort endian coroutine2
+%define develonly2 align core qvm type_index sort endian coroutine2
 
 %{expand:%(for lib in %develonly; do lib2=${lib/-/_}; cat <<EOF
 %%global devname$lib2 %%mklibname -d boost_$(echo $lib | sed 's,[0-9]$,&_,')
