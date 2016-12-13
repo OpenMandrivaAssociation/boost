@@ -16,7 +16,7 @@
 Summary:	Portable C++ libraries
 Name:		boost
 Version:	1.62.0
-Release:	1
+Release:	2
 License:	Boost
 Group:		Development/C++
 Url:		http://boost.org/
@@ -54,6 +54,9 @@ Patch19:	boost-1.57.0-build-optflags.patch
 Patch20:	boost-aarch64-flags.patch
 #Patch21:	boost-unrecognized-option.patch
 Patch22:	boost-1.60.0-aarch64-clang.patch
+# cb needs to be reverted
+# https://svn.boost.org/trac/boost/ticket/12515
+Patch23:	boost-1.62-python_version.patch
 
 BuildRequires:	doxygen
 BuildRequires:	xsltproc
@@ -306,6 +309,8 @@ if %{__cc} --version |grep -q clang; then
 %patch22 -p1 -b .clang~
 fi
 %endif
+
+%patch23 -p1
 
 # Preparing the docs
 mkdir packagedoc
