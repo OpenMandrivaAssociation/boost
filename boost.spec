@@ -340,7 +340,7 @@ sed -e '1 i#ifndef Q_MOC_RUN' -e '$ a#endif' -i boost/type_traits/detail/has_bin
 #clang-3.8: error: clang frontend command failed due to signal (use -v to see invocation)
 #clang version 3.8.1 (branches/release_38)
 
-%ifarch %ix86
+%ifarch %ix86 %arm
 export CC=gcc
 export CXX=g++
 toolset=gcc
