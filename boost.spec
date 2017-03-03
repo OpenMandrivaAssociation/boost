@@ -15,8 +15,8 @@
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.62.0
-Release:	2
+Version:	1.63.0
+Release:	1
 License:	Boost
 Group:		Development/C++
 Url:		http://boost.org/
@@ -56,7 +56,7 @@ Patch20:	boost-aarch64-flags.patch
 Patch22:	boost-1.60.0-aarch64-clang.patch
 # cb needs to be reverted
 # https://svn.boost.org/trac/boost/ticket/12515
-Patch23:	boost-1.62-python_version.patch
+Patch23:	http://pkgs.fedoraproject.org/cgit/rpms/boost.git/plain/boost-1.63.0-dual-python-build.patch
 
 BuildRequires:	doxygen
 BuildRequires:	xsltproc
@@ -64,7 +64,9 @@ BuildRequires:	bzip2-devel
 BuildRequires:	pkgconfig(expat)
 BuildRequires:	pkgconfig(icu-uc)
 BuildRequires:	pkgconfig(python3)
+BuildRequires:	python-numpy-devel
 BuildRequires:	pkgconfig(python2)
+BuildRequires:	python2-numpy-devel
 BuildRequires:	pkgconfig(zlib)
 #BuildRequires:	openmpi-devel
 %if !%{with docs}
@@ -92,7 +94,7 @@ creating static and shared libraries, making pieces of executable, and other
 chores -- whether you're using GCC, MSVC, or a dozen more supported
 C++ compilers -- on Windows, OSX, Linux and commercial UNIX systems.
 
-%define boostbinlibs chrono context coroutine date_time fiber filesystem graph iostreams locale log math prg_exec_monitor program_options python python3 random regex serialization signals system thread timer type_erasure unit_test_framework wave wserialization atomic container
+%define boostbinlibs chrono context coroutine date_time fiber filesystem graph iostreams locale log math prg_exec_monitor program_options python numpy python3 numpy3 random regex serialization signals system thread timer type_erasure unit_test_framework wave wserialization atomic container
 
 # (Anssi 01/2010) dashes are converted to underscores for macros ($lib2);
 # The sed script adds _ when library name ends in number.
@@ -118,7 +120,7 @@ done)}
 %{expand:%(for lib in %boostbinlibs; do lib2=${lib/-/_}; cat <<EOF
 %%files -n %%{libname$lib2}
 %%doc LICENSE_1_0.txt
-%if "$lib" == "python"
+%if "$lib" == "python" || "$lib" == "numpy"
 %{_libdir}/libboost_$lib.so.%{version}
 %else
 %{_libdir}/libboost_$lib*.so.%{version}
@@ -148,7 +150,7 @@ EOF
 done)}
 %{expand:%(for lib in %boostbinlibs; do lib2=${lib/-/_}; cat <<EOF
 %%files -n %%{devname$lib2}
-%if "$lib" == "python"
+%if "$lib" == "python" || "$lib" == "numpy"
 %optional %{_libdir}/libboost_$lib.so
 %else
 %optional %{_libdir}/libboost_$lib*.so
@@ -310,7 +312,6 @@ if %{__cc} --version |grep -q clang; then
 fi
 %endif
 
-%patch23 -p1
 
 # Preparing the docs
 mkdir packagedoc
