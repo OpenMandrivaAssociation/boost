@@ -16,7 +16,7 @@
 Summary:	Portable C++ libraries
 Name:		boost
 Version:	1.63.0
-Release:	1
+Release:	2
 License:	Boost
 Group:		Development/C++
 Url:		http://boost.org/
@@ -83,8 +83,11 @@ needed for running programs using Boost.
 %package build
 Summary: Cross platform build system for C++ projects
 Group: Development/C++
-Requires: boost-jam
 BuildArch: noarch
+# boost-jam used to be maintained separately. It's now part of boost-build.
+# Last separately maintained (and versioned) boost-jam was 3.1.18-11
+# (which outnumbers boost versioning, so let's kill any boost-jam without Epoch)
+Obsoletes: boost-jam < 1:0.0.0-0
 
 %description build
 Boost.Build is an easy way to build C++ projects, everywhere. You name
@@ -386,15 +389,13 @@ echo ============================= install Boost.Build ==================
  # Fix some permissions
  chmod -x %{buildroot}%{_datadir}/boost-build/src/build/alias.py
  chmod +x %{buildroot}%{_datadir}/boost-build/src/tools/doxproc.py
- # We don't want to distribute this
- rm -f %{buildroot}%{_bindir}/b2
+ mkdir -p %{buildroot}%{_mandir}/man1 
+ cp -a v2/doc/bjam.1 %{buildroot}%{_mandir}/man1/
  # Not a real file
  rm -f %{buildroot}%{_datadir}/boost-build/build/project.ann.py
  # Empty file
  rm -f %{buildroot}%{_datadir}/boost-build/tools/doxygen/windows-paths-check.hpp
 )
-rm -f %{buildroot}/%{_bindir}/bjam
-rm -f %{buildroot}/%{_mandir}/man1/bjam.1*
 
 %files -n %{coredevel}
 %dir %{_includedir}/boost
@@ -522,4 +523,7 @@ rm -f %{buildroot}/%{_mandir}/man1/bjam.1*
 
 %files build
 %doc LICENSE_1_0.txt
+%{_bindir}/bjam
+%{_bindir}/b2
 %{_datadir}/boost-build/
+%{_mandir}/man1/bjam.1*
