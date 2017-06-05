@@ -53,7 +53,6 @@ Patch19:	boost-1.57.0-build-optflags.patch
 # drop -m64 -m32 as unrecognized options
 Patch20:	boost-aarch64-flags.patch
 #Patch21:	boost-unrecognized-option.patch
-Patch22:	boost-1.60.0-aarch64-clang.patch
 # cb needs to be reverted
 # https://svn.boost.org/trac/boost/ticket/12515
 Patch23:	http://pkgs.fedoraproject.org/cgit/rpms/boost.git/plain/boost-1.63.0-dual-python-build.patch
@@ -308,13 +307,6 @@ same place as the documentation.
 %patch19 -p1
 %patch20 -p1
 #patch21 -p1
-
-%ifarch aarch64
-if %{__cc} --version |grep -q clang; then
-%patch22 -p1 -b .clang~
-fi
-%endif
-
 
 # Preparing the docs
 mkdir packagedoc
