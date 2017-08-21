@@ -15,12 +15,12 @@
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.64.0
-Release:	3
+Version:	1.65.0
+Release:	1
 License:	Boost
 Group:		Development/C++
 Url:		http://boost.org/
-Source0:	http://download.sourceforge.net/boost/boost_%{packver}.tar.bz2
+Source0:	https://dl.bintray.com/boostorg/release/%{version}/source/boost_%{packver}.tar.bz2
 Source100:	%{name}.rpmlintrc
 
 # https://svn.boost.org/trac/boost/ticket/6150
@@ -55,7 +55,7 @@ Patch20:	boost-aarch64-flags.patch
 #Patch21:	boost-unrecognized-option.patch
 # cb needs to be reverted
 # https://svn.boost.org/trac/boost/ticket/12515
-Patch23:	http://pkgs.fedoraproject.org/cgit/rpms/boost.git/plain/boost-1.63.0-dual-python-build.patch
+#Patch23:	http://pkgs.fedoraproject.org/cgit/rpms/boost.git/plain/boost-1.63.0-dual-python-build.patch
 
 BuildRequires:	doxygen
 BuildRequires:	xsltproc
@@ -96,7 +96,7 @@ creating static and shared libraries, making pieces of executable, and other
 chores -- whether you're using GCC, MSVC, or a dozen more supported
 C++ compilers -- on Windows, OSX, Linux and commercial UNIX systems.
 
-%define boostbinlibs chrono context coroutine date_time fiber filesystem graph iostreams locale log math prg_exec_monitor program_options python numpy python3 numpy3 random regex serialization signals system thread timer type_erasure unit_test_framework wave wserialization atomic container
+%define boostbinlibs chrono context coroutine date_time fiber filesystem graph iostreams locale log math prg_exec_monitor program_options python numpy python3 numpy3 random regex serialization signals system thread timer type_erasure unit_test_framework wave wserialization atomic container stacktrace_addr2line stacktrace_basic stacktrace_noop
 
 # (Anssi 01/2010) dashes are converted to underscores for macros ($lib2);
 # The sed script adds _ when library name ends in number.
@@ -170,7 +170,7 @@ done)}
 # There's no difference between develonly and develonly2. Just had to split
 # them up because there's a limit on how big a %%expand-ed statement
 # can get.
-%define develonly accumulators algorithm archive asio assign attributes bimap bind circular_buffer compute convert dll dynamic_bitset exception flyweight format function functional fusion geometry hana integer lexical_cast metaparse mpi mpl msm multi_array multi_index multiprecision optional parameter phoenix predef preprocessor process range ratio signals2 smart_ptr spirit tr1 tti tuple type_traits units unordered utility uuid variant vmd xpressive
+%define develonly accumulators algorithm archive asio assign attributes bimap bind circular_buffer compute convert dll dynamic_bitset exception flyweight format function functional fusion geometry hana integer lexical_cast metaparse mpi mpl msm multi_array multi_index multiprecision optional parameter phoenix poly_collection predef preprocessor process range ratio signals2 smart_ptr spirit stacktrace tr1 tti tuple type_traits units unordered utility uuid variant vmd xpressive
 %define develonly2 align core qvm type_index sort endian coroutine2
 
 %{expand:%(for lib in %develonly; do lib2=${lib/-/_}; cat <<EOF
@@ -296,17 +296,7 @@ same place as the documentation.
 
 %prep
 %setup -q -n boost_%{packver}
-%patch4 -p1
-%patch5 -p1
-%patch7 -p2
-%patch10 -p1
-%patch12 -p3
-%patch15 -p0
-%patch17 -p1
-%patch18 -p1
-%patch19 -p1
-%patch20 -p1
-#patch21 -p1
+%apply_patches
 
 # Preparing the docs
 mkdir packagedoc

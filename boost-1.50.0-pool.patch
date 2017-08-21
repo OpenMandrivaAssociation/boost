@@ -1,7 +1,7 @@
-Index: boost/pool/pool.hpp
+Index: boost/boost/pool/pool.hpp
 ===================================================================
---- boost/pool/pool.hpp	(revision 78317)
-+++ boost/pool/pool.hpp	(revision 78326)
+--- boost/boost/pool/pool.hpp	(revision 78317)
++++ boost/boost/pool/pool.hpp	(revision 78326)
 @@ -27,4 +27,6 @@
  #include <boost/pool/poolfwd.hpp>
  

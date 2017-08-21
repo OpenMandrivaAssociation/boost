@@ -1,7 +1,7 @@
-Index: /trunk/boost/foreach_fwd.hpp
+Index: boost/boost/foreach_fwd.hpp
 ===================================================================
---- /trunk/boost/foreach_fwd.hpp	(revision 62661)
-+++ /trunk/boost/foreach_fwd.hpp	(revision 75540)
+--- boost/boost/foreach_fwd.hpp	(revision 62661)
++++ boost/boost/foreach_fwd.hpp	(revision 75540)
 @@ -15,4 +15,6 @@
  #define BOOST_FOREACH_FWD_HPP
  
@@ -40,10 +40,10 @@ Index: /trunk/boost/foreach_fwd.hpp
 +
  } // namespace boost
  
-Index: /trunk/boost/foreach.hpp
+Index: boost/boost/foreach.hpp
 ===================================================================
---- /trunk/boost/foreach.hpp	(revision 75077)
-+++ /trunk/boost/foreach.hpp	(revision 75540)
+--- boost/boost/foreach.hpp	(revision 75077)
++++ boost/boost/foreach.hpp	(revision 75540)
 @@ -166,5 +166,5 @@
  //   at the global namespace for your type.
  template<typename T>
