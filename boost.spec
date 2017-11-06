@@ -16,7 +16,7 @@
 Summary:	Portable C++ libraries
 Name:		boost
 Version:	1.65.1
-Release:	2
+Release:	3
 License:	Boost
 Group:		Development/C++
 Url:		http://boost.org/
@@ -61,7 +61,7 @@ BuildRequires:	doxygen
 BuildRequires:	xsltproc
 BuildRequires:	bzip2-devel
 BuildRequires:	pkgconfig(expat)
-BuildRequires:	pkgconfig(icu-uc)
+BuildRequires:	pkgconfig(icu-uc) >= 60.1
 BuildRequires:	pkgconfig(python3)
 BuildRequires:	python-numpy-devel
 BuildRequires:	pkgconfig(python2)
