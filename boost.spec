@@ -15,8 +15,8 @@
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.65.1
-Release:	3
+Version:	1.66.0
+Release:	1
 License:	Boost
 Group:		Development/C++
 Url:		http://boost.org/
@@ -171,7 +171,7 @@ done)}
 # them up because there's a limit on how big a %%expand-ed statement
 # can get.
 %define develonly accumulators algorithm archive asio assign attributes bimap bind circular_buffer compute convert dll dynamic_bitset exception flyweight format function functional fusion geometry hana integer lexical_cast metaparse mpi mpl msm multi_array multi_index multiprecision optional parameter phoenix poly_collection predef preprocessor process range ratio signals2 smart_ptr spirit stacktrace tr1 tti tuple type_traits units unordered utility uuid variant vmd xpressive
-%define develonly2 align core qvm type_index sort endian coroutine2
+%define develonly2 align beast callable_traits core mp11 qvm type_index sort endian coroutine2 winapi
 
 %{expand:%(for lib in %develonly; do lib2=${lib/-/_}; cat <<EOF
 %%global devname$lib2 %%mklibname -d boost_$(echo $lib | sed 's,[0-9]$,&_,')
