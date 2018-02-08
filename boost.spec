@@ -329,7 +329,7 @@ sed -e '1 i#ifndef Q_MOC_RUN' -e '$ a#endif' -i boost/type_traits/detail/has_bin
 #%%ifarch %ix86 %arm
 export CC=gcc
 export CXX=g++
-#toolset=gcc
+toolset=gcc
 #%%else
 #using clang : : : <compileflags>"%{optflags} -fno-strict-aliasing" <cxxflags>"-std=c++11 -stdlib=libc++" <linkflags>"%{ldflags} -stdlib=libc++ -lm" ;
 # interactive toolset detection
