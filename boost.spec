@@ -329,7 +329,7 @@ sed -e '1 i#ifndef Q_MOC_RUN' -e '$ a#endif' -i boost/type_traits/detail/has_bin
 #%%ifarch %ix86 %arm
 export CC=gcc
 export CXX=g++
-export export CXXFLAGS="%{optflags} -fno-permissive -fno-strict-aliasing"
+export "CXXFLAGS="%{optflags} -fno-permissive -fno-strict-aliasing"
 toolset=gcc
 
 #%%else
