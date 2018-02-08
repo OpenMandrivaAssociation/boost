@@ -325,18 +325,18 @@ sed -e '1 i#ifndef Q_MOC_RUN' -e '$ a#endif' -i boost/type_traits/detail/has_bin
 #clang-3.8: error: unable to execute command: Aborted (core dumped)
 #clang-3.8: error: clang frontend command failed due to signal (use -v to see invocation)
 #clang version 3.8.1 (branches/release_38)
-
-%ifarch %ix86 %arm
+#itchka use gcc for the time being
+#%%ifarch %ix86 %arm
 export CC=gcc
 export CXX=g++
-toolset=gcc
-%else
+#toolset=gcc
+#%%else
 #using clang : : : <compileflags>"%{optflags} -fno-strict-aliasing" <cxxflags>"-std=c++11 -stdlib=libc++" <linkflags>"%{ldflags} -stdlib=libc++ -lm" ;
 # interactive toolset detection
 # in 2015 and cooker we fall in love with clang
 # for 2014 still use gcc
-toolset=`echo %{__cc} | sed 's!/usr/bin/!!'`
-%endif
+#toolset=`echo %{__cc} | sed 's!/usr/bin/!!'`
+#%%endif
 
 cat > ./tools/build/src/user-config.jam << EOF
 using $toolset : : : <compileflags>"%{optflags} -fno-strict-aliasing" <cxxflags>"-std=c++11" <linkflags>"%{ldflags}" ;
