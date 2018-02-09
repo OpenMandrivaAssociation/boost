@@ -23,6 +23,8 @@ Url:		http://boost.org/
 Source0:	https://dl.bintray.com/boostorg/release/%{version}/source/boost_%{packver}.tar.bz2
 Source100:	%{name}.rpmlintrc
 
+Patch3:		boost-1.66.0-python-3.7.patch
+
 # https://svn.boost.org/trac/boost/ticket/6150
 Patch4:		boost-1.50.0-fix-non-utf8-files.patch
 

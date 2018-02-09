@@ -1,0 +1,11 @@
+--- boost_1_66_0/libs/python/src/converter/builtin_converters.cpp.omv~	2018-02-09 18:02:58.937442220 +0100
++++ boost_1_66_0/libs/python/src/converter/builtin_converters.cpp	2018-02-09 18:03:26.481550017 +0100
+@@ -48,7 +48,7 @@ namespace
+ #else
+   void* convert_to_cstring(PyObject* obj)
+   {
+-      return PyUnicode_Check(obj) ? _PyUnicode_AsString(obj) : 0;
++      return PyUnicode_Check(obj) ? const_cast<void*>(reinterpret_cast<const void*>(_PyUnicode_AsString(obj))) : 0;
+   }
+ #endif
+ 
