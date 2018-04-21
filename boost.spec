@@ -9,21 +9,21 @@
 # This is totally wrong, but it's rather a CMake'ification bug.
 %define _disable_ld_no_undefined 1
 %define _disable_lto 1
+# Doesn't work with dual python2/python3 bits
+%define _python_bytecompile_build 0
 
 # (tpg) save 50 MiB
 %bcond_with docs
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.66.0
-Release:	2
+Version:	1.67.0
+Release:	1
 License:	Boost
 Group:		Development/C++
 Url:		http://boost.org/
 Source0:	https://dl.bintray.com/boostorg/release/%{version}/source/boost_%{packver}.tar.bz2
 Source100:	%{name}.rpmlintrc
-
-Patch3:		boost-1.66.0-python-3.7.patch
 
 # https://svn.boost.org/trac/boost/ticket/6150
 Patch4:		boost-1.50.0-fix-non-utf8-files.patch
@@ -52,8 +52,6 @@ Patch17:	boost-1.57.0-python-libpython_dep.patch
 Patch18:	boost-1.57.0-python-abi_letters.patch
 # https://bugzilla.redhat.com/show_bug.cgi?id=1190039
 Patch19:	boost-1.57.0-build-optflags.patch
-# drop -m64 -m32 as unrecognized options
-Patch20:	boost-aarch64-flags.patch
 #Patch21:	boost-unrecognized-option.patch
 # cb needs to be reverted
 # https://svn.boost.org/trac/boost/ticket/12515
@@ -66,8 +64,6 @@ BuildRequires:	pkgconfig(expat)
 BuildRequires:	pkgconfig(icu-uc) >= 60.1
 BuildRequires:	pkgconfig(python3)
 BuildRequires:	python-numpy-devel
-BuildRequires:	pkgconfig(python2)
-BuildRequires:	python2-numpy-devel
 BuildRequires:	pkgconfig(zlib)
 #BuildRequires:	openmpi-devel
 %if !%{with docs}
@@ -84,7 +80,6 @@ needed for running programs using Boost.
 %package build
 Summary: Cross platform build system for C++ projects
 Group: Development/C++
-BuildArch: noarch
 # boost-jam used to be maintained separately. It's now part of boost-build.
 # Last separately maintained (and versioned) boost-jam was 3.1.18-11
 # (which outnumbers boost versioning, so let's kill any boost-jam without Epoch)
@@ -98,7 +93,7 @@ creating static and shared libraries, making pieces of executable, and other
 chores -- whether you're using GCC, MSVC, or a dozen more supported
 C++ compilers -- on Windows, OSX, Linux and commercial UNIX systems.
 
-%define boostbinlibs chrono context coroutine date_time fiber filesystem graph iostreams locale log math prg_exec_monitor program_options python numpy python3 numpy3 random regex serialization signals system thread timer type_erasure unit_test_framework wave wserialization atomic container stacktrace_addr2line stacktrace_basic stacktrace_noop
+%define boostbinlibs chrono context contract coroutine date_time fiber filesystem graph iostreams locale log math prg_exec_monitor program_options python numpy random regex serialization signals system thread timer type_erasure unit_test_framework wave wserialization atomic container stacktrace_addr2line stacktrace_basic stacktrace_noop
 
 # (Anssi 01/2010) dashes are converted to underscores for macros ($lib2);
 # The sed script adds _ when library name ends in number.
@@ -124,11 +119,7 @@ done)}
 %{expand:%(for lib in %boostbinlibs; do lib2=${lib/-/_}; cat <<EOF
 %%files -n %%{libname$lib2}
 %%doc LICENSE_1_0.txt
-%if "$lib" == "python" || "$lib" == "numpy"
-%{_libdir}/libboost_$lib.so.%{version}
-%else
 %{_libdir}/libboost_$lib*.so.%{version}
-%endif
 EOF
 done)}
 
@@ -154,15 +145,12 @@ EOF
 done)}
 %{expand:%(for lib in %boostbinlibs; do lib2=${lib/-/_}; cat <<EOF
 %%files -n %%{devname$lib2}
-%if "$lib" == "python" || "$lib" == "numpy"
-%optional %{_libdir}/libboost_$lib.so
-%else
 %optional %{_libdir}/libboost_$lib*.so
-%endif
 %optional %{_includedir}/boost/$lib
 %optional %{_includedir}/boost/$lib.h
 %optional %{_includedir}/boost/$lib.hpp
 %optional %{_includedir}/boost/${lib}_fwd.hpp
+%optional %{_includedir}/boost/${lib}_macro.hpp
 %if "$lib2" == "unit_test_framework"
 %{_includedir}/boost/test
 %endif
@@ -173,7 +161,7 @@ done)}
 # them up because there's a limit on how big a %%expand-ed statement
 # can get.
 %define develonly accumulators algorithm archive asio assign attributes bimap bind circular_buffer compute convert dll dynamic_bitset exception flyweight format function functional fusion geometry hana integer lexical_cast metaparse mpi mpl msm multi_array multi_index multiprecision optional parameter phoenix poly_collection predef preprocessor process range ratio signals2 smart_ptr spirit stacktrace tr1 tti tuple type_traits units unordered utility uuid variant vmd xpressive
-%define develonly2 align beast callable_traits core mp11 qvm type_index sort endian coroutine2 winapi
+%define develonly2 align beast callable_traits container_hash core hof mp11 qvm type_index sort endian coroutine2 winapi
 
 %{expand:%(for lib in %develonly; do lib2=${lib/-/_}; cat <<EOF
 %%global devname$lib2 %%mklibname -d boost_$(echo $lib | sed 's,[0-9]$,&_,')
@@ -198,6 +186,7 @@ done)}
 %optional %{_includedir}/boost/$lib.h
 %optional %{_includedir}/boost/$lib.hpp
 %optional %{_includedir}/boost/${lib}_fwd.hpp
+%optional %{_includedir}/boost/${lib}_macro.hpp
 %if "$lib" == "unordered"
 %{_includedir}/boost/unordered_map.hpp
 %{_includedir}/boost/unordered_set.hpp
@@ -346,7 +335,7 @@ using python : %{py3_ver} : %{__python3} : %{py3_incdir} : %{_libdir} : : : m ;
 using python : %{py2_ver} : %{__python2} : %{py2_incdir} : %{_libdir} : : : ;
 EOF
 
-./bootstrap.sh --with-toolset=$toolset --with-icu --prefix=%{_prefix} --libdir=%{_libdir} --with-python=%{__python2}
+./bootstrap.sh --with-toolset=$toolset --with-icu --prefix=%{_prefix} --libdir=%{_libdir} --with-python=%{__python}
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
 	--prefix=%{_prefix} --libdir=%{_libdir} --layout=system \
 	-sHAVE_ICU=1 \
@@ -354,7 +343,7 @@ EOF
 %ifarch %ix86
 	instruction-set=i586 \
 %endif
-	threading=multi debug-symbols=on pch=off variant=release python=%{py2_ver}
+	threading=multi debug-symbols=on pch=off variant=release python=%{py3_ver}
 
 # Taken from the Fedora .src.rpm.
 echo ============================= build Boost.Build ==================
@@ -364,7 +353,7 @@ echo ============================= build Boost.Build ==================
 %install
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
 	--prefix=%{buildroot}%{_prefix} --libdir=%{buildroot}%{_libdir} \
-	debug-symbols=on pch=off python=%{py2_ver} \
+	debug-symbols=on pch=off python=%{py3_ver} \
 	install
 
 echo ============================= install Boost.Build ==================
