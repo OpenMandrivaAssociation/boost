@@ -1,0 +1,12 @@
+diff -up boost_1_68_0/boost/atomic/detail/ops_gcc_x86_dcas.hpp.omv~ boost_1_68_0/boost/atomic/detail/ops_gcc_x86_dcas.hpp
+--- boost_1_68_0/boost/atomic/detail/ops_gcc_x86_dcas.hpp.omv~	2018-07-28 18:45:29.396518945 +0200
++++ boost_1_68_0/boost/atomic/detail/ops_gcc_x86_dcas.hpp	2018-07-28 18:49:43.360778637 +0200
+@@ -399,7 +399,7 @@ struct gcc_dcas_x86_64
+         );
+     }
+ 
+-    static BOOST_FORCEINLINE storage_type load(storage_type const volatile& storage, memory_order) BOOST_NOEXCEPT
++    static BOOST_FORCEINLINE storage_type load(storage_type volatile& storage, memory_order) BOOST_NOEXCEPT
+     {
+ #if defined(__clang__)
+ 

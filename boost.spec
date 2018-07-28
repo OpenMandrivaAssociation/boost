@@ -1,4 +1,3 @@
-%define packver %(echo "%{version}" | sed -e "s/\\\./_/g")
 %define	libname %mklibname boost %{version}
 %define	libnamedevel %mklibname boost -d
 %define	libnamestaticdevel %mklibname boost -d -s
@@ -15,14 +14,22 @@
 # (tpg) save 50 MiB
 %bcond_with docs
 
+%define beta b1
+%define packver %(echo "%{version}" | sed -e "s/\\\./_/g")
+
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.67.0
-Release:	2
+Version:	1.68.0
+%if "%{beta}" != ""
+Release:	0.%{beta}.1
+Source0:	https://dl.bintray.com/boostorg/beta/%{version}.%(echo %{beta} |sed -e 's,^b,beta,')/source/boost_%{packver}_%{beta}.tar.bz2
+%else
+Release:	1
+Source0:	https://dl.bintray.com/boostorg/release/%{version}/source/boost_%{packver}.tar.bz2
+%endif
 License:	Boost
 Group:		Development/C++
 Url:		http://boost.org/
-Source0:	https://dl.bintray.com/boostorg/release/%{version}/source/boost_%{packver}.tar.bz2
 Source100:	%{name}.rpmlintrc
 
 # https://svn.boost.org/trac/boost/ticket/6150
@@ -32,6 +39,8 @@ Patch4:		boost-1.50.0-fix-non-utf8-files.patch
 # on-line documentation:
 # http://www.boost.org/boost-build2/doc/html/bbv2/overview.html
 Patch5:		boost-1.48.0-add-bjam-man-page.patch
+
+Patch6:		boost-1.68.0-atomics-buildfix.patch
 
 # https://bugzilla.redhat.com/show_bug.cgi?id=756005
 # https://svn.boost.org/trac/boost/ticket/6131
@@ -161,7 +170,7 @@ done)}
 # them up because there's a limit on how big a %%expand-ed statement
 # can get.
 %define develonly accumulators algorithm archive asio assign attributes bimap bind circular_buffer compute convert dll dynamic_bitset exception flyweight format function functional fusion geometry hana integer lexical_cast metaparse mpi mpl msm multi_array multi_index multiprecision optional parameter phoenix poly_collection predef preprocessor process range ratio signals2 smart_ptr spirit stacktrace tr1 tti tuple type_traits units unordered utility uuid variant vmd xpressive
-%define develonly2 align beast callable_traits container_hash core hof mp11 qvm type_index sort endian coroutine2 winapi
+%define develonly2 align beast callable_traits container_hash core gil hof mp11 qvm type_index sort endian coroutine2 winapi yap
 
 %{expand:%(for lib in %develonly; do lib2=${lib/-/_}; cat <<EOF
 %%global devname$lib2 %%mklibname -d boost_$(echo $lib | sed 's,[0-9]$,&_,')
@@ -277,7 +286,7 @@ needed for Boost development.
 %package 	examples
 Summary:	The examples for the Boost libraries
 Group:		Development/C++
-BuildArch:	noarch
+#BuildArch:	noarch
 
 %description examples
 Boost is a collection of free peer-reviewed portable C++ source
@@ -307,27 +316,11 @@ sed -e '1 i#ifndef Q_MOC_RUN' -e '$ a#endif' -i boost/type_traits/detail/has_bin
 #sed -i 's!-m64!!g' tools/build/src/tools/gcc.jam
 
 %build
-#(tpg) build crashes when compiling with clang on i586
-#-o bin.v2/libs/log/build/clang-linux-3.8.1/release/debug-symbols-on/instruction-set-i586/log-api-unix/pch-off/python-2.7/threading-multi/syslog_backend.o -x c++ libs/log/src/syslog_backend.cpp 
-#1.	<eof> parser at end of file
-#2.	Code generation
-#3.	Running pass 'Function Pass Manager' on module 'libs/log/src/syslog_backend.cpp'.
-#4.	Running pass 'Prologue/Epilogue Insertion & Frame Finalization' on function '@_ZN5boost4asio6detail15task_io_service25post_deferred_completionsERNS1_8op_queueINS1_25task_io_service_operationEEE'
-#clang-3.8: error: unable to execute command: Aborted (core dumped)
-#clang-3.8: error: clang frontend command failed due to signal (use -v to see invocation)
-#clang version 3.8.1 (branches/release_38)
-
-%ifarch %ix86 %arm
-export CC=gcc
-export CXX=g++
-toolset=gcc
-%else
 #using clang : : : <compileflags>"%{optflags} -fno-strict-aliasing" <cxxflags>"-std=c++11 -stdlib=libc++" <linkflags>"%{ldflags} -stdlib=libc++ -lm" ;
 # interactive toolset detection
 # in 2015 and cooker we fall in love with clang
 # for 2014 still use gcc
 toolset=`echo %{__cc} | sed 's!/usr/bin/!!'`
-%endif
 
 cat > ./tools/build/src/user-config.jam << EOF
 using $toolset : : : <compileflags>"%{optflags} -fno-strict-aliasing" <cxxflags>"-std=c++11" <linkflags>"%{ldflags}" ;
@@ -341,7 +334,10 @@ EOF
 	-sHAVE_ICU=1 \
 	linkflags="%{ldflags} -lstdc++ -lm" \
 %ifarch %ix86
-	instruction-set=i586 \
+	instruction-set=i686 \
+%endif
+%ifarch znver1
+	instruction-set=znver1 \
 %endif
 	threading=multi debug-symbols=on pch=off variant=release python=%{py3_ver}
 
@@ -368,6 +364,8 @@ echo ============================= install Boost.Build ==================
  rm -f %{buildroot}%{_datadir}/boost-build/build/project.ann.py
  # Empty file
  rm -f %{buildroot}%{_datadir}/boost-build/tools/doxygen/windows-paths-check.hpp
+ # Let's symlink instead of shipping 2 copies of the same file
+ ln -sf b2 %{buildroot}%{_bindir}/bjam
 )
 
 %files -n %{coredevel}
@@ -411,7 +409,6 @@ echo ============================= install Boost.Build ==================
 %{_includedir}/boost/function_types
 %{_includedir}/boost/generator_iterator.hpp
 %{_includedir}/boost/get_pointer.hpp
-%{_includedir}/boost/gil
 %{_includedir}/boost/heap
 %{_includedir}/boost/icl
 %{_includedir}/boost/implicit_cast.hpp
