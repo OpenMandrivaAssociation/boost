@@ -19,12 +19,12 @@
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.68.0
+Version:	1.69.0
 %if "%{beta}" != ""
 Release:	0.%{beta}.1
 Source0:	https://dl.bintray.com/boostorg/beta/%{version}.%(echo %{beta} |sed -e 's,^b,beta,')/source/boost_%{packver}_%{beta}.tar.bz2
 %else
-Release:	4
+Release:	1
 Source0:	https://dl.bintray.com/boostorg/release/%{version}/source/boost_%{packver}.tar.bz2
 %endif
 License:	Boost
@@ -74,6 +74,9 @@ BuildRequires:	pkgconfig(icu-uc) >= 60.1
 BuildRequires:	pkgconfig(python3)
 BuildRequires:	python-numpy-devel
 BuildRequires:	pkgconfig(zlib)
+BuildRequires:	pkgconfig(libzstd)
+BuildRequires:	pkgconfig(liblzma)
+BuildRequires:	pkgconfig(bzip2)
 #BuildRequires:	openmpi-devel
 %if !%{with docs}
 Obsoletes:	%{libnamedevel}-doc <= %{EVRD}
@@ -102,7 +105,7 @@ creating static and shared libraries, making pieces of executable, and other
 chores -- whether you're using GCC, MSVC, or a dozen more supported
 C++ compilers -- on Windows, OSX, Linux and commercial UNIX systems.
 
-%define boostbinlibs chrono context contract coroutine date_time fiber filesystem graph iostreams locale log math prg_exec_monitor program_options python numpy random regex serialization signals system thread timer type_erasure unit_test_framework wave wserialization atomic container stacktrace_addr2line stacktrace_basic stacktrace_noop
+%define boostbinlibs chrono context contract coroutine date_time fiber filesystem graph iostreams locale log math prg_exec_monitor program_options python numpy random regex serialization system thread timer type_erasure unit_test_framework wave wserialization atomic container stacktrace_addr2line stacktrace_basic stacktrace_noop
 
 # (Anssi 01/2010) dashes are converted to underscores for macros ($lib2);
 # The sed script adds _ when library name ends in number.
@@ -170,7 +173,7 @@ done)}
 # them up because there's a limit on how big a %%expand-ed statement
 # can get.
 %define develonly accumulators algorithm archive asio assign attributes bimap bind circular_buffer compute convert dll dynamic_bitset exception flyweight format function functional fusion geometry hana integer lexical_cast metaparse mpi mpl msm multi_array multi_index multiprecision optional parameter phoenix poly_collection predef preprocessor process range ratio signals2 smart_ptr spirit stacktrace tr1 tti tuple type_traits units unordered utility uuid variant vmd xpressive
-%define develonly2 align beast callable_traits container_hash core gil hof mp11 qvm type_index sort endian coroutine2 winapi yap
+%define develonly2 align beast callable_traits container_hash core gil hof mp11 qvm type_index sort endian coroutine2 winapi yap safe_numerics
 
 %{expand:%(for lib in %develonly; do lib2=${lib/-/_}; cat <<EOF
 %%global devname$lib2 %%mklibname -d boost_$(echo $lib | sed 's,[0-9]$,&_,')
@@ -424,7 +427,6 @@ echo ============================= install Boost.Build ==================
 %{_includedir}/boost/iterator
 %{_includedir}/boost/iterator_adaptors.hpp
 %{_includedir}/boost/lambda
-%{_includedir}/boost/last_value.hpp
 %{_includedir}/boost/limits.hpp
 %{_includedir}/boost/local_function.hpp
 %{_includedir}/boost/local_function
@@ -464,7 +466,6 @@ echo ============================= install Boost.Build ==================
 %{_includedir}/boost/shared_array.hpp
 %{_includedir}/boost/shared_container_iterator.hpp
 %{_includedir}/boost/shared_ptr.hpp
-%{_includedir}/boost/signal.hpp
 %{_includedir}/boost/statechart
 %{_includedir}/boost/static_assert.hpp
 %{_includedir}/boost/swap.hpp
