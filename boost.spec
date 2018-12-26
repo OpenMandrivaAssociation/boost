@@ -24,7 +24,7 @@ Version:	1.69.0
 Release:	0.%{beta}.1
 Source0:	https://dl.bintray.com/boostorg/beta/%{version}.%(echo %{beta} |sed -e 's,^b,beta,')/source/boost_%{packver}_%{beta}.tar.bz2
 %else
-Release:	2
+Release:	1
 Source0:	https://dl.bintray.com/boostorg/release/%{version}/source/boost_%{packver}.tar.bz2
 %endif
 License:	Boost
@@ -105,7 +105,7 @@ creating static and shared libraries, making pieces of executable, and other
 chores -- whether you're using GCC, MSVC, or a dozen more supported
 C++ compilers -- on Windows, OSX, Linux and commercial UNIX systems.
 
-%define boostbinlibs chrono context contract coroutine date_time fiber filesystem graph iostreams locale log math prg_exec_monitor program_options python numpy random regex serialization signals system thread timer type_erasure unit_test_framework wave wserialization atomic container stacktrace_addr2line stacktrace_basic stacktrace_noop
+%define boostbinlibs chrono context contract coroutine date_time fiber filesystem graph iostreams locale log math prg_exec_monitor program_options python numpy random regex serialization system thread timer type_erasure unit_test_framework wave wserialization atomic container stacktrace_addr2line stacktrace_basic stacktrace_noop
 
 # (Anssi 01/2010) dashes are converted to underscores for macros ($lib2);
 # The sed script adds _ when library name ends in number.
