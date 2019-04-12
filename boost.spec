@@ -19,7 +19,7 @@
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.69.0
+Version:	1.70.0
 %if "%{beta}" != ""
 Release:	0.%{beta}.1
 Source0:	https://dl.bintray.com/boostorg/beta/%{version}.%(echo %{beta} |sed -e 's,^b,beta,')/source/boost_%{packver}_%{beta}.tar.bz2
@@ -105,7 +105,7 @@ creating static and shared libraries, making pieces of executable, and other
 chores -- whether you're using GCC, MSVC, or a dozen more supported
 C++ compilers -- on Windows, OSX, Linux and commercial UNIX systems.
 
-%define boostbinlibs chrono context contract coroutine date_time fiber filesystem graph iostreams locale log math prg_exec_monitor program_options python numpy random regex serialization system thread timer type_erasure unit_test_framework wave wserialization atomic container stacktrace_addr2line stacktrace_basic stacktrace_noop
+%define boostbinlibs chrono context contract coroutine date_time fiber filesystem graph iostreams locale log math prg_exec_monitor program_options python random regex serialization system thread timer type_erasure unit_test_framework wave wserialization atomic container stacktrace_addr2line stacktrace_basic stacktrace_noop
 
 # (Anssi 01/2010) dashes are converted to underscores for macros ($lib2);
 # The sed script adds _ when library name ends in number.
@@ -131,7 +131,7 @@ done)}
 %{expand:%(for lib in %boostbinlibs; do lib2=${lib/-/_}; cat <<EOF
 %%files -n %%{libname$lib2}
 %%doc LICENSE_1_0.txt
-%{_libdir}/libboost_$lib*.so.%{version}
+%{_libdir}/libboost_$lib*.so.%(echo %{version} |cut -d. -f1)*
 EOF
 done)}
 
@@ -165,6 +165,13 @@ done)}
 %optional %{_includedir}/boost/${lib}_macro.hpp
 %if "$lib2" == "unit_test_framework"
 %{_includedir}/boost/test
+%{_libdir}/cmake/boost_test_exec_monitor-%{version}
+%endif
+%optional %{_libdir}/cmake/boost_$lib-%{version}
+%optional %{_libdir}/cmake/boost_${lib}_*-%{version}
+%if "$lib2" == "stacktrace_basic"
+%{_libdir}/cmake/boost_stacktrace_backtrace*-%{version}
+%{_libdir}/cmake/boost_stacktrace_windbg*-%{version}
 %endif
 EOF
 done)}
@@ -172,8 +179,8 @@ done)}
 # There's no difference between develonly and develonly2. Just had to split
 # them up because there's a limit on how big a %%expand-ed statement
 # can get.
-%define develonly accumulators algorithm archive asio assign attributes bimap bind circular_buffer compute convert dll dynamic_bitset exception flyweight format function functional fusion geometry hana integer lexical_cast metaparse mpi mpl msm multi_array multi_index multiprecision optional parameter phoenix poly_collection predef preprocessor process range ratio signals2 smart_ptr spirit stacktrace tr1 tti tuple type_traits units unordered utility uuid variant vmd xpressive
-%define develonly2 align beast callable_traits container_hash core gil hof mp11 qvm type_index sort endian coroutine2 winapi yap safe_numerics
+%define develonly accumulators algorithm archive asio assign attributes bimap bind circular_buffer compute convert dll dynamic_bitset exception flyweight format function functional fusion geometry hana integer lexical_cast metaparse mpi mpl msm multi_array multi_index multiprecision numpy optional parameter phoenix poly_collection predef preprocessor process range ratio signals2 smart_ptr spirit stacktrace tr1 tti tuple type_traits units unordered utility uuid variant vmd xpressive
+%define develonly2 align beast callable_traits container_hash core gil hof mp11 qvm type_index sort endian coroutine2 winapi yap safe_numerics histogram outcome
 
 %{expand:%(for lib in %develonly; do lib2=${lib/-/_}; cat <<EOF
 %%global devname$lib2 %%mklibname -d boost_$(echo $lib | sed 's,[0-9]$,&_,')
@@ -203,6 +210,7 @@ done)}
 %{_includedir}/boost/unordered_map.hpp
 %{_includedir}/boost/unordered_set.hpp
 %endif
+%optional %{_libdir}/cmake/boost_$lib-%{version}
 EOF
 done)}
 
@@ -231,6 +239,7 @@ done)}
 %optional %{_includedir}/boost/$lib.h
 %optional %{_includedir}/boost/$lib.hpp
 %optional %{_includedir}/boost/${lib}_fwd.hpp
+%optional %{_libdir}/cmake/boost_$lib-%{version}
 EOF
 done)}
 
@@ -478,6 +487,9 @@ echo ============================= install Boost.Build ==================
 %{_includedir}/boost/version.hpp
 %{_includedir}/boost/visit_each.hpp
 %{_includedir}/boost/weak_ptr.hpp
+%{_libdir}/cmake/Boost-%{version}
+%{_libdir}/cmake/BoostDetectToolset-%{version}.cmake
+%{_libdir}/cmake/boost_headers-%{version}
 
 %files -n %{libnamedevel}
 

@@ -1,6 +1,7 @@
---- boost_1_66_0/tools/build/src/tools/gcc.jam.0019~	2017-12-14 00:56:50.000000000 +0100
-+++ boost_1_66_0/tools/build/src/tools/gcc.jam	2017-12-18 16:30:47.742614914 +0100
-@@ -603,7 +603,7 @@ rule compile.fortran ( targets * : sourc
+diff -up boost_1_70_0/tools/build/src/tools/gcc.jam.0019~ boost_1_70_0/tools/build/src/tools/gcc.jam
+--- boost_1_70_0/tools/build/src/tools/gcc.jam.0019~	2019-04-09 21:36:57.000000000 +0200
++++ boost_1_70_0/tools/build/src/tools/gcc.jam	2019-04-12 14:23:10.519125908 +0200
+@@ -569,7 +569,7 @@ rule compile.fortran ( targets * : sourc
  
  actions compile.c++ bind PCH_FILE
  {
@@ -9,7 +10,7 @@
  }
  
  actions compile.c bind PCH_FILE
-@@ -613,7 +613,7 @@ actions compile.c bind PCH_FILE
+@@ -579,7 +579,7 @@ actions compile.c bind PCH_FILE
  
  actions compile.c++.preprocess bind PCH_FILE
  {
@@ -18,7 +19,7 @@
  }
  
  actions compile.c.preprocess bind PCH_FILE
-@@ -755,17 +755,17 @@ actions compile.c.pch
+@@ -702,13 +702,13 @@ actions compile.c.pch
  ###
  
  # Declare flags and action for compilation.
@@ -29,21 +30,13 @@
 -toolset.flags gcc.compile OPTIONS <inlining>off  : -fno-inline ;
 -toolset.flags gcc.compile OPTIONS <inlining>on   : -Wno-inline ;
 -toolset.flags gcc.compile OPTIONS <inlining>full : -finline-functions -Wno-inline ;
--
--toolset.flags gcc.compile OPTIONS <warnings>off : -w ;
--toolset.flags gcc.compile OPTIONS <warnings>on  : -Wall ;
--toolset.flags gcc.compile OPTIONS <warnings>all : -Wall -pedantic ;
-+toolset.flags gcc.compile OPTIONS <optimization>off   :  ;
-+toolset.flags gcc.compile OPTIONS <optimization>speed :  ;
-+toolset.flags gcc.compile OPTIONS <optimization>space :  ;
++toolset.flags gcc.compile OPTIONS <optimization>off   : ;
++toolset.flags gcc.compile OPTIONS <optimization>speed : ;
++toolset.flags gcc.compile OPTIONS <optimization>space : ;
 +
-+toolset.flags gcc.compile OPTIONS <inlining>off  :  ;
-+toolset.flags gcc.compile OPTIONS <inlining>on   :  ;
-+toolset.flags gcc.compile OPTIONS <inlining>full :  ;
-+
-+toolset.flags gcc.compile OPTIONS <warnings>off :  ;
-+toolset.flags gcc.compile OPTIONS <warnings>on  :  ;
-+toolset.flags gcc.compile OPTIONS <warnings>all :  ;
- toolset.flags gcc.compile OPTIONS <warnings-as-errors>on : -Werror ;
++toolset.flags gcc.compile OPTIONS <inlining>off  : ;
++toolset.flags gcc.compile OPTIONS <inlining>on   : ;
++toolset.flags gcc.compile OPTIONS <inlining>full : ;
  
- toolset.flags gcc.compile OPTIONS <debug-symbols>on : -g ;
+ toolset.flags gcc.compile OPTIONS <warnings>off : -w ;
+ toolset.flags gcc.compile OPTIONS <warnings>on  : -Wall ;
