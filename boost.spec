@@ -71,7 +71,9 @@ BuildRequires:	xsltproc
 BuildRequires:	bzip2-devel
 BuildRequires:	pkgconfig(expat)
 BuildRequires:	pkgconfig(icu-uc) >= 60.1
+BuildRequires:	pkgconfig(python2)
 BuildRequires:	pkgconfig(python3)
+BuildRequires:	python2-numpy-devel
 BuildRequires:	python-numpy-devel
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	pkgconfig(libzstd)
