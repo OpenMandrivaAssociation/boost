@@ -181,7 +181,7 @@ done)}
 # There's no difference between develonly and develonly2. Just had to split
 # them up because there's a limit on how big a %%expand-ed statement
 # can get.
-%define develonly accumulators algorithm archive asio assign attributes bimap bind circular_buffer compute convert dll dynamic_bitset exception flyweight format function functional fusion geometry hana integer lexical_cast metaparse mpi mpl msm multi_array multi_index multiprecision numpy optional parameter phoenix poly_collection predef preprocessor process range ratio signals2 smart_ptr spirit stacktrace tr1 tti tuple type_traits units unordered utility uuid variant vmd xpressive
+%define develonly accumulators algorithm archive asio assign attributes bimap bind circular_buffer compute convert dll dynamic_bitset exception flyweight format function functional fusion geometry hana integer lexical_cast metaparse mpi mpl msm multi_array multi_index multiprecision optional parameter phoenix poly_collection predef preprocessor process range ratio signals2 smart_ptr spirit stacktrace tr1 tti tuple type_traits units unordered utility uuid variant vmd xpressive
 %define develonly2 align beast callable_traits container_hash core gil hof mp11 qvm type_index sort endian coroutine2 winapi yap safe_numerics histogram outcome
 
 %{expand:%(for lib in %develonly; do lib2=${lib/-/_}; cat <<EOF
@@ -307,6 +307,67 @@ Development files for the Boost Python 3 library
 %{_includedir}/boost/python.hpp
 %{_libdir}/libboost_python3*.so
 %{_libdir}/cmake/boost_python-%{version}
+
+%global libnamenumpy2 %mklibname boost_numpy27 %{version}
+%global devnamenumpy2 %mklibname -d boost_numpy27
+%global libnamenumpy3 %mklibname boost_numpy37 %{version}
+%global devnamenumpy3 %mklibname -d boost_numpy37
+
+%package -n %{libnamenumpy2}
+Summary:	Boost NumPy 2 shared library
+Group:		System/Libraries
+Provides:	boost-numpy2 = %{EVRD}
+
+%description -n %{libnamenumpy2}
+Boost NumPy 2 shared library
+
+%files -n %{libnamenumpy2}
+%{_libdir}/libboost_numpy27.so.%(echo %{version} |cut -d. -f1)*
+
+%package -n %{devnamenumpy2}
+Summary:	Development files for the Boost NumPy 2 library
+Group:		Development/C++
+# Headers are the same for python2 and python3, so we package
+# them with what people SHOULD use
+Requires:	%{devnamenumpy3} = %{EVRD}
+Requires:	python2
+Provides:	boost-numpy27-devel = %{EVRD}
+Provides:	boost-numpy2-devel = %{EVRD}
+Requires:	%{coredevel} = %{EVRD}
+
+%description -n %{devnamenumpy2}
+Development files for the Boost NumPy 2 library
+
+%files -n %{devnamenumpy2}
+%{_libdir}/libboost_numpy27.so
+
+%package -n %{libnamenumpy3}
+Summary:	Boost NumPy 3 shared library
+Group:		System/Libraries
+Provides:	boost-numpy = %{EVRD}
+Provides:	boost-numpy3 = %{EVRD}
+
+%description -n %{libnamenumpy3}
+Boost NumPy 3 shared library
+
+%files -n %{libnamenumpy3}
+%{_libdir}/libboost_numpy37.so.%(echo %{version} |cut -d. -f1)*
+
+%package -n %{devnamenumpy3}
+Summary:	Development files for the Boost NumPy 3 library
+Group:		Development/C++
+Requires:	python >= 3.0
+Provides:	boost-numpy37-devel = %{EVRD}
+Provides:	boost-numpy3-devel = %{EVRD}
+Provides:	boost-numpy-devel = %{EVRD}
+Requires:	%{coredevel} = %{EVRD}
+
+%description -n %{devnamenumpy3}
+Development files for the Boost NumPy 3 library
+
+%files -n %{devnamenumpy3}
+%{_libdir}/libboost_numpy3*.so
+%{_libdir}/cmake/boost_numpy-%{version}
 
 %package -n	%{coredevel}
 Summary:	Core development files needed by all or most Boost components
