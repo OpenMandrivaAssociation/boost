@@ -105,7 +105,7 @@ creating static and shared libraries, making pieces of executable, and other
 chores -- whether you're using GCC, MSVC, or a dozen more supported
 C++ compilers -- on Windows, OSX, Linux and commercial UNIX systems.
 
-%define boostbinlibs chrono context contract coroutine date_time fiber filesystem graph iostreams locale log math prg_exec_monitor program_options python random regex serialization system thread timer type_erasure unit_test_framework wave wserialization atomic container stacktrace_addr2line stacktrace_basic stacktrace_noop
+%define boostbinlibs chrono context contract coroutine date_time fiber filesystem graph iostreams locale log math prg_exec_monitor program_options random regex serialization system thread timer type_erasure unit_test_framework wave wserialization atomic container stacktrace_addr2line stacktrace_basic stacktrace_noop
 
 # (Anssi 01/2010) dashes are converted to underscores for macros ($lib2);
 # The sed script adds _ when library name ends in number.
@@ -136,7 +136,7 @@ EOF
 done)}
 
 %{expand:%(for lib in %boostbinlibs; do lib2=${lib/-/_}; cat <<EOF
-%%global devname$lib2 %%mklibname -d boost_$(echo $lib | sed 's,[0-9]$,&_,')
+%%global devname$lib2 %%mklibname -d boost_$lib
 %%package -n %%{devname$lib2}
 Summary:	Development files for Boost $lib
 Group:		Development/C++
@@ -183,7 +183,7 @@ done)}
 %define develonly2 align beast callable_traits container_hash core gil hof mp11 qvm type_index sort endian coroutine2 winapi yap safe_numerics histogram outcome
 
 %{expand:%(for lib in %develonly; do lib2=${lib/-/_}; cat <<EOF
-%%global devname$lib2 %%mklibname -d boost_$(echo $lib | sed 's,[0-9]$,&_,')
+%%global devname$lib2 %%mklibname -d boost_$lib
 %%package -n %%{devname$lib2}
 Summary:	Development files for Boost $lib
 Group:		Development/C++
@@ -215,7 +215,7 @@ EOF
 done)}
 
 %{expand:%(for lib in %develonly2; do lib2=${lib/-/_}; cat <<EOF
-%%global devname$lib2 %%mklibname -d boost_$(echo $lib | sed 's,[0-9]$,&_,')
+%%global devname$lib2 %%mklibname -d boost_$lib
 %%package -n %%{devname$lib2}
 Summary:	Development files for Boost $lib
 Group:		Development/C++
@@ -243,6 +243,69 @@ done)}
 EOF
 done)}
 
+%global libnamepython2 %mklibname boost_python27 %{version}
+%global devnamepython2 %mklibname -d boost_python27
+%global libnamepython3 %mklibname boost_python37 %{version}
+%global devnamepython3 %mklibname -d boost_python37
+
+%package -n %{libnamepython2}
+Summary:	Boost Python 2 shared library
+Group:		System/Libraries
+Provides:	boost-python2 = %{EVRD}
+
+%description -n %{libnamepython2}
+Boost Python 2 shared library
+
+%files -n %{libnamepython2}
+%{_libdir}/libboost_python27.so.%(echo %{version} |cut -d. -f1)*
+
+%package -n %{devnamepython2}
+Summary:	Development files for the Boost Python 2 library
+Group:		Development/C++
+# Headers are the same for python2 and python3, so we package
+# them with what people SHOULD use
+Requires:	%{devnamepython3} = %{EVRD}
+Requires:	python2
+Provides:	boost-python27-devel = %{EVRD}
+Provides:	boost-python2-devel = %{EVRD}
+Requires:	%{coredevel} = %{EVRD}
+
+%description -n %{devnamepython2}
+Development files for the Boost Python 2 library
+
+%files -n %{devnamepython2}
+%{_libdir}/libboost_python27.so
+
+%package -n %{libnamepython3}
+Summary:	Boost Python 3 shared library
+Group:		System/Libraries
+Provides:	boost-python = %{EVRD}
+Provides:	boost-python3 = %{EVRD}
+
+%description -n %{libnamepython3}
+Boost Python 3 shared library
+
+%files -n %{libnamepython3}
+%{_libdir}/libboost_python37.so.%(echo %{version} |cut -d. -f1)*
+
+%package -n %{devnamepython3}
+Summary:	Development files for the Boost Python 3 library
+Group:		Development/C++
+Requires:	python >= 3.0
+Provides:	boost-python37-devel = %{EVRD}
+Provides:	boost-python3-devel = %{EVRD}
+Provides:	boost-python-devel = %{EVRD}
+Requires:	%{coredevel} = %{EVRD}
+
+%description -n %{devnamepython3}
+Development files for the Boost Python 3 library
+
+%files -n %{devnamepython3}
+%{_includedir}/boost/python
+%{_includedir}/boost/python.hpp
+%{_libdir}/libboost_python3*.so
+%{_libdir}/cmake/boost_python-%{version}
+
 %package -n	%{coredevel}
 Summary:	Core development files needed by all or most Boost components
 Group:		Development/C++
@@ -254,6 +317,12 @@ Core development files needed by all or most Boost components
 Summary:	The libraries and headers needed for Boost development
 Group:		Development/C++
 Requires:	%{expand:%(for lib in %boostbinlibs %develonly %develonly2; do echo -n "%%{devname${lib/-/_}} = %{version}-%{release} "; done)}
+Requires:	%{devnamepython3} = %{EVRD}
+# We could also require %{devnamepython2} = %{EVRD}, but let's not force
+# people to install prehistoric crap that should have died a decade or two
+# ago. If something really wants to use it, use a manual requirement on
+# boost-python2-devel.
+Conflicts:	%{devnamepython2} < %{EVRD}
 Requires:	%{coredevel} = %{EVRD}
 Obsoletes:	%{mklibname boost 1}-devel < %{EVRD}
 Provides:	%{name}-devel = %{EVRD}
@@ -337,10 +406,31 @@ toolset=`echo %{__cc} | sed 's!/usr/bin/!!'`
 cat > ./tools/build/src/user-config.jam << EOF
 using $toolset : : : <compileflags>"%{optflags} -fno-strict-aliasing" <cxxflags>"-std=c++14" <linkflags>"%{ldflags}" ;
 using python : %{py3_ver} : %{__python3} : %{py3_incdir} : %{_libdir} : : : m ;
+EOF
+
+cat >python2-config.jam << EOF
+using $toolset : : : <compileflags>"%{optflags} -fno-strict-aliasing" <cxxflags>"-std=c++14" <linkflags>"%{ldflags}" ;
 using python : %{py2_ver} : %{__python2} : %{py2_incdir} : %{_libdir} : : : ;
 EOF
 
 ./bootstrap.sh --with-toolset=$toolset --with-icu --prefix=%{_prefix} --libdir=%{_libdir} --with-python=%{__python}
+
+# Build python2 bits first, so if there's any conflicts
+# python3 will overwrite...
+./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
+	--user-config=./python2-config.jam --build-dir=py2 \
+	--prefix=%{_prefix} --libdir=%{_libdir} --layout=system \
+	-sHAVE_ICU=1 \
+	linkflags="%{ldflags} -lstdc++ -lm" \
+%ifarch %ix86
+	instruction-set=i686 \
+%endif
+%ifarch znver1
+	instruction-set=znver1 \
+%endif
+	threading=multi debug-symbols=on pch=off variant=release python=%{py2_ver}
+
+# And python 3...
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
 	--prefix=%{_prefix} --libdir=%{_libdir} --layout=system \
 	-sHAVE_ICU=1 \
@@ -353,12 +443,22 @@ EOF
 %endif
 	threading=multi debug-symbols=on pch=off variant=release python=%{py3_ver}
 
+
 # Taken from the Fedora .src.rpm.
 echo ============================= build Boost.Build ==================
 (cd tools/build/
  ./bootstrap.sh --with-toolset=$toolset)
 
 %install
+# Install python2 bits first, so if there's any conflicts
+# python3 will overwrite...
+./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
+	--user-config=./python2-config.jam --build-dir=py2 \
+	--prefix=%{buildroot}%{_prefix} --libdir=%{buildroot}%{_libdir} \
+	debug-symbols=on pch=off python=%{py2_ver} \
+	install
+
+# And python 3...
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
 	--prefix=%{buildroot}%{_prefix} --libdir=%{buildroot}%{_libdir} \
 	debug-symbols=on pch=off python=%{py3_ver} \
