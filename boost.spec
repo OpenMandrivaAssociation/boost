@@ -16,6 +16,7 @@
 
 %define beta %{nil}
 %define packver %(echo "%{version}" | sed -e "s/\\\./_/g")
+%bcond_without	numpy
 
 Summary:	Portable C++ libraries
 Name:		boost
@@ -73,8 +74,10 @@ BuildRequires:	pkgconfig(expat)
 BuildRequires:	pkgconfig(icu-uc) >= 60.1
 BuildRequires:	pkgconfig(python2)
 BuildRequires:	pkgconfig(python3)
+%if %{with numpy}
 BuildRequires:	python2-numpy-devel
 BuildRequires:	python-numpy-devel
+%endif
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	pkgconfig(libzstd)
 BuildRequires:	pkgconfig(liblzma)
@@ -308,6 +311,7 @@ Development files for the Boost Python 3 library
 %{_libdir}/libboost_python3*.so
 %{_libdir}/cmake/boost_python-%{version}
 
+%if %{with numpy}
 %global libnamenumpy2 %mklibname boost_numpy27 %{version}
 %global devnamenumpy2 %mklibname -d boost_numpy27
 %global libnamenumpy3 %mklibname boost_numpy37 %{version}
@@ -368,6 +372,7 @@ Development files for the Boost NumPy 3 library
 %files -n %{devnamenumpy3}
 %{_libdir}/libboost_numpy3*.so
 %{_libdir}/cmake/boost_numpy-%{version}
+%endif
 
 %package -n	%{coredevel}
 Summary:	Core development files needed by all or most Boost components
