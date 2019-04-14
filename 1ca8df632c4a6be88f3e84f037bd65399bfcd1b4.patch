@@ -1,0 +1,70 @@
+From 1ca8df632c4a6be88f3e84f037bd65399bfcd1b4 Mon Sep 17 00:00:00 2001
+From: Andreas Schwab <schwab@suse.de>
+Date: Mon, 8 Apr 2019 14:53:54 +0200
+Subject: [PATCH] Add detection of RISC-V from __riscv
+
+---
+ include/boost/predef/architecture.h       |  1 +
+ include/boost/predef/architecture/riscv.h | 41 +++++++++++++++++++++++
+ 2 files changed, 42 insertions(+)
+ create mode 100644 include/boost/predef/architecture/riscv.h
+
+diff --git a/boost/predef/architecture.h b/boost/predef/architecture.h
+index 120d557..732d6f0 100644
+--- a/boost/predef/architecture.h
++++ b/boost/predef/architecture.h
+@@ -21,6 +21,7 @@ Distributed under the Boost Software License, Version 1.0.
+ #include <boost/predef/architecture/ppc.h>
+ #include <boost/predef/architecture/ptx.h>
+ #include <boost/predef/architecture/pyramid.h>
++#include <boost/predef/architecture/riscv.h>
+ #include <boost/predef/architecture/rs6k.h>
+ #include <boost/predef/architecture/sparc.h>
+ #include <boost/predef/architecture/superh.h>
+diff --git a/boost/predef/architecture/riscv.h b/boost/predef/architecture/riscv.h
+new file mode 100644
+index 0000000..5ff2c3b
+--- /dev/null
++++ b/boost/predef/architecture/riscv.h
+@@ -0,0 +1,41 @@
++/*
++Distributed under the Boost Software License, Version 1.0.
++(See accompanying file LICENSE_1_0.txt or copy at
++http://www.boost.org/LICENSE_1_0.txt)
++*/
++
++#ifndef BOOST_PREDEF_ARCHITECTURE_RISCV_H
++#define BOOST_PREDEF_ARCHITECTURE_RISCV_H
++
++#include <boost/predef/version_number.h>
++#include <boost/predef/make.h>
++
++/*`
++[heading `BOOST_ARCH_RISCV`]
++
++[@http://en.wikipedia.org/wiki/RISC-V] architecture.
++
++[table
++    [[__predef_symbol__] [__predef_version__]]
++
++    [[`__riscv`] [__predef_detection__]]
++    ]
++ */
++
++#define BOOST_ARCH_RISCV BOOST_VERSION_NUMBER_NOT_AVAILABLE
++
++#if defined(__riscv)
++#   undef BOOST_ARCH_RISCV
++#   define BOOST_ARCH_RISCV BOOST_VERSION_NUMBER_AVAILABLE
++#endif
++
++#if BOOST_ARCH_RISCV
++#   define BOOST_ARCH_RISCV_AVAILABLE
++#endif
++
++#define BOOST_ARCH_RISCV_NAME "RISC-V"
++
++#endif
++
++#include <boost/predef/detail/test.h>
++BOOST_PREDEF_DECLARE_TEST(BOOST_ARCH_RISCV,BOOST_ARCH_RISCV_NAME)

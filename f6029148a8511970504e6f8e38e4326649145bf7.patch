@@ -1,0 +1,37 @@
+From f6029148a8511970504e6f8e38e4326649145bf7 Mon Sep 17 00:00:00 2001
+From: Andreas Schwab <schwab@suse.de>
+Date: Mon, 8 Apr 2019 14:53:30 +0200
+Subject: [PATCH] Add detection of the RISC-V architecture
+
+---
+ checks/architecture/Jamroot.jam | 1 +
+ checks/architecture/riscv.cpp   | 9 +++++++++
+ 2 files changed, 10 insertions(+)
+ create mode 100644 checks/architecture/riscv.cpp
+
+diff --git a/libs/config/checks/architecture/Jamroot.jam b/libs/config/checks/architecture/Jamroot.jam
+index ca653b751..03f595344 100644
+--- a/libs/config/checks/architecture/Jamroot.jam
++++ b/libs/config/checks/architecture/Jamroot.jam
+@@ -19,5 +19,6 @@ obj arm      : arm.cpp ;
+ obj combined : combined.cpp ;
+ obj mips1    : mips1.cpp ;
+ obj power    : power.cpp ;
++obj riscv    : riscv.cpp ;
+ obj sparc    : sparc.cpp ;
+ obj x86      : x86.cpp ;
+diff --git a/libs/config/checks/architecture/riscv.cpp b/libs/config/checks/architecture/riscv.cpp
+new file mode 100644
+index 000000000..55f377967
+--- /dev/null
++++ b/libs/config/checks/architecture/riscv.cpp
+@@ -0,0 +1,9 @@
++// riscv.cpp
++//
++// Distributed under the Boost Software License Version 1.0. (See
++// accompanying file LICENSE_1_0.txt or copy at
++// http://www.boost.org/LICENSE_1_0.txt)
++
++#if !defined(__riscv)
++#error "Not RISC-V"
++#endif

@@ -62,9 +62,18 @@ Patch18:	boost-1.57.0-python-abi_letters.patch
 # https://bugzilla.redhat.com/show_bug.cgi?id=1190039
 Patch19:	boost-1.57.0-build-optflags.patch
 #Patch21:	boost-unrecognized-option.patch
-# cb needs to be reverted
-# https://svn.boost.org/trac/boost/ticket/12515
-#Patch23:	http://pkgs.fedoraproject.org/cgit/rpms/boost.git/plain/boost-1.63.0-dual-python-build.patch
+
+# RISC-V support from upstream
+# https://github.com/boostorg/boost/pull/273
+Patch30:	https://github.com/boostorg/boost/commit/aab7addcc5d0fbb7ea9ed62e902095bc781baa2e.patch
+# https://github.com/boostorg/config/pull/277
+Patch31:	https://github.com/boostorg/config/commit/f6029148a8511970504e6f8e38e4326649145bf7.patch
+# https://github.com/boostorg/context/pull/104
+Patch32:	https://github.com/boostorg/context/commit/c8fb4a42f3a8453948b5d893cfecd97c6827eee5.patch
+# https://github.com/boostorg/predef/pull/97
+Patch33:	https://github.com/boostorg/predef/commit/1ca8df632c4a6be88f3e84f037bd65399bfcd1b4.patch
+# https://github.com/boostorg/build/pull/424
+Patch34:	https://github.com/boostorg/build/commit/949b24a42f8bc0df899712ab03bbc7fa2212b4e4.patch
 
 BuildRequires:	doxygen
 BuildRequires:	xsltproc

@@ -1,0 +1,40 @@
+From aab7addcc5d0fbb7ea9ed62e902095bc781baa2e Mon Sep 17 00:00:00 2001
+From: Andreas Schwab <schwab@suse.de>
+Date: Mon, 8 Apr 2019 14:54:20 +0200
+Subject: [PATCH] Add support for the RISC-V architecture
+
+---
+ boostcpp.jam | 5 +++--
+ libs/config  | 2 +-
+ libs/context | 2 +-
+ libs/predef  | 2 +-
+ tools/build  | 2 +-
+ 5 files changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/boostcpp.jam b/boostcpp.jam
+index efc41c1ed8b..10250a5b693 100644
+--- a/boostcpp.jam
++++ b/boostcpp.jam
+@@ -607,7 +607,7 @@ rule address-model ( )
+     return <conditional>@boostcpp.deduce-address-model ;
+ }
+ 
+-local deducable-architectures = arm mips1 power sparc x86 combined ;
++local deducable-architectures = arm mips1 power riscv sparc x86 combined ;
+ feature.feature deduced-architecture : $(deducable-architectures) : propagated optional composite hidden ;
+ for a in $(deducable-architectures)
+ {
+@@ -618,11 +618,12 @@ rule deduce-architecture ( properties * )
+ {
+     local result ;
+     local filtered = [ toolset-properties $(properties) ] ;
+-    local names = arm mips1 power sparc x86 combined ;
++    local names = arm mips1 power riscv sparc x86 combined ;
+     local idx = [ configure.find-builds "default architecture" : $(filtered)
+         : /boost/architecture//arm
+         : /boost/architecture//mips1
+         : /boost/architecture//power
++        : /boost/architecture//riscv
+         : /boost/architecture//sparc
+         : /boost/architecture//x86
+         : /boost/architecture//combined ] ;
