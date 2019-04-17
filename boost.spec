@@ -563,6 +563,10 @@ echo ============================= install Boost.Build ==================
  ln -sf b2 %{buildroot}%{_bindir}/bjam
 )
 
+%if !%{with numpy}
+rm -rf %{buildroot}/%{_libdir}/cmake/boost_numpy-%{version}/
+%endif
+
 %files -n %{coredevel}
 %dir %{_includedir}/boost
 %{_includedir}/boost/aligned_storage.hpp
