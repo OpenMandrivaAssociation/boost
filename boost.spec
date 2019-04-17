@@ -455,6 +455,12 @@ same place as the documentation.
 %prep
 %setup -q -n boost_%{packver}
 %apply_patches
+%if !%{with numpy}
+# Boost.Build does not allow for disabling of numpy
+# extensions, thereby leading to automagic numpy
+# https://github.com/boostorg/python/issues/111#issuecomment-280447482
+sed -e 's/\[ unless \[ python\.numpy \] : <build>no \]/<build>no/g' -i libs/python/build/Jamfile
+%endif
 
 # Preparing the docs
 mkdir packagedoc
