@@ -25,7 +25,7 @@ Version:	1.70.0
 Release:	0.%{beta}.1
 Source0:	https://dl.bintray.com/boostorg/beta/%{version}.%(echo %{beta} |sed -e 's,^b,beta,')/source/boost_%{packver}_%{beta}.tar.bz2
 %else
-Release:	1
+Release:	2
 Source0:	https://dl.bintray.com/boostorg/release/%{version}/source/boost_%{packver}.tar.bz2
 %endif
 License:	Boost
@@ -283,6 +283,7 @@ Requires:	python2
 Provides:	boost-python27-devel = %{EVRD}
 Provides:	boost-python2-devel = %{EVRD}
 Requires:	%{coredevel} = %{EVRD}
+Requires:	%{libnamepython2} = %{EVRD}
 
 %description -n %{devnamepython2}
 Development files for the Boost Python 2 library
@@ -310,6 +311,7 @@ Provides:	boost-python37-devel = %{EVRD}
 Provides:	boost-python3-devel = %{EVRD}
 Provides:	boost-python-devel = %{EVRD}
 Requires:	%{coredevel} = %{EVRD}
+Requires:	%{libnamepython3} = %{EVRD}
 
 %description -n %{devnamepython3}
 Development files for the Boost Python 3 library
