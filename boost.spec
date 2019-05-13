@@ -25,7 +25,7 @@ Version:	1.70.0
 Release:	0.%{beta}.1
 Source0:	https://dl.bintray.com/boostorg/beta/%{version}.%(echo %{beta} |sed -e 's,^b,beta,')/source/boost_%{packver}_%{beta}.tar.bz2
 %else
-Release:	3
+Release:	4
 Source0:	https://dl.bintray.com/boostorg/release/%{version}/source/boost_%{packver}.tar.bz2
 %endif
 License:	Boost
@@ -75,6 +75,8 @@ Patch32:	https://github.com/boostorg/context/commit/c8fb4a42f3a8453948b5d893cfec
 Patch33:	https://github.com/boostorg/predef/commit/1ca8df632c4a6be88f3e84f037bd65399bfcd1b4.patch
 # https://github.com/boostorg/build/pull/424
 Patch34:	https://github.com/boostorg/build/commit/949b24a42f8bc0df899712ab03bbc7fa2212b4e4.patch
+# FindBoost is broken, fix
+Patch35:	cfa8d55250dfc2635e907e42da423e4eb540dee5.patch
 
 BuildRequires:	doxygen
 BuildRequires:	xsltproc

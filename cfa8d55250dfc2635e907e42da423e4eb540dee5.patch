@@ -1,0 +1,29 @@
+diff --git a/tools/boost_install/BoostConfig.cmake b/tools/boost_install/BoostConfig.cmake
+index 539267d92..2d036d94f 100644
+--- a/tools/boost_install/BoostConfig.cmake
++++ b/tools/boost_install/BoostConfig.cmake
+@@ -97,6 +97,12 @@ macro(boost_find_dependency dep req)
+   string(TOUPPER ${dep} _BOOST_DEP)
+   set(Boost_${_BOOST_DEP}_FOUND ${boost_${dep}_FOUND})
+ 
++  # FindBoost compatibility variables: Boost_LIBRARIES, Boost_<C>_LIBRARY
++  if(boost_${dep}_FOUND)
++    list(APPEND Boost_LIBRARIES Boost::${dep})
++    set(Boost_${_BOOST_DEP}_LIBRARY Boost::${dep})
++  endif()
++
+   unset(_BOOST_REQUIRED)
+   unset(_BOOST_QUIET)
+   unset(_BOOST_CMAKEDIR)
+@@ -117,6 +123,11 @@ if(NOT boost_headers_FOUND)
+ 
+ endif()
+ 
++# Compatibility variables
++
++get_target_property(Boost_INCLUDE_DIRS Boost::headers INTERFACE_INCLUDE_DIRECTORIES)
++set(Boost_LIBRARIES)
++
+ # Find components
+ 
+ foreach(__boost_comp IN LISTS Boost_FIND_COMPONENTS)
