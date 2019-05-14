@@ -25,7 +25,7 @@ Version:	1.70.0
 Release:	0.%{beta}.1
 Source0:	https://dl.bintray.com/boostorg/beta/%{version}.%(echo %{beta} |sed -e 's,^b,beta,')/source/boost_%{packver}_%{beta}.tar.bz2
 %else
-Release:	4
+Release:	5
 Source0:	https://dl.bintray.com/boostorg/release/%{version}/source/boost_%{packver}.tar.bz2
 %endif
 License:	Boost
@@ -491,12 +491,12 @@ sed -e '1 i#ifndef Q_MOC_RUN' -e '$ a#endif' -i boost/type_traits/detail/has_bin
 toolset=`echo %{__cc} | sed 's!/usr/bin/!!'`
 
 cat > ./tools/build/src/user-config.jam << EOF
-using $toolset : : : <compileflags>"%{optflags} -fno-strict-aliasing" <cxxflags>"-std=c++14" <linkflags>"%{ldflags}" ;
+using $toolset : : : <compileflags>"%{optflags} -fno-strict-aliasing" <cxxflags>"-std=c++14 -fPIC" <linkflags>"%{ldflags}" ;
 using python : %{py3_ver} : %{__python3} : %{py3_incdir} : %{_libdir} : : : m ;
 EOF
 
 cat >python2-config.jam << EOF
-using $toolset : : : <compileflags>"%{optflags} -fno-strict-aliasing" <cxxflags>"-std=c++14" <linkflags>"%{ldflags}" ;
+using $toolset : : : <compileflags>"%{optflags} -fno-strict-aliasing" <cxxflags>"-std=c++14 -fPIC" <linkflags>"%{ldflags}" ;
 using python : %{py2_ver} : %{__python2} : %{py2_incdir} : %{_libdir} : : : ;
 EOF
 
