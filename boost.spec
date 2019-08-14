@@ -14,18 +14,18 @@
 # (tpg) save 50 MiB
 %bcond_with docs
 
-%define beta %{nil}
+%define beta rc1
 %define packver %(echo "%{version}" | sed -e "s/\\\./_/g")
 %bcond_without	numpy
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.70.0
+Version:	1.71.0
 %if "%{beta}" != ""
 Release:	0.%{beta}.1
-Source0:	https://dl.bintray.com/boostorg/beta/%{version}.%(echo %{beta} |sed -e 's,^b,beta,')/source/boost_%{packver}_%{beta}.tar.bz2
+Source0:	https://dl.bintray.com/boostorg/release/%{version}.%(echo %{beta} |sed -e 's,^b,beta,')/source/boost_%{packver}_%{beta}.tar.bz2
 %else
-Release:	5
+Release:	1
 Source0:	https://dl.bintray.com/boostorg/release/%{version}/source/boost_%{packver}.tar.bz2
 %endif
 License:	Boost
@@ -67,16 +67,8 @@ Patch19:	boost-1.57.0-build-optflags.patch
 # RISC-V support from upstream
 # https://github.com/boostorg/boost/pull/273
 Patch30:	https://github.com/boostorg/boost/commit/aab7addcc5d0fbb7ea9ed62e902095bc781baa2e.patch
-# https://github.com/boostorg/config/pull/277
-Patch31:	https://github.com/boostorg/config/commit/f6029148a8511970504e6f8e38e4326649145bf7.patch
-# https://github.com/boostorg/context/pull/104
-Patch32:	https://github.com/boostorg/context/commit/c8fb4a42f3a8453948b5d893cfecd97c6827eee5.patch
 # https://github.com/boostorg/predef/pull/97
 Patch33:	https://github.com/boostorg/predef/commit/1ca8df632c4a6be88f3e84f037bd65399bfcd1b4.patch
-# https://github.com/boostorg/build/pull/424
-Patch34:	https://github.com/boostorg/build/commit/949b24a42f8bc0df899712ab03bbc7fa2212b4e4.patch
-# FindBoost is broken, fix
-Patch35:	cfa8d55250dfc2635e907e42da423e4eb540dee5.patch
 
 BuildRequires:	doxygen
 BuildRequires:	xsltproc
@@ -195,7 +187,7 @@ done)}
 # There's no difference between develonly and develonly2. Just had to split
 # them up because there's a limit on how big a %%expand-ed statement
 # can get.
-%define develonly accumulators algorithm archive asio assign attributes bimap bind circular_buffer compute convert dll dynamic_bitset exception flyweight format function functional fusion geometry hana integer lexical_cast metaparse mpi mpl msm multi_array multi_index multiprecision optional parameter phoenix poly_collection predef preprocessor process range ratio signals2 smart_ptr spirit stacktrace tr1 tti tuple type_traits units unordered utility uuid variant vmd xpressive
+%define develonly accumulators algorithm archive asio assign attributes bimap bind circular_buffer compute convert dll dynamic_bitset exception flyweight format function functional fusion geometry hana integer lexical_cast metaparse mpi mpl msm multi_array multi_index multiprecision optional parameter phoenix poly_collection predef preprocessor process range ratio signals2 smart_ptr spirit stacktrace tr1 tti tuple type_traits units unordered utility uuid variant variant2 vmd xpressive
 %define develonly2 align beast callable_traits container_hash core gil hof mp11 qvm type_index sort endian coroutine2 winapi yap safe_numerics histogram outcome
 
 %{expand:%(for lib in %develonly; do lib2=${lib/-/_}; cat <<EOF
@@ -555,7 +547,6 @@ echo ============================= install Boost.Build ==================
 (cd tools/build/
  ./b2 --prefix=%{buildroot}%{_prefix} install
  # Fix some permissions
- chmod -x %{buildroot}%{_datadir}/boost-build/src/build/alias.py
  chmod +x %{buildroot}%{_datadir}/boost-build/src/tools/doxproc.py
  mkdir -p %{buildroot}%{_mandir}/man1 
  cp -a v2/doc/bjam.1 %{buildroot}%{_mandir}/man1/
