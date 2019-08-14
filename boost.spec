@@ -476,19 +476,19 @@ sed -e '1 i#ifndef Q_MOC_RUN' -e '$ a#endif' -i boost/type_traits/detail/has_bin
 #sed -i 's!-m64!!g' tools/build/src/tools/gcc.jam
 
 %build
-#using clang : : : <compileflags>"%{optflags} -fno-strict-aliasing" <cxxflags>"-std=c++14 -stdlib=libc++" <linkflags>"%{ldflags} -stdlib=libc++ -lm" ;
+#using clang : : : <compileflags>"%{optflags} -O3 -fno-strict-aliasing" <cxxflags>"-std=c++14 -stdlib=libc++" <linkflags>"%{ldflags} -stdlib=libc++ -lm" ;
 # interactive toolset detection
 # in 2015 and cooker we fall in love with clang
 # for 2014 still use gcc
 toolset=`echo %{__cc} | sed 's!/usr/bin/!!'`
 
 cat > ./tools/build/src/user-config.jam << EOF
-using $toolset : : : <compileflags>"%{optflags} -fno-strict-aliasing" <cxxflags>"-std=c++14 -fPIC" <linkflags>"%{ldflags}" ;
+using $toolset : : : <compileflags>"%{optflags} -O3 -fno-strict-aliasing" <cxxflags>"-std=c++14 -fPIC" <linkflags>"%{ldflags}" ;
 using python : %{py3_ver} : %{__python3} : %{py3_incdir} : %{_libdir} : : : m ;
 EOF
 
 cat >python2-config.jam << EOF
-using $toolset : : : <compileflags>"%{optflags} -fno-strict-aliasing" <cxxflags>"-std=c++14 -fPIC" <linkflags>"%{ldflags}" ;
+using $toolset : : : <compileflags>"%{optflags} -O3 -fno-strict-aliasing" <cxxflags>"-std=c++14 -fPIC" <linkflags>"%{ldflags}" ;
 using python : %{py2_ver} : %{__python2} : %{py2_incdir} : %{_libdir} : : : ;
 EOF
 
