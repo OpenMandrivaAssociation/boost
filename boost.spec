@@ -25,7 +25,7 @@ Version:	1.71.0
 Release:	0.%{beta}.1
 Source0:	https://dl.bintray.com/boostorg/release/%{version}.%(echo %{beta} |sed -e 's,^b,beta,')/source/boost_%{packver}_%{beta}.tar.bz2
 %else
-Release:	1
+Release:	2
 Source0:	https://dl.bintray.com/boostorg/release/%{version}/source/boost_%{packver}.tar.bz2
 %endif
 License:	Boost
@@ -119,11 +119,15 @@ C++ compilers -- on Windows, OSX, Linux and commercial UNIX systems.
 # The sed script adds _ when library name ends in number.
 %{expand:%(for lib in %boostbinlibs; do lib2=${lib/-/_}; cat <<EOF
 %%global libname$lib2 %%mklibname boost_$(echo $lib | sed 's,[0-9]$,&_,') %{version}
+%%global old69name$lib2 %%mklibname boost_$(echo $lib | sed 's,[0-9]$,&_,') 1.69.0
+%%global old70name$lib2 %%mklibname boost_$(echo $lib | sed 's,[0-9]$,&_,') 1.70.0
 %%package -n %%{libname$lib2}
 Summary:	Boost $lib shared library
 # no one should require this, but provided anyway for maximum compatibility:
 Provides:	boost = %{EVRD}
 Group:		System/Libraries
+Obsoletes:	%%{old69name$lib2} < %{EVRD}
+Obsoletes:	%%{old70name$lib2} < %{EVRD}
 EOF
 done)}
 # (Anssi 01/2010) splitted expand contents due to rpm bug failing build,
