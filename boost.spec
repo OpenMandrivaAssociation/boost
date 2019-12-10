@@ -14,18 +14,18 @@
 # (tpg) save 50 MiB
 %bcond_with docs
 
-%define beta %{nil}
+%define beta b1
 %define packver %(echo "%{version}" | sed -e "s/\\\./_/g")
 %bcond_without	numpy
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.71.0
+Version:	1.72.0
 %if "%{beta}" != ""
 Release:	0.%{beta}.1
-Source0:	https://dl.bintray.com/boostorg/release/%{version}.%(echo %{beta} |sed -e 's,^b,beta,')/source/boost_%{packver}_%{beta}.tar.bz2
+Source0:	https://dl.bintray.com/boostorg/beta/%{version}.%(echo %{beta} |sed -e 's,^b,beta.,')/source/boost_%{packver}_%{beta}.tar.bz2
 %else
-Release:	2
+Release:	1
 Source0:	https://dl.bintray.com/boostorg/release/%{version}/source/boost_%{packver}.tar.bz2
 %endif
 License:	Boost
@@ -257,8 +257,8 @@ done)}
 
 %global libnamepython2 %mklibname boost_python27 %{version}
 %global devnamepython2 %mklibname -d boost_python27
-%global libnamepython3 %mklibname boost_python37 %{version}
-%global devnamepython3 %mklibname -d boost_python37
+%global libnamepython3 %mklibname boost_python38 %{version}
+%global devnamepython3 %mklibname -d boost_python38
 
 %package -n %{libnamepython2}
 Summary:	Boost Python 2 shared library
@@ -299,13 +299,13 @@ Provides:	boost-python3 = %{EVRD}
 Boost Python 3 shared library
 
 %files -n %{libnamepython3}
-%{_libdir}/libboost_python37.so.%(echo %{version} |cut -d. -f1)*
+%{_libdir}/libboost_python38.so.%(echo %{version} |cut -d. -f1)*
 
 %package -n %{devnamepython3}
 Summary:	Development files for the Boost Python 3 library
 Group:		Development/C++
 Requires:	python >= 3.0
-Provides:	boost-python37-devel = %{EVRD}
+Provides:	boost-python38-devel = %{EVRD}
 Provides:	boost-python3-devel = %{EVRD}
 Provides:	boost-python-devel = %{EVRD}
 Requires:	%{coredevel} = %{EVRD}
@@ -323,8 +323,8 @@ Development files for the Boost Python 3 library
 %if %{with numpy}
 %global libnamenumpy2 %mklibname boost_numpy27 %{version}
 %global devnamenumpy2 %mklibname -d boost_numpy27
-%global libnamenumpy3 %mklibname boost_numpy37 %{version}
-%global devnamenumpy3 %mklibname -d boost_numpy37
+%global libnamenumpy3 %mklibname boost_numpy38 %{version}
+%global devnamenumpy3 %mklibname -d boost_numpy38
 
 %package -n %{libnamenumpy2}
 Summary:	Boost NumPy 2 shared library
@@ -364,13 +364,13 @@ Provides:	boost-numpy3 = %{EVRD}
 Boost NumPy 3 shared library
 
 %files -n %{libnamenumpy3}
-%{_libdir}/libboost_numpy37.so.%(echo %{version} |cut -d. -f1)*
+%{_libdir}/libboost_numpy38.so.%(echo %{version} |cut -d. -f1)*
 
 %package -n %{devnamenumpy3}
 Summary:	Development files for the Boost NumPy 3 library
 Group:		Development/C++
 Requires:	python >= 3.0
-Provides:	boost-numpy37-devel = %{EVRD}
+Provides:	boost-numpy38-devel = %{EVRD}
 Provides:	boost-numpy3-devel = %{EVRD}
 Provides:	boost-numpy-devel = %{EVRD}
 Requires:	%{coredevel} = %{EVRD}
@@ -488,7 +488,7 @@ toolset=`echo %{__cc} | sed 's!/usr/bin/!!'`
 
 cat > ./tools/build/src/user-config.jam << EOF
 using $toolset : : : <compileflags>"%{optflags} -O3 -fno-strict-aliasing" <cxxflags>"-std=c++14 -fPIC" <linkflags>"%{ldflags}" ;
-using python : %{py3_ver} : %{__python3} : %{py3_incdir} : %{_libdir} : : : m ;
+using python : %{py3_ver} : %{__python3} : %{py3_incdir} : %{_libdir} : : : ;
 EOF
 
 cat >python2-config.jam << EOF
