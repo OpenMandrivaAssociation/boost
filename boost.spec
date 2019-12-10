@@ -16,7 +16,11 @@
 
 %define beta b1
 %define packver %(echo "%{version}" | sed -e "s/\\\./_/g")
+%ifarch %{ix86} %{arm}
+%bcond_with	numpy
+%else
 %bcond_without	numpy
+%endif
 
 Summary:	Portable C++ libraries
 Name:		boost
