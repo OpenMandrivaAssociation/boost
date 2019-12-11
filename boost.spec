@@ -14,7 +14,7 @@
 # (tpg) save 50 MiB
 %bcond_with docs
 
-%define beta b1
+%define beta %{nil}
 %define packver %(echo "%{version}" | sed -e "s/\\\./_/g")
 %ifarch %{ix86} %{arm}
 %bcond_with	numpy
@@ -125,6 +125,7 @@ C++ compilers -- on Windows, OSX, Linux and commercial UNIX systems.
 %%global libname$lib2 %%mklibname boost_$(echo $lib | sed 's,[0-9]$,&_,') %{version}
 %%global old69name$lib2 %%mklibname boost_$(echo $lib | sed 's,[0-9]$,&_,') 1.69.0
 %%global old70name$lib2 %%mklibname boost_$(echo $lib | sed 's,[0-9]$,&_,') 1.70.0
+%%global old71name$lib2 %%mklibname boost_$(echo $lib | sed 's,[0-9]$,&_,') 1.70.0
 %%package -n %%{libname$lib2}
 Summary:	Boost $lib shared library
 # no one should require this, but provided anyway for maximum compatibility:
@@ -132,6 +133,7 @@ Provides:	boost = %{EVRD}
 Group:		System/Libraries
 Obsoletes:	%%{old69name$lib2} < %{EVRD}
 Obsoletes:	%%{old70name$lib2} < %{EVRD}
+Obsoletes:	%%{old71name$lib2} < %{EVRD}
 EOF
 done)}
 # (Anssi 01/2010) splitted expand contents due to rpm bug failing build,
@@ -263,6 +265,8 @@ done)}
 %global devnamepython2 %mklibname -d boost_python27
 %global libnamepython3 %mklibname boost_python38 %{version}
 %global devnamepython3 %mklibname -d boost_python38
+%global oldlibnamepython3 %mklibname boost_python37 1.71.0
+%global olddevnamepython3 %mklibname -d boost_python37
 
 %package -n %{libnamepython2}
 Summary:	Boost Python 2 shared library
@@ -298,6 +302,7 @@ Summary:	Boost Python 3 shared library
 Group:		System/Libraries
 Provides:	boost-python = %{EVRD}
 Provides:	boost-python3 = %{EVRD}
+Obsoletes:	%{oldlibnamepython3} < %{EVRD}
 
 %description -n %{libnamepython3}
 Boost Python 3 shared library
@@ -312,6 +317,7 @@ Requires:	python >= 3.0
 Provides:	boost-python38-devel = %{EVRD}
 Provides:	boost-python3-devel = %{EVRD}
 Provides:	boost-python-devel = %{EVRD}
+Obsoletes:	%{olddevnamepython3} < %{EVRD}
 Requires:	%{coredevel} = %{EVRD}
 Requires:	%{libnamepython3} = %{EVRD}
 
@@ -329,6 +335,8 @@ Development files for the Boost Python 3 library
 %global devnamenumpy2 %mklibname -d boost_numpy27
 %global libnamenumpy3 %mklibname boost_numpy38 %{version}
 %global devnamenumpy3 %mklibname -d boost_numpy38
+%global oldlibnamenumpy3 %mklibname boost_numpy37 1.71.0
+%global olddevnamenumpy3 %mklibname -d boost_numpy37
 
 %package -n %{libnamenumpy2}
 Summary:	Boost NumPy 2 shared library
@@ -363,6 +371,7 @@ Summary:	Boost NumPy 3 shared library
 Group:		System/Libraries
 Provides:	boost-numpy = %{EVRD}
 Provides:	boost-numpy3 = %{EVRD}
+Obsoletes:	%{oldlibnamenumpy3} < %{EVRD}
 
 %description -n %{libnamenumpy3}
 Boost NumPy 3 shared library
@@ -377,6 +386,7 @@ Requires:	python >= 3.0
 Provides:	boost-numpy38-devel = %{EVRD}
 Provides:	boost-numpy3-devel = %{EVRD}
 Provides:	boost-numpy-devel = %{EVRD}
+Obsoletes:	%{olddevnamenumpy3} < %{EVRD}
 Requires:	%{coredevel} = %{EVRD}
 
 %description -n %{devnamenumpy3}
