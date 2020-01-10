@@ -468,7 +468,7 @@ same place as the documentation.
 
 %prep
 %setup -q -n boost_%{packver}
-%apply_patches
+%autopatch -p1
 %if !%{with numpy}
 # Boost.Build does not allow for disabling of numpy
 # extensions, thereby leading to automagic numpy
