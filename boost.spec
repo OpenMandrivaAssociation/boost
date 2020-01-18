@@ -29,13 +29,16 @@ Version:	1.72.0
 Release:	0.%{beta}.1
 Source0:	https://dl.bintray.com/boostorg/beta/%{version}.%(echo %{beta} |sed -e 's,^b,beta.,')/source/boost_%{packver}_%{beta}.tar.bz2
 %else
-Release:	3
+Release:	4
 Source0:	https://dl.bintray.com/boostorg/release/%{version}/source/boost_%{packver}.tar.bz2
 %endif
 License:	Boost
 Group:		Development/C++
 Url:		http://boost.org/
 Source100:	%{name}.rpmlintrc
+
+# https://github.com/boostorg/process/issues/116
+Patch0:		https://github.com/boostorg/process/commit/6a4d2ff72114ef47c7afaf92e1042aca3dfa41b0.patch
 
 # https://svn.boost.org/trac/boost/ticket/6150
 Patch4:		boost-1.50.0-fix-non-utf8-files.patch
