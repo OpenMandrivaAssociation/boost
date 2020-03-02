@@ -1,0 +1,560 @@
+From 536c7cbb19fa1b28f33b929e1070c78f3402b4f7 Mon Sep 17 00:00:00 2001
+From: "luz.paz" <luzpaz@users.noreply.github.com>
+Date: Sun, 23 Sep 2018 14:47:01 -0400
+Subject: [PATCH] bimap: misc-typos
+
+Found via `codespell -q 3`
+---
+ doc/bimap_and_boost.qbk                                     | 2 +-
+ doc/compiler_specifics.qbk                                  | 2 +-
+ .../boost_libraries_that_work_well_with_boost_bimap.html    | 4 ++--
+ doc/html/boost_bimap/compiler_specifics.html                | 2 +-
+ .../examples/multiindex_to_bimap_path___hashed_indices.html | 2 +-
+ doc/html/boost_bimap/rationale.html                         | 2 +-
+ doc/html/boost_bimap/reference/set_of_reference.html        | 2 +-
+ .../boost_bimap/reference/unordered_set_of_reference.html   | 2 +-
+ .../the_tutorial/bimaps_with_user_defined_names.html        | 4 ++--
+ doc/rationale.qbk                                           | 2 +-
+ doc/reference/list_of.qbk                                   | 2 +-
+ doc/reference/set_of.qbk                                    | 2 +-
+ doc/reference/unordered_set_of.qbk                          | 2 +-
+ doc/reference/vector_of.qbk                                 | 2 +-
+ doc/tutorial.qbk                                            | 2 +-
+ example/bimap_and_boost/serialization.cpp                   | 2 +-
+ example/mi_to_b_path/mi_hashed_indices.cpp                  | 2 +-
+ example/step_by_step.cpp                                    | 2 +-
+ .../support/iterator_facade_converters.hpp                  | 2 +-
+ include/boost/bimap/detail/bimap_core.hpp                   | 6 +++---
+ include/boost/bimap/detail/concept_tags.hpp                 | 6 +++---
+ include/boost/bimap/relation/member_at.hpp                  | 4 ++--
+ include/boost/bimap/relation/structured_pair.hpp            | 2 +-
+ include/boost/bimap/relation/support/get.hpp                | 6 +++---
+ .../boost/bimap/relation/support/is_tag_of_member_at.hpp    | 4 ++--
+ include/boost/bimap/relation/support/pair_by.hpp            | 6 +++---
+ include/boost/bimap/relation/symmetrical_base.hpp           | 2 +-
+ include/boost/bimap/support/map_by.hpp                      | 6 +++---
+ include/boost/bimap/tags/support/apply_to_value_type.hpp    | 2 +-
+ include/boost/bimap/tags/support/tag_of.hpp                 | 2 +-
+ include/boost/bimap/tags/support/value_type_of.hpp          | 2 +-
+ include/boost/bimap/tags/tagged.hpp                         | 2 +-
+ test/test_structured_pair.cpp                               | 2 +-
+ 33 files changed, 47 insertions(+), 47 deletions(-)
+
+diff --git a/libs/bimap/doc/bimap_and_boost.qbk b/libs/bimap/doc/bimap_and_boost.qbk
+index 8737cbf..a3314a0 100644
+--- a/libs/bimap/doc/bimap_and_boost.qbk
++++ b/libs/bimap/doc/bimap_and_boost.qbk
+@@ -328,7 +328,7 @@ The following code snippet
+ 
+ [code_bimap_and_boost_typeof_not_using_auto]
+ 
+-can be rewrited as
++can be rewritten as
+ 
+ [code_bimap_and_boost_typeof_using_auto]
+ 
+diff --git a/libs/bimap/doc/compiler_specifics.qbk b/libs/bimap/doc/compiler_specifics.qbk
+index 844c151..807d109 100644
+--- a/libs/bimap/doc/compiler_specifics.qbk
++++ b/libs/bimap/doc/compiler_specifics.qbk
+@@ -52,7 +52,7 @@ can be cause buffer overruns or other possible security issues if misused.
+ See http://msdn.microsoft.com/msdnmag/issues/05/05/SafeCandC/default.aspx
+ But the wording of the warning is misleading and unsettling, there are no
+ portable alternative functions, and VC++ 8.0's own libraries use the
+-functions in question. In order to turn off the warnings add the followings
++functions in question. In order to turn off the warnings add the following
+ defines at the begging of your .cpp files:
+ 
+     #define _CRT_SECURE_NO_DEPRECATE
+diff --git a/libs/bimap/doc/html/boost_bimap/bimap_and_boost/boost_libraries_that_work_well_with_boost_bimap.html b/libs/bimap/doc/html/boost_bimap/bimap_and_boost/boost_libraries_that_work_well_with_boost_bimap.html
+index 4ed9102..452e5a9 100644
+--- a/libs/bimap/doc/html/boost_bimap/bimap_and_boost/boost_libraries_that_work_well_with_boost_bimap.html
++++ b/libs/bimap/doc/html/boost_bimap/bimap_and_boost/boost_libraries_that_work_well_with_boost_bimap.html
+@@ -352,7 +352,7 @@
+ <td width="5%" valign="top" align="left"><p><a name="boost_bimap.bimap_and_boost.boost_libraries_that_work_well_with_boost_bimap.boost_serialization.c3"></a><a href="#boost_bimap.bimap_and_boost.boost_libraries_that_work_well_with_boost_bimap.boost_serialization.c2"><img src="../../../../../../doc/src/images/callouts/2.png" alt="2" border="0"></a> </p></td>
+ <td valign="top" align="left"><p>
+               We can only serialize iterators if the bimap was serialized first.
+-              Note that the const cast is not requiered here because we create our
++              Note that the const cast is not required here because we create our
+               iterators as const.
+             </p></td>
+ </tr>
+@@ -768,7 +768,7 @@
+ <p>
+         </p>
+ <p>
+-          can be rewrited as
++          can be rewritten as
+         </p>
+ <p>
+ </p>
+diff --git a/libs/bimap/doc/html/boost_bimap/compiler_specifics.html b/libs/bimap/doc/html/boost_bimap/compiler_specifics.html
+index 0e0e404..052106e 100644
+--- a/libs/bimap/doc/html/boost_bimap/compiler_specifics.html
++++ b/libs/bimap/doc/html/boost_bimap/compiler_specifics.html
+@@ -345,7 +345,7 @@ <h3>
+       See http://msdn.microsoft.com/msdnmag/issues/05/05/SafeCandC/default.aspx But
+       the wording of the warning is misleading and unsettling, there are no portable
+       alternative functions, and VC++ 8.0's own libraries use the functions in question.
+-      In order to turn off the warnings add the followings defines at the begging
++      In order to turn off the warnings add the following defines at the begging
+       of your .cpp files:
+     </p>
+ <pre class="programlisting"><span class="preprocessor">#define</span> <span class="identifier">_CRT_SECURE_NO_DEPRECATE</span>
+diff --git a/libs/bimap/doc/html/boost_bimap/examples/multiindex_to_bimap_path___hashed_indices.html b/libs/bimap/doc/html/boost_bimap/examples/multiindex_to_bimap_path___hashed_indices.html
+index 39d09a8..2c45fef 100644
+--- a/libs/bimap/doc/html/boost_bimap/examples/multiindex_to_bimap_path___hashed_indices.html
++++ b/libs/bimap/doc/html/boost_bimap/examples/multiindex_to_bimap_path___hashed_indices.html
+@@ -63,7 +63,7 @@ <h5>
+ <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">multi_index</span><span class="special">;</span>
+ <span class="keyword">namespace</span> <span class="identifier">bl</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">lambda</span><span class="special">;</span>
+ 
+-<span class="comment">// word_counter keeps the ocurrences of words inserted. A hashed</span>
++<span class="comment">// word_counter keeps the occurrences of words inserted. A hashed</span>
+ <span class="comment">// index allows for fast checking of preexisting entries.</span>
+ 
+ <span class="keyword">struct</span> <span class="identifier">word_counter_entry</span>
+diff --git a/libs/bimap/doc/html/boost_bimap/rationale.html b/libs/bimap/doc/html/boost_bimap/rationale.html
+index 95be192..ed7e8c3 100644
+--- a/libs/bimap/doc/html/boost_bimap/rationale.html
++++ b/libs/bimap/doc/html/boost_bimap/rationale.html
+@@ -277,7 +277,7 @@ <h5>
+         you can build other container that behaves exactly as a <code class="computeroutput"><span class="identifier">std</span><span class="special">::</span><span class="identifier">set</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span></code> using
+         <code class="computeroutput"><span class="identifier">set_adaptor</span></code> and <code class="literal">iterator_adaptor</code>.
+         The combined use of this two tools is very powerful. A <code class="literal">container_adaptor</code>
+-        can take classes that do not fulfil all the requirements of the adapted container.
++        can take classes that do not fulfill all the requirements of the adapted container.
+         The new container must define these missing functions.
+       </p>
+ </div>
+diff --git a/libs/bimap/doc/html/boost_bimap/reference/set_of_reference.html b/libs/bimap/doc/html/boost_bimap/reference/set_of_reference.html
+index 2f0e620..e560e6b 100644
+--- a/libs/bimap/doc/html/boost_bimap/reference/set_of_reference.html
++++ b/libs/bimap/doc/html/boost_bimap/reference/set_of_reference.html
+@@ -1100,7 +1100,7 @@
+ <p>
+             The symmetry of bimap imposes some constraints on <code class="computeroutput"><span class="keyword">operator</span><span class="special">[]</span></code> and the non constant version of at()
+             that are not found in <code class="computeroutput"><span class="identifier">std</span><span class="special">::</span><span class="identifier">maps</span></code>.
+-            Tey are only provided if the other collection type is mutable (<code class="computeroutput"><span class="identifier">list_of</span></code>, <code class="computeroutput"><span class="identifier">vector_of</span></code>
++            They are only provided if the other collection type is mutable (<code class="computeroutput"><span class="identifier">list_of</span></code>, <code class="computeroutput"><span class="identifier">vector_of</span></code>
+             and <code class="computeroutput"><span class="identifier">unconstrained_set_of</span></code>).
+           </p>
+ <a name="reference_set_of_operator_bracket_key"></a><pre class="programlisting"><span class="keyword">template</span><span class="special">&lt;</span> <span class="keyword">class</span> <span class="identifier">CompatibleKey</span> <span class="special">&gt;</span>
+diff --git a/libs/bimap/doc/html/boost_bimap/reference/unordered_set_of_reference.html b/libs/bimap/doc/html/boost_bimap/reference/unordered_set_of_reference.html
+index 7e18532..1179848 100644
+--- a/libs/bimap/doc/html/boost_bimap/reference/unordered_set_of_reference.html
++++ b/libs/bimap/doc/html/boost_bimap/reference/unordered_set_of_reference.html
+@@ -1013,7 +1013,7 @@
+ <p>
+             The symmetry of bimap imposes some constraints on <code class="computeroutput"><span class="keyword">operator</span><span class="special">[]</span></code> and the non constant version of at()
+             that are not found in <code class="computeroutput"><span class="identifier">std</span><span class="special">::</span><span class="identifier">maps</span></code>.
+-            Tey are only provided if the other collection type is mutable (<code class="computeroutput"><span class="identifier">list_of</span></code>, <code class="computeroutput"><span class="identifier">vector_of</span></code>
++            They are only provided if the other collection type is mutable (<code class="computeroutput"><span class="identifier">list_of</span></code>, <code class="computeroutput"><span class="identifier">vector_of</span></code>
+             and <code class="computeroutput"><span class="identifier">unconstrained_set_of</span></code>).
+           </p>
+ <a name="reference_unordered_set_of_operator_bracket_key"></a><pre class="programlisting"><span class="keyword">template</span><span class="special">&lt;</span> <span class="keyword">class</span> <span class="identifier">CompatibleKey</span> <span class="special">&gt;</span>
+diff --git a/libs/bimap/doc/html/boost_bimap/the_tutorial/bimaps_with_user_defined_names.html b/libs/bimap/doc/html/boost_bimap/the_tutorial/bimaps_with_user_defined_names.html
+index 7a3c52b..9826729 100644
+--- a/libs/bimap/doc/html/boost_bimap/the_tutorial/bimaps_with_user_defined_names.html
++++ b/libs/bimap/doc/html/boost_bimap/the_tutorial/bimaps_with_user_defined_names.html
+@@ -171,8 +171,8 @@
+ <span class="identifier">bm_type</span><span class="special">::</span><span class="identifier">right_iterator</span> <span class="identifier">right_iter</span> <span class="special">=</span> <span class="identifier">bm</span><span class="special">.</span><span class="identifier">right</span><span class="special">.</span><span class="identifier">begin</span><span class="special">();</span>
+ </pre>
+ <div class="table">
+-<a name="boost_bimap.the_tutorial.bimaps_with_user_defined_names.t0"></a><p class="title"><b>Table&#160;1.3.&#160;Equivalence of expresions using user defined names</b></p>
+-<div class="table-contents"><table class="table" summary="Equivalence of expresions using user defined names">
++<a name="boost_bimap.the_tutorial.bimaps_with_user_defined_names.t0"></a><p class="title"><b>Table&#160;1.3.&#160;Equivalence of expressions using user defined names</b></p>
++<div class="table-contents"><table class="table" summary="Equivalence of expressions using user defined names">
+ <colgroup>
+ <col>
+ <col>
+diff --git a/libs/bimap/doc/rationale.qbk b/libs/bimap/doc/rationale.qbk
+index 4a5028c..94ada83 100644
+--- a/libs/bimap/doc/rationale.qbk
++++ b/libs/bimap/doc/rationale.qbk
+@@ -206,7 +206,7 @@ iterators instead of the originals. For example, if you have a
+ `std::set<int*>`, you can build other container that behaves exactly as a
+ `std::set<int>` using `set_adaptor` and [^iterator_adaptor]. The combined use
+ of this two tools is very powerful. A [^container_adaptor] can take classes
+-that do not fulfil all the requirements of the adapted container. The
++that do not fulfill all the requirements of the adapted container. The
+ new container must define these missing functions.
+ 
+ [endsect]
+diff --git a/libs/bimap/doc/reference/list_of.qbk b/libs/bimap/doc/reference/list_of.qbk
+index 23f92c3..166f17f 100644
+--- a/libs/bimap/doc/reference/list_of.qbk
++++ b/libs/bimap/doc/reference/list_of.qbk
+@@ -528,7 +528,7 @@ for ['Set View]. `position` is a valid dereferenceable iterator of the view.
+ for ['Set View] where `e` is the element pointed to by `position` and
+ rearranges `*position` into all the views of the `bimap`.
+ Rearrangement on `list_of` views does not change the position of the element
+-with respect to the view; rearrangement on other views may or might not suceed.
++with respect to the view; rearrangement on other views may or might not succeed.
+ If the rearrangement fails, the element is erased.
+ * [*Postconditions:] Validity of `position` is preserved if the operation succeeds.
+ * [*Returns: ] `true` if the operation succeeded, `false` otherwise.
+diff --git a/libs/bimap/doc/reference/set_of.qbk b/libs/bimap/doc/reference/set_of.qbk
+index 1b52f5e..19a00ae 100644
+--- a/libs/bimap/doc/reference/set_of.qbk
++++ b/libs/bimap/doc/reference/set_of.qbk
+@@ -818,7 +818,7 @@ throws `std::out_of_range` if such key does not exist.
+ 
+ The symmetry of bimap imposes some constraints on `operator[]` and the 
+ non constant version of at() that are not found in `std::maps`.
+-Tey are only provided if the other collection type is mutable
++They are only provided if the other collection type is mutable
+ (`list_of`, `vector_of` and `unconstrained_set_of`).
+ 
+ [#reference_set_of_operator_bracket_key]
+diff --git a/libs/bimap/doc/reference/unordered_set_of.qbk b/libs/bimap/doc/reference/unordered_set_of.qbk
+index 7b22df0..18e4a9e 100644
+--- a/libs/bimap/doc/reference/unordered_set_of.qbk
++++ b/libs/bimap/doc/reference/unordered_set_of.qbk
+@@ -695,7 +695,7 @@ throws `std::out_of_range` if such key does not exist.
+ 
+ The symmetry of bimap imposes some constraints on `operator[]` and the 
+ non constant version of at() that are not found in `std::maps`.
+-Tey are only provided if the other collection type is mutable
++They are only provided if the other collection type is mutable
+ (`list_of`, `vector_of` and `unconstrained_set_of`).
+ 
+ 
+diff --git a/libs/bimap/doc/reference/vector_of.qbk b/libs/bimap/doc/reference/vector_of.qbk
+index 55ce978..03dc56e 100644
+--- a/libs/bimap/doc/reference/vector_of.qbk
++++ b/libs/bimap/doc/reference/vector_of.qbk
+@@ -574,7 +574,7 @@ for ['Set View] where e is the element pointed to by `position` and
+ rearranges `*position` into all the views of the `bimap`.
+ Rearrangement on `vector_of` views does not change the position of the
+ element with respect to the view; rearrangement on other views may or
+-might not suceed. If the rearrangement fails, the element is erased.
++might not succeed. If the rearrangement fails, the element is erased.
+ * [*Postconditions:] Validity of `position` is preserved if the operation succeeds.
+ * [*Returns: ] `true` if the operation succeeded, `false` otherwise.
+ * [link vector_of_complexity_signature [*Complexity:]] O(M(n)).
+diff --git a/libs/bimap/doc/tutorial.qbk b/libs/bimap/doc/tutorial.qbk
+index 88bd462..0d66dea 100644
+--- a/libs/bimap/doc/tutorial.qbk
++++ b/libs/bimap/doc/tutorial.qbk
+@@ -811,7 +811,7 @@ the untagged version structures.
+ 
+ 
+ 
+-[table Equivalence of expresions using user defined names
++[table Equivalence of expressions using user defined names
+ [[Untagged version]               [Tagged version]                     ]
+ [[`bm.left`]                      [`bm.by<Left>()`]                    ]
+ [[`bm.right`]                     [`bm.by<Right>()`]                   ]
+diff --git a/libs/bimap/example/bimap_and_boost/serialization.cpp b/libs/bimap/example/bimap_and_boost/serialization.cpp
+index f4791a1..94a3f6e 100644
+--- a/libs/bimap/example/bimap_and_boost/serialization.cpp
++++ b/libs/bimap/example/bimap_and_boost/serialization.cpp
+@@ -52,7 +52,7 @@ int main()
+             rationale behind this decision >*/
+ 
+         /*<< We can only serialize iterators if the bimap was serialized first.
+-             Note that the const cast is not requiered here because we create
++             Note that the const cast is not required here because we create
+              our iterators as const. >>*/
+         const bm_type::left_iterator left_iter = bm.left.find("two");
+         oa << left_iter;
+diff --git a/libs/bimap/example/mi_to_b_path/mi_hashed_indices.cpp b/libs/bimap/example/mi_to_b_path/mi_hashed_indices.cpp
+index f91b835..4e59fce 100755
+--- a/libs/bimap/example/mi_to_b_path/mi_hashed_indices.cpp
++++ b/libs/bimap/example/mi_to_b_path/mi_hashed_indices.cpp
+@@ -29,7 +29,7 @@ Boost.MultiIndex
+ using namespace boost::multi_index;
+ namespace bl = boost::lambda;
+ 
+-// word_counter keeps the ocurrences of words inserted. A hashed
++// word_counter keeps the occurrences of words inserted. A hashed
+ // index allows for fast checking of preexisting entries.
+ 
+ struct word_counter_entry
+diff --git a/libs/bimap/example/step_by_step.cpp b/libs/bimap/example/step_by_step.cpp
+index df40ba2..a038379 100644
+--- a/libs/bimap/example/step_by_step.cpp
++++ b/libs/bimap/example/step_by_step.cpp
+@@ -23,7 +23,7 @@
+ #include <iostream>
+ #include <cassert>
+ 
+-// A convinience header is avaiable in the boost directory:
++// A convenience header is available in the boost directory:
+ #include <boost/bimap.hpp>
+ 
+ int main()
+diff --git a/boost/bimap/container_adaptor/support/iterator_facade_converters.hpp b/boost/bimap/container_adaptor/support/iterator_facade_converters.hpp
+index d6042e6..98c32b0 100644
+--- a/boost/bimap/container_adaptor/support/iterator_facade_converters.hpp
++++ b/boost/bimap/container_adaptor/support/iterator_facade_converters.hpp
+@@ -28,7 +28,7 @@ namespace support {
+ 
+ /// \brief Converter for Boost.Iterators based iterators.
+ /**
+-Container adaptor is dessigned to play well with Boost.Iterators. This
++Container adaptor is designed to play well with Boost.Iterators. This
+ converter can be used if this library is used to adapt the iterators.
+                                                                             **/
+ template
+diff --git a/boost/bimap/detail/bimap_core.hpp b/boost/bimap/detail/bimap_core.hpp
+index f642e96..27a8fc7 100644
+--- a/boost/bimap/detail/bimap_core.hpp
++++ b/boost/bimap/detail/bimap_core.hpp
+@@ -263,7 +263,7 @@ class bimap_core
+ 
+     // If it is based either on the left or on the right, then only the side
+     // indices are needed. But the set type of the relation can be completely
+-    // diferent from the one used for the sides in wich case we have to add yet
++    // different from the one used for the sides in which case we have to add yet
+     // another index to the core.
+ 
+     // TODO
+@@ -306,7 +306,7 @@ class bimap_core
+                         relation_set_type_of;
+ 
+     // Logic tags
+-    // This is a necesary extra level of indirection to allow unconstrained
++    // This is a necessary extra level of indirection to allow unconstrained
+     // sets to be plug in the design. The bimap constructors use this logic
+     // tags.
+ 
+@@ -445,7 +445,7 @@ class bimap_core
+     typedef bimap_core bimap_core_;
+ };
+ 
+-// Two auxiliar metafunctions to compute the map view types
++// Two auxiliary metafunctions to compute the map view types
+ // The map view type can not be computed inside the bimap core because a 
+ // they need the bimap core to be parsed first.
+ 
+diff --git a/boost/bimap/detail/concept_tags.hpp b/boost/bimap/detail/concept_tags.hpp
+index fc3ab5c..c5c9fff 100644
+--- a/boost/bimap/detail/concept_tags.hpp
++++ b/boost/bimap/detail/concept_tags.hpp
+@@ -34,7 +34,7 @@ metafunctions. For example now is easy to create a is_set_type_of metafunction.
+ 
+ struct set_type_of_tag          {};
+ 
+-/// \brief Tag of {SetType}_of_relation defition classes
++/// \brief Tag of {SetType}_of_relation definition classes
+ 
+ struct set_type_of_relation_tag {};
+ 
+@@ -68,7 +68,7 @@ See also left_based.
+ struct left_based : ::boost::bimaps::detail::side_based_tag
+ {
+     // I run into troubles if I do not define bind for side based tags.
+-    // Maybe a more coherent way of binding the relation can be developped.
++    // Maybe a more coherent way of binding the relation can be developed.
+     template< class Relation > struct bind_to { typedef void type; };
+ 
+     typedef mpl::bool_<true>  left_mutable_key;
+@@ -78,7 +78,7 @@ struct left_based : ::boost::bimaps::detail::side_based_tag
+ struct right_based : ::boost::bimaps::detail::side_based_tag
+ {
+     // I run into troubles if I do not define bind for side based tags.
+-    // Maybe a more coherent way of binding the relation can be developped.
++    // Maybe a more coherent way of binding the relation can be developed.
+     template< class Relation > struct bind_to { typedef void type; };
+ 
+     typedef mpl::bool_<true>  left_mutable_key;
+diff --git a/boost/bimap/relation/member_at.hpp b/boost/bimap/relation/member_at.hpp
+index 1a57d04..b7385da 100644
+--- a/boost/bimap/relation/member_at.hpp
++++ b/boost/bimap/relation/member_at.hpp
+@@ -25,7 +25,7 @@ namespace relation {
+ /// \brief member_at::side idiom to access relation values and types using metaprogramming. 
+ /**
+ 
+-This tags are used to specify which member you want to acces when using a metafunction over
++This tags are used to specify which member you want to access when using a metafunction over
+ a symmetrical type. The idea is to be able to write code like:
+ 
+ \code
+@@ -44,7 +44,7 @@ namespace member_at {
+ 
+     /// \brief Member at left tag
+     /**
+-    See also member_at, rigth.
++    See also member_at, right.
+                                             **/
+ 
+     struct left  {};
+diff --git a/boost/bimap/relation/structured_pair.hpp b/boost/bimap/relation/structured_pair.hpp
+index ba107b0..c533f82 100644
+--- a/boost/bimap/relation/structured_pair.hpp
++++ b/boost/bimap/relation/structured_pair.hpp
+@@ -254,7 +254,7 @@ class mutant_relation;
+ /// \brief A std::pair signature compatible class that allows you to control
+ ///        the internal structure of the data.
+ /**
+-This class allows you to specify the order in wich the two data types will be
++This class allows you to specify the order in which the two data types will be
+ in the layout of the class.
+                                                                                **/
+ 
+diff --git a/boost/bimap/relation/support/get.hpp b/boost/bimap/relation/support/get.hpp
+index 48d7240..e205beb 100644
+--- a/boost/bimap/relation/support/get.hpp
++++ b/boost/bimap/relation/support/get.hpp
+@@ -60,13 +60,13 @@ namespace relation {
+ namespace support {
+ 
+ // Since it is very error-prone to directly write the hole bunch
+-// of relation accesor. They are buil from litle macro blocks that
++// of relation accesor. They are built from little macro blocks that
+ // are both more readable, leading to self docummenting code and a
+-// lot more easier to understand and mantain.
++// lot more easier to understand and maintain.
+ // It is very important to note that the three building blocks have
+ // to laid in the same namespace in order to work. There is also
+ // important to keep them in order.
+-// The forward declaration are not necesary but they help a lot to
++// The forward declaration are not necessary but they help a lot to
+ // the reader, as they undercover what is the signature of the
+ // result code.
+ // In the end, it is not quicker to do it in this way because you
+diff --git a/boost/bimap/relation/support/is_tag_of_member_at.hpp b/boost/bimap/relation/support/is_tag_of_member_at.hpp
+index 69d1299..4d1bf4f 100644
+--- a/boost/bimap/relation/support/is_tag_of_member_at.hpp
++++ b/boost/bimap/relation/support/is_tag_of_member_at.hpp
+@@ -27,7 +27,7 @@
+ 
+ /** \struct boost::bimaps::relation::support::is_tag_of_member_at_left
+ 
+-\brief Metafunction to test if a user tag is refering to the left member.
++\brief Metafunction to test if a user tag is referring to the left member.
+ 
+ \code
+ 
+@@ -53,7 +53,7 @@ See also member_with_tag, member_at, is_tag_of_member_at_right.
+ 
+ /** \struct boost::bimaps::relation::support::is_tag_of_member_at_right
+ 
+-\brief Metafunction to test if a user tag is refering to the left member.
++\brief Metafunction to test if a user tag is referring to the left member.
+ 
+ \code
+ 
+diff --git a/boost/bimap/relation/support/pair_by.hpp b/boost/bimap/relation/support/pair_by.hpp
+index 7b8226d..e1bfc79 100644
+--- a/boost/bimap/relation/support/pair_by.hpp
++++ b/boost/bimap/relation/support/pair_by.hpp
+@@ -54,13 +54,13 @@ namespace support {
+ 
+ 
+ // Since it is very error-prone to directly write the hole bunch
+-// of relation accesor. They are buil from litle macro blocks that
++// of relation accesor. They are built from little macro blocks that
+ // are both more readable, leading to self docummenting code and a
+-// lot more easier to understand and mantain.
++// lot more easier to understand and maintain.
+ // It is very important to note that the three building blocks have
+ // to laid in the same namespace in order to work. There is also
+ // important to keep them in order.
+-// The forward declaration are not necesary but they help a lot to
++// The forward declaration are not necessary but they help a lot to
+ // the reader, as they undercover what is the signature of the
+ // result code.
+ // In the end, it is not quicker to do it in this way because you
+diff --git a/boost/bimap/relation/symmetrical_base.hpp b/boost/bimap/relation/symmetrical_base.hpp
+index a81ab1d..cd13306 100644
+--- a/boost/bimap/relation/symmetrical_base.hpp
++++ b/boost/bimap/relation/symmetrical_base.hpp
+@@ -32,7 +32,7 @@ namespace boost {
+ namespace bimaps {
+ namespace relation {
+ 
+-/// \brief Base of symetrical tagged types.
++/// \brief Base of symmetrical tagged types.
+ /**
+ 
+                                                            **/
+diff --git a/boost/bimap/support/map_by.hpp b/boost/bimap/support/map_by.hpp
+index 1d41529..360f05f 100644
+--- a/boost/bimap/support/map_by.hpp
++++ b/boost/bimap/support/map_by.hpp
+@@ -68,13 +68,13 @@ namespace bimaps {
+ namespace support {
+ 
+ // Since it is very error-prone to directly write the hole bunch
+-// of relation accesor. They are buil from litle macro blocks that
++// of relation accesor. They are built from little macro blocks that
+ // are both more readable, leading to self docummenting code and a
+-// lot more easier to understand and mantain.
++// lot more easier to understand and maintain.
+ // It is very important to note that the three building blocks have
+ // to laid in the same namespace in order to work. There is also
+ // important to keep them in order.
+-// The forward declaration are not necesary but they help a lot to
++// The forward declaration are not necessary but they help a lot to
+ // the reader, as they undercover what is the signature of the
+ // result code.
+ // In the end, it is not quicker to do it in this way because you
+diff --git a/boost/bimap/tags/support/apply_to_value_type.hpp b/boost/bimap/tags/support/apply_to_value_type.hpp
+index af6dacd..0267b86 100644
+--- a/boost/bimap/tags/support/apply_to_value_type.hpp
++++ b/boost/bimap/tags/support/apply_to_value_type.hpp
+@@ -38,7 +38,7 @@ struct apply_to_value_type
+ \endcode
+ 
+ This higher order metafunctions is very useful, and it can be used with lambda
+-expresions.
++expressions.
+ 
+ See also tagged.
+                                                                                 **/
+diff --git a/boost/bimap/tags/support/tag_of.hpp b/boost/bimap/tags/support/tag_of.hpp
+index 48b9004..f2594f0 100644
+--- a/boost/bimap/tags/support/tag_of.hpp
++++ b/boost/bimap/tags/support/tag_of.hpp
+@@ -7,7 +7,7 @@
+ // http://www.boost.org/LICENSE_1_0.txt)
+ 
+ /// \file tags/support/tag_of.hpp
+-/// \brief Safe way to acces the tag of a type
++/// \brief Safe way to access the tag of a type
+ 
+ #ifndef BOOST_BIMAP_TAGS_SUPPORT_TAG_OF_HPP
+ #define BOOST_BIMAP_TAGS_SUPPORT_TAG_OF_HPP
+diff --git a/boost/bimap/tags/support/value_type_of.hpp b/boost/bimap/tags/support/value_type_of.hpp
+index e1e1760..4734c6b 100644
+--- a/boost/bimap/tags/support/value_type_of.hpp
++++ b/boost/bimap/tags/support/value_type_of.hpp
+@@ -32,7 +32,7 @@ struct value_type_of
+ \endcode
+ 
+ If the type is tagged this metafunction returns Type::value_type, and if it is not
+-tagged it return the same type. This allows to work consistenly with tagged and
++tagged it return the same type. This allows to work consistently with tagged and
+ untagged types.
+ 
+ See also tagged, tag_of.
+diff --git a/boost/bimap/tags/tagged.hpp b/boost/bimap/tags/tagged.hpp
+index 0a48d03..4376d85 100644
+--- a/boost/bimap/tags/tagged.hpp
++++ b/boost/bimap/tags/tagged.hpp
+@@ -92,7 +92,7 @@ struct tagged
+ \brief Metafunctions to work with tagged types.
+ 
+ This metafunctions aims to make easier the manage of tagged types. They are all mpl
+-compatible metafunctions and can be used with lambda expresions.
++compatible metafunctions and can be used with lambda expressions.
+ The metafunction value_type_of and tag_of get the data in a tagged type in a secure
+ and consistent way.
+ default_tagged and overwrite_tagged allows to work with the tag of a tagged type,
+diff --git a/libs/bimap/test/test_structured_pair.cpp b/libs/bimap/test/test_structured_pair.cpp
+index 776661c..51e3f68 100644
+--- a/libs/bimap/test/test_structured_pair.cpp
++++ b/libs/bimap/test/test_structured_pair.cpp
+@@ -70,7 +70,7 @@ void test_basic()
+ 
+     using namespace boost::bimaps::relation;
+ 
+-    // Instanciate two pairs and test the storage alignmentDataData
++    // Instantiate two pairs and test the storage alignmentDataData
+ 
+     typedef structured_pair< short, double, normal_layout > pair_type;
+     typedef structured_pair< double, short, mirror_layout > mirror_type;

@@ -29,7 +29,7 @@ Version:	1.72.0
 Release:	0.%{beta}.1
 Source0:	https://dl.bintray.com/boostorg/beta/%{version}.%(echo %{beta} |sed -e 's,^b,beta.,')/source/boost_%{packver}_%{beta}.tar.bz2
 %else
-Release:	4
+Release:	5
 Source0:	https://dl.bintray.com/boostorg/release/%{version}/source/boost_%{packver}.tar.bz2
 %endif
 License:	Boost
@@ -70,6 +70,15 @@ Patch18:	boost-1.57.0-python-abi_letters.patch
 # https://bugzilla.redhat.com/show_bug.cgi?id=1190039
 Patch19:	boost-1.57.0-build-optflags.patch
 #Patch21:	boost-unrecognized-option.patch
+
+# Make boost-bimap compatible with current compilers
+# https://github.com/boostorg/bimap/pull/15
+Patch20:	https://patch-diff.githubusercontent.com/raw/boostorg/bimap/pull/15.patch
+# While at it, pull in other bimap fixes
+Patch21:	https://patch-diff.githubusercontent.com/raw/boostorg/bimap/pull/10.patch
+Patch22:	https://patch-diff.githubusercontent.com/raw/boostorg/bimap/pull/12.patch
+Patch23:	https://patch-diff.githubusercontent.com/raw/boostorg/bimap/pull/14.patch
+Patch24:	https://patch-diff.githubusercontent.com/raw/boostorg/bimap/pull/18.patch
 
 # RISC-V support from upstream
 # https://github.com/boostorg/boost/pull/273

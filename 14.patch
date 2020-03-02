@@ -1,0 +1,200 @@
+From cf63a1169cc4d77ca8c9ff17dd11e6dc84c3970b Mon Sep 17 00:00:00 2001
+From: CromwellEnage <32967088+CromwellEnage@users.noreply.github.com>
+Date: Sun, 30 Sep 2018 08:55:10 -0400
+Subject: [PATCH] Update test_bimap_modify.cpp
+
+Added BOOST_CHECK statements, some as requested by previous code comments.
+---
+ test/test_bimap_modify.cpp | 137 +++++++++++++++++++++++++++++++++++--
+ 1 file changed, 130 insertions(+), 7 deletions(-)
+
+diff --git a/libs/bimap/test/test_bimap_modify.cpp b/libs/bimap/test/test_bimap_modify.cpp
+index 2f2cbaa..945978d 100644
+--- a/libs/bimap/test/test_bimap_modify.cpp
++++ b/libs/bimap/test/test_bimap_modify.cpp
+@@ -104,6 +104,7 @@ void test_bimap_modify()
+         BOOST_CHECK( b.size() == 1 );
+         BOOST_CHECK( i->left == 1 && i->right == 100 );
+         BOOST_CHECK( b.left.at(1) == 100 );
++        BOOST_CHECK( b.right.at(100) == 1 );
+ 
+         result = b.replace_left( i, 2 );
+ 
+@@ -111,6 +112,7 @@ void test_bimap_modify()
+         BOOST_CHECK( b.size() == 1 );
+         BOOST_CHECK( i->left == 2 && i->right == 100 );
+         BOOST_CHECK( b.left.at(2) == 100 );
++        BOOST_CHECK( b.right.at(100) == 2 );
+ 
+         result = b.replace_right( b.begin(), 200 );
+ 
+@@ -118,7 +120,7 @@ void test_bimap_modify()
+         BOOST_CHECK( b.size() == 1 );
+         BOOST_CHECK( i->left == 2 && i->right == 200 );
+         BOOST_CHECK( b.left.at(2) == 200 );
+-
++        BOOST_CHECK( b.right.at(200) == 2 );
+     }
+ 
+     b.clear();
+@@ -137,14 +139,88 @@ void test_bimap_modify()
+         BOOST_CHECK( b.left.at(1) == 100 );
+         BOOST_CHECK( b.left.at(2) == 200 );
+ 
++        result = b.left.replace_key( i, 2 );
++
++        BOOST_CHECK( ! result );
++        BOOST_CHECK( b.size() == 2 );
++        BOOST_CHECK( i->first == 1 && i->second == 100 );
++        BOOST_CHECK( b.left.at(1) == 100 );
++        BOOST_CHECK( b.left.at(2) == 200 );
++
++        result = b.left.replace_data( i, 200 );
+ 
+-        // Add checks for replace_key and replace_data
++        BOOST_CHECK( ! result );
++        BOOST_CHECK( b.size() == 2 );
++        BOOST_CHECK( i->first == 1 && i->second == 100 );
++        BOOST_CHECK( b.left.at(1) == 100 );
++        BOOST_CHECK( b.left.at(2) == 200 );
+     }
+ 
+-    // Add checks for fail to replace in right map view
++    // fail to replace in right map view
++    {
++        bm::right_iterator i = b.right.begin();
++
++        result = b.right.replace( i, bm::right_value_type(100,2) );
+ 
+-    // Add checks for fail to replace in set of relations view
++        BOOST_CHECK( !result );
++        BOOST_CHECK( b.size() == 2 );
++        BOOST_CHECK( (i->first == 100) && (i->second == 1) );
++        BOOST_CHECK( b.right.at(100) == 1 );
++        BOOST_CHECK( b.right.at(200) == 2 );
++
++        result = b.right.replace_key( i, 200 );
++
++        BOOST_CHECK( !result );
++        BOOST_CHECK( b.size() == 2 );
++        BOOST_CHECK( (i->first == 100) && (i->second == 1) );
++        BOOST_CHECK( b.right.at(100) == 1 );
++        BOOST_CHECK( b.right.at(200) == 2 );
++
++        result = b.right.replace_data( i, 2 );
++
++        BOOST_CHECK( !result );
++        BOOST_CHECK( b.size() == 2 );
++        BOOST_CHECK( (i->first == 100) && (i->second == 1) );
++        BOOST_CHECK( b.right.at(100) == 1 );
++        BOOST_CHECK( b.right.at(200) == 2 );
++    }
++
++    // fail to replace in set of relations view
++    {
++        bm::iterator i = b.begin();
++
++        result = b.replace( i, bm::value_type(2,100) );
++
++        BOOST_CHECK( !result );
++        BOOST_CHECK( b.size() == 2 );
++        BOOST_CHECK( i->left == 1 && i->right == 100 );
++        BOOST_CHECK( b.left.at(1) == 100 );
++        BOOST_CHECK( b.right.at(100) == 1 );
+ 
++        result = b.replace( i, bm::value_type(1,200) );
++
++        BOOST_CHECK( !result );
++        BOOST_CHECK( b.size() == 2 );
++        BOOST_CHECK( i->left == 1 && i->right == 100 );
++        BOOST_CHECK( b.left.at(1) == 100 );
++        BOOST_CHECK( b.right.at(100) == 1 );
++
++        result = b.replace_left( i, 2 );
++
++        BOOST_CHECK( !result );
++        BOOST_CHECK( b.size() == 2 );
++        BOOST_CHECK( i->left == 1 && i->right == 100 );
++        BOOST_CHECK( b.left.at(1) == 100 );
++        BOOST_CHECK( b.right.at(100) == 1 );
++
++        result = b.replace_right( b.begin(), 200 );
++
++        BOOST_CHECK( !result );
++        BOOST_CHECK( b.size() == 2 );
++        BOOST_CHECK( i->left == 1 && i->right == 100 );
++        BOOST_CHECK( b.left.at(1) == 100 );
++        BOOST_CHECK( b.right.at(100) == 1 );
++    }
+ 
+     // modify
+     // ----------------------------------------------------------------------
+@@ -160,18 +236,65 @@ void test_bimap_modify()
+         BOOST_CHECK( b.size() == 1 );
+         BOOST_CHECK( b.left.at(2) == 100 );
+ 
+-        result = b.left.modify_data( b.left.begin() , _data = 200 );
++        result = b.left.modify_data( b.left.begin(), _data = 200 );
+ 
+         BOOST_CHECK( result );
+         BOOST_CHECK( b.size() == 1 );
+         BOOST_CHECK( b.left.at(2) == 200 );
+     }
+ 
+-    // Add checks for successful modify in right map view
++    // successful modify in right map view
++    {
++        result = b.right.modify_key( b.right.begin(), _key = 100 );
++
++        BOOST_CHECK( result );
++        BOOST_CHECK( b.size() == 1 );
++        BOOST_CHECK( b.right.at(100) == 2 );
++
++        result = b.right.modify_data( b.right.begin(), _data = 1 );
++
++        BOOST_CHECK( result );
++        BOOST_CHECK( b.size() == 1 );
++        BOOST_CHECK( b.right.at(100) == 1 );
++    }
++
++    // fail to modify in left map view
++    {
++        b.insert( bm::value_type(2,200) );
++        result = b.left.modify_key( b.left.begin(), _key = 2 );
++
++        BOOST_CHECK( !result );
++        BOOST_CHECK( b.size() == 1 );
++        BOOST_CHECK( b.left.find(1) == b.left.end() );
++        BOOST_CHECK( b.right.find(100) == b.right.end() );
++
++        b.insert( bm::value_type(1,100) );
++        result = b.left.modify_data( b.left.begin(), _data = 200 );
++
++        BOOST_CHECK( !result );
++        BOOST_CHECK( b.size() == 1 );
++        BOOST_CHECK( b.left.find(1) == b.left.end() );
++        BOOST_CHECK( b.right.find(100) == b.right.end() );
++    }
++
++    // fail to modify in right map view
++    {
++        b.insert( bm::value_type(1,100) );
++        result = b.right.modify_key( b.right.begin(), _key = 200 );
+ 
+-    // Add checks for fails to modify in left map view
++        BOOST_CHECK( !result );
++        BOOST_CHECK( b.size() == 1 );
++        BOOST_CHECK( b.left.find(1) == b.left.end() );
++        BOOST_CHECK( b.right.find(100) == b.right.end() );
+ 
++        b.insert( bm::value_type(1,100) );
++        result = b.right.modify_data( b.right.begin(), _data = 2 );
+ 
++        BOOST_CHECK( !result );
++        BOOST_CHECK( b.size() == 1 );
++        BOOST_CHECK( b.left.find(1) == b.left.end() );
++        BOOST_CHECK( b.right.find(100) == b.right.end() );
++    }
+ }
+ 
+ void test_bimap_replace_with_info() 

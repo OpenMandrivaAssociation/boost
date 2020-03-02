@@ -1,0 +1,29 @@
+From 257664e0d09eefc690b192639813e9ef4ff33503 Mon Sep 17 00:00:00 2001
+From: Romain Geissler <romain.geissler@amadeus.com>
+Date: Fri, 28 Jun 2019 15:53:56 +0000
+Subject: [PATCH] Avoid gcc 9 -Wdeprecated-copy warning (when you define the
+ copy constructor, you have to define to copy assignment operator too in C++
+ >= 11).
+
+---
+ include/boost/bimap/detail/map_view_iterator.hpp | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/boost/bimap/detail/map_view_iterator.hpp b/boost/bimap/detail/map_view_iterator.hpp
+index 17d43cb..7b9e196 100644
+--- a/boost/bimap/detail/map_view_iterator.hpp
++++ b/boost/bimap/detail/map_view_iterator.hpp
+@@ -166,6 +166,13 @@ struct const_map_view_iterator :
+ 	const_map_view_iterator(map_view_iterator<Tag,BimapCore> i)
+       : base_(i.base()) {}
+ 
++    const_map_view_iterator& operator=(const_map_view_iterator const & iter)
++    {
++        static_cast<base_&>(*this) = static_cast<const base_&>(iter);
++
++        return *this;
++    }
++
+     BOOST_DEDUCED_TYPENAME base_::reference dereference() const
+     {
+         return ::boost::bimaps::relation::support::pair_by<Tag>(*this->base());
