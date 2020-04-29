@@ -1,10 +1,9 @@
-diff --git a/libs/math/config/has_long_double_support.cpp b/libs/math/config/has_long_double_support.cpp
-index d314cf3..9022408 100644
---- a/libs/math/config/has_long_double_support.cpp
-+++ b/libs/math/config/has_long_double_support.cpp
+diff -up boost_1_73_0/libs/math/config/has_long_double_support.cpp.5~ boost_1_73_0/libs/math/config/has_long_double_support.cpp
+--- boost_1_73_0/libs/math/config/has_long_double_support.cpp.5~	2020-04-29 03:27:52.608400056 +0200
++++ boost_1_73_0/libs/math/config/has_long_double_support.cpp	2020-04-29 14:29:15.063698315 +0200
 @@ -8,3 +8,7 @@
  #ifdef BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS
- #error "long double support is not supported by Boost.Math on this Plaform: the long double version of the TR1 library will not be built."
+ #error "long double support is not supported by Boost.Math on this Platform: the long double version of the TR1 library will not be built."
  #endif
 +
 +int main(int argc, char *argv[]) {

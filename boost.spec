@@ -24,21 +24,18 @@
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.72.0
+Version:	1.73.0
 %if "%{beta}" != ""
 Release:	0.%{beta}.1
 Source0:	https://dl.bintray.com/boostorg/beta/%{version}.%(echo %{beta} |sed -e 's,^b,beta.,')/source/boost_%{packver}_%{beta}.tar.bz2
 %else
-Release:	5
+Release:	1
 Source0:	https://dl.bintray.com/boostorg/release/%{version}/source/boost_%{packver}.tar.bz2
 %endif
 License:	Boost
 Group:		Development/C++
 Url:		http://boost.org/
 Source100:	%{name}.rpmlintrc
-
-# https://github.com/boostorg/process/issues/116
-Patch0:		https://github.com/boostorg/process/commit/6a4d2ff72114ef47c7afaf92e1042aca3dfa41b0.patch
 
 # https://svn.boost.org/trac/boost/ticket/6150
 Patch4:		boost-1.50.0-fix-non-utf8-files.patch
@@ -80,12 +77,6 @@ Patch22:	https://patch-diff.githubusercontent.com/raw/boostorg/bimap/pull/12.pat
 Patch23:	https://patch-diff.githubusercontent.com/raw/boostorg/bimap/pull/14.patch
 Patch24:	https://patch-diff.githubusercontent.com/raw/boostorg/bimap/pull/18.patch
 
-# RISC-V support from upstream
-# https://github.com/boostorg/boost/pull/273
-Patch30:	https://github.com/boostorg/boost/commit/aab7addcc5d0fbb7ea9ed62e902095bc781baa2e.patch
-# https://github.com/boostorg/predef/pull/97
-Patch33:	https://github.com/boostorg/predef/commit/1ca8df632c4a6be88f3e84f037bd65399bfcd1b4.patch
-
 BuildRequires:	doxygen
 BuildRequires:	xsltproc
 BuildRequires:	bzip2-devel
@@ -94,7 +85,7 @@ BuildRequires:	pkgconfig(icu-uc) >= 60.1
 BuildRequires:	pkgconfig(python2)
 BuildRequires:	pkgconfig(python3)
 %if %{with numpy}
-BuildRequires:	python2-numpy-devel
+#BuildRequires:	python2-numpy-devel
 BuildRequires:	python-numpy-devel
 %endif
 BuildRequires:	pkgconfig(zlib)
@@ -129,7 +120,7 @@ creating static and shared libraries, making pieces of executable, and other
 chores -- whether you're using GCC, MSVC, or a dozen more supported
 C++ compilers -- on Windows, OSX, Linux and commercial UNIX systems.
 
-%define boostbinlibs chrono context contract coroutine date_time fiber filesystem graph iostreams locale log math prg_exec_monitor program_options random regex serialization system thread timer type_erasure unit_test_framework wave wserialization atomic container stacktrace_addr2line stacktrace_basic stacktrace_noop
+%define boostbinlibs chrono context contract coroutine date_time fiber filesystem graph iostreams locale log math prg_exec_monitor program_options random regex serialization system thread timer type_erasure unit_test_framework wave wserialization atomic container stacktrace_addr2line stacktrace_basic stacktrace_noop nowide
 
 # (Anssi 01/2010) dashes are converted to underscores for macros ($lib2);
 # The sed script adds _ when library name ends in number.
@@ -138,6 +129,7 @@ C++ compilers -- on Windows, OSX, Linux and commercial UNIX systems.
 %%global old69name$lib2 %%mklibname boost_$(echo $lib | sed 's,[0-9]$,&_,') 1.69.0
 %%global old70name$lib2 %%mklibname boost_$(echo $lib | sed 's,[0-9]$,&_,') 1.70.0
 %%global old71name$lib2 %%mklibname boost_$(echo $lib | sed 's,[0-9]$,&_,') 1.71.0
+%%global old72name$lib2 %%mklibname boost_$(echo $lib | sed 's,[0-9]$,&_,') 1.72.0
 %%package -n %%{libname$lib2}
 Summary:	Boost $lib shared library
 # no one should require this, but provided anyway for maximum compatibility:
@@ -146,6 +138,7 @@ Group:		System/Libraries
 Obsoletes:	%%{old69name$lib2} < %{EVRD}
 Obsoletes:	%%{old70name$lib2} < %{EVRD}
 Obsoletes:	%%{old71name$lib2} < %{EVRD}
+Obsoletes:	%%{old72name$lib2} < %{EVRD}
 EOF
 done)}
 # (Anssi 01/2010) splitted expand contents due to rpm bug failing build,
@@ -210,7 +203,7 @@ done)}
 # them up because there's a limit on how big a %%expand-ed statement
 # can get.
 %define develonly accumulators algorithm archive asio assign attributes bimap bind circular_buffer compute convert dll dynamic_bitset exception flyweight format function functional fusion geometry hana integer lexical_cast metaparse mpi mpl msm multi_array multi_index multiprecision optional parameter phoenix poly_collection predef preprocessor process range ratio signals2 smart_ptr spirit stacktrace tr1 tti tuple type_traits units unordered utility uuid variant variant2 vmd xpressive
-%define develonly2 align beast callable_traits container_hash core gil hof mp11 qvm type_index sort endian coroutine2 winapi yap safe_numerics histogram outcome
+%define develonly2 align beast callable_traits container_hash core gil hof mp11 qvm type_index sort endian coroutine2 winapi yap safe_numerics histogram outcome static_string
 
 %{expand:%(for lib in %develonly; do lib2=${lib/-/_}; cat <<EOF
 %%global devname$lib2 %%mklibname -d boost_$lib
@@ -343,40 +336,11 @@ Development files for the Boost Python 3 library
 %{_libdir}/cmake/boost_python-%{version}
 
 %if %{with numpy}
-%global libnamenumpy2 %mklibname boost_numpy27 %{version}
-%global devnamenumpy2 %mklibname -d boost_numpy27
+# Numpy's python 2.x support has been discontinued -- no more numpy27
 %global libnamenumpy3 %mklibname boost_numpy38 %{version}
 %global devnamenumpy3 %mklibname -d boost_numpy38
 %global oldlibnamenumpy3 %mklibname boost_numpy37 1.71.0
 %global olddevnamenumpy3 %mklibname -d boost_numpy37
-
-%package -n %{libnamenumpy2}
-Summary:	Boost NumPy 2 shared library
-Group:		System/Libraries
-Provides:	boost-numpy2 = %{EVRD}
-
-%description -n %{libnamenumpy2}
-Boost NumPy 2 shared library
-
-%files -n %{libnamenumpy2}
-%{_libdir}/libboost_numpy27.so.%(echo %{version} |cut -d. -f1)*
-
-%package -n %{devnamenumpy2}
-Summary:	Development files for the Boost NumPy 2 library
-Group:		Development/C++
-# Headers are the same for python2 and python3, so we package
-# them with what people SHOULD use
-Requires:	%{devnamenumpy3} = %{EVRD}
-Requires:	python2
-Provides:	boost-numpy27-devel = %{EVRD}
-Provides:	boost-numpy2-devel = %{EVRD}
-Requires:	%{coredevel} = %{EVRD}
-
-%description -n %{devnamenumpy2}
-Development files for the Boost NumPy 2 library
-
-%files -n %{devnamenumpy2}
-%{_libdir}/libboost_numpy27.so
 
 %package -n %{libnamenumpy3}
 Summary:	Boost NumPy 3 shared library
@@ -599,6 +563,7 @@ rm -rf %{buildroot}/%{_libdir}/cmake/boost_numpy-%{version}/
 %{_includedir}/boost/any.hpp
 %{_includedir}/boost/array.hpp
 %{_includedir}/boost/assert.hpp
+%{_includedir}/boost/assert
 %{_includedir}/boost/blank.hpp
 %{_includedir}/boost/cstdfloat.hpp
 %{_includedir}/boost/make_unique.hpp
