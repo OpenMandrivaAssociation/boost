@@ -443,8 +443,9 @@ Standard Library. This package contains examples, installed in the
 same place as the documentation.
 
 %prep
-%setup -q -n boost_%{packver}
-%autopatch -p1
+%autosetup -p1 -n boost_%{packver}
+# Examples etc. get copied -- so drop patch backup files
+find . -name "*~" |xargs rm
 %if !%{with numpy}
 # Boost.Build does not allow for disabling of numpy
 # extensions, thereby leading to automagic numpy
