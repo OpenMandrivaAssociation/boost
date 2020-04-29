@@ -82,10 +82,8 @@ BuildRequires:	xsltproc
 BuildRequires:	bzip2-devel
 BuildRequires:	pkgconfig(expat)
 BuildRequires:	pkgconfig(icu-uc) >= 60.1
-BuildRequires:	pkgconfig(python2)
 BuildRequires:	pkgconfig(python3)
 %if %{with numpy}
-#BuildRequires:	python2-numpy-devel
 BuildRequires:	python-numpy-devel
 %endif
 BuildRequires:	pkgconfig(zlib)
@@ -266,41 +264,10 @@ done)}
 EOF
 done)}
 
-%global libnamepython2 %mklibname boost_python27 %{version}
-%global devnamepython2 %mklibname -d boost_python27
 %global libnamepython3 %mklibname boost_python38 %{version}
 %global devnamepython3 %mklibname -d boost_python38
 %global oldlibnamepython3 %mklibname boost_python37 1.71.0
 %global olddevnamepython3 %mklibname -d boost_python37
-
-%package -n %{libnamepython2}
-Summary:	Boost Python 2 shared library
-Group:		System/Libraries
-Provides:	boost-python2 = %{EVRD}
-
-%description -n %{libnamepython2}
-Boost Python 2 shared library
-
-%files -n %{libnamepython2}
-%{_libdir}/libboost_python27.so.%(echo %{version} |cut -d. -f1)*
-
-%package -n %{devnamepython2}
-Summary:	Development files for the Boost Python 2 library
-Group:		Development/C++
-# Headers are the same for python2 and python3, so we package
-# them with what people SHOULD use
-Requires:	%{devnamepython3} = %{EVRD}
-Requires:	python2
-Provides:	boost-python27-devel = %{EVRD}
-Provides:	boost-python2-devel = %{EVRD}
-Requires:	%{coredevel} = %{EVRD}
-Requires:	%{libnamepython2} = %{EVRD}
-
-%description -n %{devnamepython2}
-Development files for the Boost Python 2 library
-
-%files -n %{devnamepython2}
-%{_libdir}/libboost_python27.so
 
 %package -n %{libnamepython3}
 Summary:	Boost Python 3 shared library
@@ -385,11 +352,6 @@ Summary:	The libraries and headers needed for Boost development
 Group:		Development/C++
 Requires:	%{expand:%(for lib in %boostbinlibs %develonly %develonly2; do echo -n "%%{devname${lib/-/_}} = %{version}-%{release} "; done)}
 Requires:	%{devnamepython3} = %{EVRD}
-# We could also require %{devnamepython2} = %{EVRD}, but let's not force
-# people to install prehistoric crap that should have died a decade or two
-# ago. If something really wants to use it, use a manual requirement on
-# boost-python2-devel.
-Conflicts:	%{devnamepython2} < %{EVRD}
 Requires:	%{coredevel} = %{EVRD}
 Obsoletes:	%{mklibname boost 1}-devel < %{EVRD}
 Provides:	%{name}-devel = %{EVRD}
@@ -482,27 +444,7 @@ using $toolset : : : <compileflags>"%{optflags} -O3 -fno-strict-aliasing" <cxxfl
 using python : %{py3_ver} : %{__python3} : %{py3_incdir} : %{_libdir} : : : ;
 EOF
 
-cat >python2-config.jam << EOF
-using $toolset : : : <compileflags>"%{optflags} -O3 -fno-strict-aliasing" <cxxflags>"-std=c++14 -fPIC" <linkflags>"%{ldflags}" ;
-using python : %{py2_ver} : %{__python2} : %{py2_incdir} : %{_libdir} : : : ;
-EOF
-
 ./bootstrap.sh --with-toolset=$toolset --with-icu --prefix=%{_prefix} --libdir=%{_libdir} --with-python=%{__python}
-
-# Build python2 bits first, so if there's any conflicts
-# python3 will overwrite...
-./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
-	--user-config=./python2-config.jam --build-dir=py2 \
-	--prefix=%{_prefix} --libdir=%{_libdir} --layout=system \
-	-sHAVE_ICU=1 \
-	linkflags="%{ldflags} -lstdc++ -lm" \
-%ifarch %ix86
-	instruction-set=i686 \
-%endif
-%ifarch znver1
-	instruction-set=znver1 \
-%endif
-	threading=multi debug-symbols=on pch=off variant=release python=%{py2_ver}
 
 # And python 3...
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
@@ -524,15 +466,6 @@ echo ============================= build Boost.Build ==================
  ./bootstrap.sh --with-toolset=$toolset)
 
 %install
-# Install python2 bits first, so if there's any conflicts
-# python3 will overwrite...
-./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
-	--user-config=./python2-config.jam --build-dir=py2 \
-	--prefix=%{buildroot}%{_prefix} --libdir=%{buildroot}%{_libdir} \
-	debug-symbols=on pch=off python=%{py2_ver} \
-	install
-
-# And python 3...
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
 	--prefix=%{buildroot}%{_prefix} --libdir=%{buildroot}%{_libdir} \
 	debug-symbols=on pch=off python=%{py3_ver} \
