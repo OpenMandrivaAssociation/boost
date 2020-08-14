@@ -24,7 +24,7 @@
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.73.0
+Version:	1.74.0
 %if "%{beta}" != ""
 Release:	0.%{beta}.1
 Source0:	https://dl.bintray.com/boostorg/beta/%{version}.%(echo %{beta} |sed -e 's,^b,beta.,')/source/boost_%{packver}_%{beta}.tar.bz2
@@ -44,8 +44,6 @@ Patch4:		boost-1.50.0-fix-non-utf8-files.patch
 # on-line documentation:
 # http://www.boost.org/boost-build2/doc/html/bbv2/overview.html
 Patch5:		boost-1.48.0-add-bjam-man-page.patch
-
-Patch6:		boost-1.68.0-atomics-buildfix.patch
 
 # https://bugzilla.redhat.com/show_bug.cgi?id=756005
 # https://svn.boost.org/trac/boost/ticket/6131
@@ -68,13 +66,7 @@ Patch18:	boost-1.57.0-python-abi_letters.patch
 Patch19:	boost-1.57.0-build-optflags.patch
 #Patch21:	boost-unrecognized-option.patch
 
-# Make boost-bimap compatible with current compilers
-# https://github.com/boostorg/bimap/pull/15
-Patch20:	https://patch-diff.githubusercontent.com/raw/boostorg/bimap/pull/15.patch
-# While at it, pull in other bimap fixes
-Patch21:	https://patch-diff.githubusercontent.com/raw/boostorg/bimap/pull/10.patch
-Patch22:	https://patch-diff.githubusercontent.com/raw/boostorg/bimap/pull/12.patch
-Patch23:	https://patch-diff.githubusercontent.com/raw/boostorg/bimap/pull/14.patch
+# Pull in various bimap fixes
 Patch24:	https://patch-diff.githubusercontent.com/raw/boostorg/bimap/pull/18.patch
 
 BuildRequires:	doxygen
@@ -128,6 +120,7 @@ C++ compilers -- on Windows, OSX, Linux and commercial UNIX systems.
 %%global old70name$lib2 %%mklibname boost_$(echo $lib | sed 's,[0-9]$,&_,') 1.70.0
 %%global old71name$lib2 %%mklibname boost_$(echo $lib | sed 's,[0-9]$,&_,') 1.71.0
 %%global old72name$lib2 %%mklibname boost_$(echo $lib | sed 's,[0-9]$,&_,') 1.72.0
+%%global old73name$lib2 %%mklibname boost_$(echo $lib | sed 's,[0-9]$,&_,') 1.73.0
 %%package -n %%{libname$lib2}
 Summary:	Boost $lib shared library
 # no one should require this, but provided anyway for maximum compatibility:
@@ -137,6 +130,7 @@ Obsoletes:	%%{old69name$lib2} < %{EVRD}
 Obsoletes:	%%{old70name$lib2} < %{EVRD}
 Obsoletes:	%%{old71name$lib2} < %{EVRD}
 Obsoletes:	%%{old72name$lib2} < %{EVRD}
+Obsoletes:	%%{old73name$lib2} < %{EVRD}
 EOF
 done)}
 # (Anssi 01/2010) splitted expand contents due to rpm bug failing build,
@@ -200,7 +194,7 @@ done)}
 # There's no difference between develonly and develonly2. Just had to split
 # them up because there's a limit on how big a %%expand-ed statement
 # can get.
-%define develonly accumulators algorithm archive asio assign attributes bimap bind circular_buffer compute convert dll dynamic_bitset exception flyweight format function functional fusion geometry hana integer lexical_cast metaparse mpi mpl msm multi_array multi_index multiprecision optional parameter phoenix poly_collection predef preprocessor process range ratio signals2 smart_ptr spirit stacktrace tr1 tti tuple type_traits units unordered utility uuid variant variant2 vmd xpressive
+%define develonly accumulators algorithm archive asio assign attributes bimap bind circular_buffer compute convert dll dynamic_bitset exception flyweight format function functional fusion geometry hana integer lexical_cast metaparse mpi mpl msm multi_array multi_index multiprecision optional parameter phoenix poly_collection predef preprocessor process range ratio signals2 smart_ptr spirit stacktrace stl_interfaces tr1 tti tuple type_traits units unordered utility uuid variant variant2 vmd xpressive
 %define develonly2 align beast callable_traits container_hash core gil hof mp11 qvm type_index sort endian coroutine2 winapi yap safe_numerics histogram outcome static_string
 
 %{expand:%(for lib in %develonly; do lib2=${lib/-/_}; cat <<EOF

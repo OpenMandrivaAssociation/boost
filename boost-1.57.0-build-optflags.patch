@@ -1,25 +1,25 @@
-diff -up boost_1_70_0/tools/build/src/tools/gcc.jam.0019~ boost_1_70_0/tools/build/src/tools/gcc.jam
---- boost_1_70_0/tools/build/src/tools/gcc.jam.0019~	2019-04-09 21:36:57.000000000 +0200
-+++ boost_1_70_0/tools/build/src/tools/gcc.jam	2019-04-12 14:23:10.519125908 +0200
-@@ -569,7 +569,7 @@ rule compile.fortran ( targets * : sourc
+diff -up boost_1_74_0/tools/build/src/tools/gcc.jam.9~ boost_1_74_0/tools/build/src/tools/gcc.jam
+--- boost_1_74_0/tools/build/src/tools/gcc.jam.9~	2020-08-11 16:57:21.000000000 +0200
++++ boost_1_74_0/tools/build/src/tools/gcc.jam	2020-08-14 17:43:55.676937535 +0200
+@@ -577,7 +577,7 @@ rule compile.fortran ( targets * : sourc
  
  actions compile.c++ bind PCH_FILE
  {
--    "$(CONFIG_COMMAND)" $(LANG) -ftemplate-depth-$(TEMPLATE_DEPTH) $(OPTIONS) $(USER_OPTIONS) -D$(DEFINES) -I"$(PCH_FILE:D)" -I"$(INCLUDES)" -c -o "$(<:W)" "$(>:W)"
-+    "$(CONFIG_COMMAND)" $(LANG) $(OPTIONS) $(USER_OPTIONS) -D$(DEFINES) -I"$(PCH_FILE:D)" -I"$(INCLUDES)" -c -o "$(<:W)" "$(>:W)"
+-    "$(CONFIG_COMMAND)" $(LANG) -ftemplate-depth-$(TEMPLATE_DEPTH) $(OPTIONS) $(USER_OPTIONS) -D$(DEFINES) -I"$(PCH_FILE:D)" -I"$(INCLUDES)" -include"$(FORCE_INCLUDES)" -c -o "$(<:W)" "$(>:W)"
++    "$(CONFIG_COMMAND)" $(LANG) $(OPTIONS) $(USER_OPTIONS) -D$(DEFINES) -I"$(PCH_FILE:D)" -I"$(INCLUDES)" -include"$(FORCE_INCLUDES)" -c -o "$(<:W)" "$(>:W)"
  }
  
  actions compile.c bind PCH_FILE
-@@ -579,7 +579,7 @@ actions compile.c bind PCH_FILE
+@@ -587,7 +587,7 @@ actions compile.c bind PCH_FILE
  
  actions compile.c++.preprocess bind PCH_FILE
  {
--    "$(CONFIG_COMMAND)" $(LANG) -ftemplate-depth-$(TEMPLATE_DEPTH) $(OPTIONS) $(USER_OPTIONS) -D$(DEFINES) -I"$(PCH_FILE:D)" -I"$(INCLUDES)" "$(>:W)" -E >"$(<:W)"
-+    "$(CONFIG_COMMAND)" $(LANG) $(OPTIONS) $(USER_OPTIONS) -D$(DEFINES) -I"$(PCH_FILE:D)" -I"$(INCLUDES)" "$(>:W)" -E >"$(<:W)"
+-    "$(CONFIG_COMMAND)" $(LANG) -ftemplate-depth-$(TEMPLATE_DEPTH) $(OPTIONS) $(USER_OPTIONS) -D$(DEFINES) -I"$(PCH_FILE:D)" -I"$(INCLUDES)" -include"$(FORCE_INCLUDES)" "$(>:W)" -E >"$(<:W)"
++    "$(CONFIG_COMMAND)" $(LANG) $(OPTIONS) $(USER_OPTIONS) -D$(DEFINES) -I"$(PCH_FILE:D)" -I"$(INCLUDES)" -include"$(FORCE_INCLUDES)" "$(>:W)" -E >"$(<:W)"
  }
  
  actions compile.c.preprocess bind PCH_FILE
-@@ -702,13 +702,13 @@ actions compile.c.pch
+@@ -704,13 +704,13 @@ actions compile.c.pch
  ###
  
  # Declare flags and action for compilation.
