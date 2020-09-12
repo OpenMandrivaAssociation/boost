@@ -29,7 +29,7 @@ Version:	1.74.0
 Release:	0.%{beta}.1
 Source0:	https://dl.bintray.com/boostorg/beta/%{version}.%(echo %{beta} |sed -e 's,^b,beta.,')/source/boost_%{packver}_%{beta}.tar.bz2
 %else
-Release:	1
+Release:	2
 Source0:	https://dl.bintray.com/boostorg/release/%{version}/source/boost_%{packver}.tar.bz2
 %endif
 License:	Boost
