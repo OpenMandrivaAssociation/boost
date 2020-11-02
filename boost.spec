@@ -72,6 +72,9 @@ Patch24:	https://patch-diff.githubusercontent.com/raw/boostorg/bimap/pull/18.pat
 BuildRequires:	doxygen
 BuildRequires:	xsltproc
 BuildRequires:	bzip2-devel
+%if %{x86}
+BuildRequires:  pkgconfig(libunwind)
+%endif
 BuildRequires:  pkgconfig(libunwind-llvm)
 BuildRequires:	pkgconfig(expat)
 BuildRequires:	pkgconfig(icu-uc) >= 60.1
