@@ -72,10 +72,7 @@ Patch24:	https://patch-diff.githubusercontent.com/raw/boostorg/bimap/pull/18.pat
 BuildRequires:	doxygen
 BuildRequires:	xsltproc
 BuildRequires:	bzip2-devel
-%if %{x86}
 BuildRequires:  pkgconfig(libunwind)
-%endif
-BuildRequires:  pkgconfig(libunwind-llvm)
 BuildRequires:	pkgconfig(expat)
 BuildRequires:	pkgconfig(icu-uc) >= 60.1
 BuildRequires:	pkgconfig(python3)
@@ -262,10 +259,12 @@ done)}
 EOF
 done)}
 
-%global libnamepython3 %mklibname boost_python38 %{version}
-%global devnamepython3 %mklibname -d boost_python38
-%global oldlibnamepython3 %mklibname boost_python37 1.71.0
-%global olddevnamepython3 %mklibname -d boost_python37
+%global libnamepython3 %mklibname boost_python39 %{version}
+%global devnamepython3 %mklibname -d boost_python39
+%global oldlibnamepython3 %mklibname boost_python38 1.74.0
+%global olddevnamepython3 %mklibname -d boost_python38
+%global olderlibnamepython3 %mklibname boost_python37 1.71.0
+%global olderdevnamepython3 %mklibname -d boost_python37
 
 %package -n %{libnamepython3}
 Summary:	Boost Python 3 shared library
@@ -273,21 +272,23 @@ Group:		System/Libraries
 Provides:	boost-python = %{EVRD}
 Provides:	boost-python3 = %{EVRD}
 Obsoletes:	%{oldlibnamepython3} < %{EVRD}
+Obsoletes:	%{olderlibnamepython3} < %{EVRD}
 
 %description -n %{libnamepython3}
 Boost Python 3 shared library
 
 %files -n %{libnamepython3}
-%{_libdir}/libboost_python38.so.%(echo %{version} |cut -d. -f1)*
+%{_libdir}/libboost_python39.so.%(echo %{version} |cut -d. -f1)*
 
 %package -n %{devnamepython3}
 Summary:	Development files for the Boost Python 3 library
 Group:		Development/C++
 Requires:	python >= 3.0
-Provides:	boost-python38-devel = %{EVRD}
+Provides:	boost-python39-devel = %{EVRD}
 Provides:	boost-python3-devel = %{EVRD}
 Provides:	boost-python-devel = %{EVRD}
 Obsoletes:	%{olddevnamepython3} < %{EVRD}
+Obsoletes:	%{olderdevnamepython3} < %{EVRD}
 Requires:	%{coredevel} = %{EVRD}
 Requires:	%{libnamepython3} = %{EVRD}
 
@@ -302,10 +303,12 @@ Development files for the Boost Python 3 library
 
 %if %{with numpy}
 # Numpy's python 2.x support has been discontinued -- no more numpy27
-%global libnamenumpy3 %mklibname boost_numpy38 %{version}
-%global devnamenumpy3 %mklibname -d boost_numpy38
-%global oldlibnamenumpy3 %mklibname boost_numpy37 1.71.0
-%global olddevnamenumpy3 %mklibname -d boost_numpy37
+%global libnamenumpy3 %mklibname boost_numpy39 %{version}
+%global devnamenumpy3 %mklibname -d boost_numpy39
+%global oldlibnamenumpy3 %mklibname boost_numpy38 1.74.0
+%global olddevnamenumpy3 %mklibname -d boost_numpy38
+%global olderlibnamenumpy3 %mklibname boost_numpy37 1.71.0
+%global olderdevnamenumpy3 %mklibname -d boost_numpy37
 
 %package -n %{libnamenumpy3}
 Summary:	Boost NumPy 3 shared library
@@ -313,21 +316,23 @@ Group:		System/Libraries
 Provides:	boost-numpy = %{EVRD}
 Provides:	boost-numpy3 = %{EVRD}
 Obsoletes:	%{oldlibnamenumpy3} < %{EVRD}
+Obsoletes:	%{olderlibnamenumpy3} < %{EVRD}
 
 %description -n %{libnamenumpy3}
 Boost NumPy 3 shared library
 
 %files -n %{libnamenumpy3}
-%{_libdir}/libboost_numpy38.so.%(echo %{version} |cut -d. -f1)*
+%{_libdir}/libboost_numpy39.so.%(echo %{version} |cut -d. -f1)*
 
 %package -n %{devnamenumpy3}
 Summary:	Development files for the Boost NumPy 3 library
 Group:		Development/C++
 Requires:	python >= 3.0
-Provides:	boost-numpy38-devel = %{EVRD}
+Provides:	boost-numpy39-devel = %{EVRD}
 Provides:	boost-numpy3-devel = %{EVRD}
 Provides:	boost-numpy-devel = %{EVRD}
 Obsoletes:	%{olddevnamenumpy3} < %{EVRD}
+Obsoletes:	%{olderdevnamenumpy3} < %{EVRD}
 Requires:	%{coredevel} = %{EVRD}
 
 %description -n %{devnamenumpy3}
