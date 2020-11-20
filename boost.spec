@@ -14,7 +14,7 @@
 # (tpg) save 50 MiB
 %bcond_with docs
 
-%define beta %{nil}
+%define beta beta1
 %define packver %(echo "%{version}" | sed -e "s/\\\./_/g")
 %ifarch %{ix86} %{arm}
 %bcond_with	numpy
@@ -24,21 +24,18 @@
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.74.0
+Version:	1.75.0
 %if "%{beta}" != ""
 Release:	0.%{beta}.1
-Source0:	https://dl.bintray.com/boostorg/beta/%{version}.%(echo %{beta} |sed -e 's,^b,beta.,')/source/boost_%{packver}_%{beta}.tar.bz2
+Source0:	https://dl.bintray.com/boostorg/beta/%{version}.%{beta}/source/boost_%{packver}_%(echo %{beta} |sed -e 's,eta,,g').tar.bz2
 %else
-Release:	2
+Release:	1
 Source0:	https://dl.bintray.com/boostorg/release/%{version}/source/boost_%{packver}.tar.bz2
 %endif
 License:	Boost
 Group:		Development/C++
 Url:		http://boost.org/
 Source100:	%{name}.rpmlintrc
-
-# https://svn.boost.org/trac/boost/ticket/6150
-Patch4:		boost-1.50.0-fix-non-utf8-files.patch
 
 # Add a manual page for the sole executable, namely bjam, based on the
 # on-line documentation:
@@ -111,7 +108,7 @@ creating static and shared libraries, making pieces of executable, and other
 chores -- whether you're using GCC, MSVC, or a dozen more supported
 C++ compilers -- on Windows, OSX, Linux and commercial UNIX systems.
 
-%define boostbinlibs chrono context contract coroutine date_time fiber filesystem graph iostreams locale log math prg_exec_monitor program_options random regex serialization system thread timer type_erasure unit_test_framework wave wserialization atomic container stacktrace_addr2line stacktrace_basic stacktrace_noop nowide
+%define boostbinlibs chrono context contract coroutine date_time fiber filesystem graph iostreams json locale log math prg_exec_monitor program_options random regex serialization system thread timer type_erasure unit_test_framework wave wserialization atomic container stacktrace_addr2line stacktrace_basic stacktrace_noop nowide
 
 # (Anssi 01/2010) dashes are converted to underscores for macros ($lib2);
 # The sed script adds _ when library name ends in number.
@@ -196,7 +193,7 @@ done)}
 # them up because there's a limit on how big a %%expand-ed statement
 # can get.
 %define develonly accumulators algorithm archive asio assign attributes bimap bind circular_buffer compute convert dll dynamic_bitset exception flyweight format function functional fusion geometry hana integer lexical_cast metaparse mpi mpl msm multi_array multi_index multiprecision optional parameter phoenix poly_collection predef preprocessor process range ratio signals2 smart_ptr spirit stacktrace stl_interfaces tr1 tti tuple type_traits units unordered utility uuid variant variant2 vmd xpressive
-%define develonly2 align beast callable_traits container_hash core gil hof mp11 qvm type_index sort endian coroutine2 winapi yap safe_numerics histogram outcome static_string
+%define develonly2 align beast callable_traits container_hash core gil hof leaf mp11 pfr qvm type_index sort endian coroutine2 winapi yap safe_numerics histogram outcome static_string
 
 %{expand:%(for lib in %develonly; do lib2=${lib/-/_}; cat <<EOF
 %%global devname$lib2 %%mklibname -d boost_$lib
