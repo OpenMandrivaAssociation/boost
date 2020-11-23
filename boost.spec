@@ -469,6 +469,12 @@ echo ============================= build Boost.Build ==================
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
 	--prefix=%{buildroot}%{_prefix} --libdir=%{buildroot}%{_libdir} \
 	debug-symbols=on pch=off python=%{py3_ver} \
+%ifarch %ix86
+        instruction-set=i686 \
+%endif
+%ifarch znver1
+        instruction-set=znver1 \
+%endif
 	install
 
 echo ============================= install Boost.Build ==================
