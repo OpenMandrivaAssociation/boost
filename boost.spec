@@ -449,7 +449,7 @@ EOF
 # And python 3...
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
 	--prefix=%{_prefix} --libdir=%{_libdir} --layout=system \
-	-sHAVE_ICU=1 \
+        -sICU_PATH=%{_libdir} \
 	linkflags="%{ldflags} -lstdc++ -lm" \
 %ifarch %ix86
 	instruction-set=i686 \
