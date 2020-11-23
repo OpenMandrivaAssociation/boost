@@ -26,7 +26,7 @@ Summary:	Portable C++ libraries
 Name:		boost
 Version:	1.75.0
 %if "%{beta}" != ""
-Release:	0.%{beta}.1
+Release:	0.%{beta}.2
 Source0:	https://dl.bintray.com/boostorg/beta/%{version}.%{beta}/source/boost_%{packver}_%(echo %{beta} |sed -e 's,eta,,g').tar.bz2
 %else
 Release:	1
