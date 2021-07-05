@@ -1,6 +1,6 @@
-%define	libname %mklibname boost %{version}
-%define	libnamedevel %mklibname boost -d
-%define	libnamestaticdevel %mklibname boost -d -s
+%define libname %mklibname boost %{version}
+%define libnamedevel %mklibname boost -d
+%define libnamestaticdevel %mklibname boost -d -s
 %define coredevel %mklibname boost-core -d
 
 # --no-undefined breaks build of CMakeified Boost.{Chrono,Locale,Timer}.
@@ -11,15 +11,17 @@
 # Doesn't work with dual python2/python3 bits
 %define _python_bytecompile_build 0
 
+%global optflags %{optflags} -O3 -fno-strict-aliasing -I%{_includedir}/libunwind
+
 # (tpg) save 50 MiB
 %bcond_with docs
 
 %define beta %{nil}
 %define packver %(echo "%{version}" | sed -e "s/\\\./_/g")
 %ifarch %{ix86} %{arm}
-%bcond_with	numpy
+%bcond_with numpy
 %else
-%bcond_without	numpy
+%bcond_without numpy
 %endif
 
 Summary:	Portable C++ libraries
@@ -65,11 +67,12 @@ Patch19:	boost-1.57.0-build-optflags.patch
 
 # Pull in various bimap fixes
 Patch24:	https://patch-diff.githubusercontent.com/raw/boostorg/bimap/pull/18.patch
+Patch25:	boost-1.75.0-remove-deprecated-boost-iterator.patch
+Patch26:	boost-1.73-locale-empty-vector.patch
 
 BuildRequires:	doxygen
 BuildRequires:	xsltproc
-BuildRequires:	bzip2-devel
-BuildRequires:  pkgconfig(libunwind)
+BuildRequires:	pkgconfig(libunwind)
 BuildRequires:	pkgconfig(expat)
 BuildRequires:	pkgconfig(icu-uc) >= 60.1
 BuildRequires:	pkgconfig(python3)
@@ -93,12 +96,12 @@ needed for running programs using Boost.
 
 # build section Taken from the Fedora .src.rpm.
 %package build
-Summary: Cross platform build system for C++ projects
-Group: Development/C++
+Summary:	Cross platform build system for C++ projects
+Group:		Development/C++
 # boost-jam used to be maintained separately. It's now part of boost-build.
 # Last separately maintained (and versioned) boost-jam was 3.1.18-11
 # (which outnumbers boost versioning, so let's kill any boost-jam without Epoch)
-Obsoletes: boost-jam < 1:0.0.0-0
+Obsoletes:	boost-jam < 1:0.0.0-0
 
 %description build
 Boost.Build is an easy way to build C++ projects, everywhere. You name
@@ -272,7 +275,7 @@ Obsoletes:	%{oldlibnamepython3} < %{EVRD}
 Obsoletes:	%{olderlibnamepython3} < %{EVRD}
 
 %description -n %{libnamepython3}
-Boost Python 3 shared library
+Boost Python 3 shared library.
 
 %files -n %{libnamepython3}
 %{_libdir}/libboost_python39.so.%(echo %{version} |cut -d. -f1)*
@@ -290,7 +293,7 @@ Requires:	%{coredevel} = %{EVRD}
 Requires:	%{libnamepython3} = %{EVRD}
 
 %description -n %{devnamepython3}
-Development files for the Boost Python 3 library
+Development files for the Boost Python 3 library.
 
 %files -n %{devnamepython3}
 %{_includedir}/boost/python
@@ -316,7 +319,7 @@ Obsoletes:	%{oldlibnamenumpy3} < %{EVRD}
 Obsoletes:	%{olderlibnamenumpy3} < %{EVRD}
 
 %description -n %{libnamenumpy3}
-Boost NumPy 3 shared library
+Boost NumPy 3 shared library.
 
 %files -n %{libnamenumpy3}
 %{_libdir}/libboost_numpy39.so.%(echo %{version} |cut -d. -f1)*
@@ -333,21 +336,21 @@ Obsoletes:	%{olderdevnamenumpy3} < %{EVRD}
 Requires:	%{coredevel} = %{EVRD}
 
 %description -n %{devnamenumpy3}
-Development files for the Boost NumPy 3 library
+Development files for the Boost NumPy 3 library.
 
 %files -n %{devnamenumpy3}
 %{_libdir}/libboost_numpy3*.so
 %{_libdir}/cmake/boost_numpy-%{version}
 %endif
 
-%package -n	%{coredevel}
+%package -n %{coredevel}
 Summary:	Core development files needed by all or most Boost components
 Group:		Development/C++
 
-%description -n	%{coredevel}
-Core development files needed by all or most Boost components
+%description -n %{coredevel}
+Core development files needed by all or most Boost components.
 
-%package -n	%{libnamedevel}
+%package -n %{libnamedevel}
 Summary:	The libraries and headers needed for Boost development
 Group:		Development/C++
 Requires:	%{expand:%(for lib in %boostbinlibs %develonly %develonly2; do echo -n "%%{devname${lib/-/_}} = %{version}-%{release} "; done)}
@@ -357,43 +360,43 @@ Obsoletes:	%{mklibname boost 1}-devel < %{EVRD}
 Provides:	%{name}-devel = %{EVRD}
 Provides:	lib%{name}-devel = %{EVRD}
 
-%description -n	%{libnamedevel}
+%description -n %{libnamedevel}
 Boost is a collection of free peer-reviewed portable C++ source
 libraries. The emphasis is on libraries which work well with the C++
 Standard Library. This package contains headers and shared library
 symlinks needed for Boost development.
 
 %if %{with docs}
-%package -n	%{libnamedevel}-doc
+%package -n %{libnamedevel}-doc
 Summary:	The libraries and headers needed for Boost development
-Group:	Development/C++
+Group:		Development/C++
 Conflicts:	libboost-devel < 1.41.0
 Conflicts:	lib64boost-devel < 1.41.0
 Obsoletes:	libboost-devel-doc < 1.48.0-2
 Obsoletes:	lib64boost-devel-doc < 1.48.0-2
 BuildArch:	noarch
 
-%description -n  %{libnamedevel}-doc
+%description -n %{libnamedevel}-doc
 Boost is a collection of free peer-reviewed portable C++ source
 libraries. The emphasis is on libraries which work well with the C++
 Standard Library. This package contains documentation needed for Boost
 development.
 %endif
 
-%package -n	%{libnamestaticdevel}
+%package -n %{libnamestaticdevel}
 Summary:	Static libraries for Boost development
 Group:		Development/C++
 Requires:	%{libnamedevel} = %{EVRD}
 Obsoletes:	%{mklibname boost 1}-static-devel < %{EVRD}
 Provides:	%{name}-static-devel = %{EVRD}
 
-%description -n	%{libnamestaticdevel}
+%description -n %{libnamestaticdevel}
 Boost is a collection of free peer-reviewed portable C++ source
 libraries. The emphasis is on libraries which work well with the C++
 Standard Library. This package contains only the static libraries
 needed for Boost development.
 
-%package 	examples
+%package examples
 Summary:	The examples for the Boost libraries
 Group:		Development/C++
 #BuildArch:	noarch
@@ -433,14 +436,13 @@ sed -e '1 i#ifndef Q_MOC_RUN' -e '$ a#endif' -i boost/type_traits/detail/has_bin
 #sed -i 's!-m64!!g' tools/build/src/tools/gcc.jam
 
 %build
-#using clang : : : <compileflags>"%{optflags} -O3 -fno-strict-aliasing" <cxxflags>"-std=c++14 -stdlib=libc++" <linkflags>"%{ldflags} -stdlib=libc++ -lm" ;
+%set_build_flags
+
 # interactive toolset detection
-# in 2015 and cooker we fall in love with clang
-# for 2014 still use gcc
-toolset=`echo %{__cc} | sed 's!/usr/bin/!!'`
+toolset=$(echo %{__cc} | sed 's!/usr/bin/!!')
 
 cat > ./tools/build/src/user-config.jam << EOF
-using $toolset : : : <compileflags>"%{optflags} -O3 -fno-strict-aliasing -I%{_includedir}/libunwind" <cxxflags>"-std=c++14 -fPIC" <linkflags>"%{ldflags}" ;
+using $toolset : : : <compileflags>"%{optflags}" <linkflags>"%{build_ldflags}" ;
 using python : %{py3_ver} : %{__python3} : %{py3_incdir} : %{_libdir} : : : ;
 EOF
 
@@ -449,9 +451,9 @@ EOF
 # And python 3...
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
 	--prefix=%{_prefix} --libdir=%{_libdir} --layout=system \
-        -sICU_PATH=%{_libdir} \
-	linkflags="%{ldflags} -lstdc++ -lm" \
-%ifarch %ix86
+	-sICU_PATH=%{_libdir} \
+	linkflags="%{build_ldflags} -lstdc++ -lm" \
+%ifarch %{ix86}
 	instruction-set=i686 \
 %endif
 %ifarch znver1
@@ -469,11 +471,11 @@ echo ============================= build Boost.Build ==================
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
 	--prefix=%{buildroot}%{_prefix} --libdir=%{buildroot}%{_libdir} \
 	debug-symbols=on pch=off python=%{py3_ver} \
-%ifarch %ix86
-        instruction-set=i686 \
+%ifarch %{ix86}
+	instruction-set=i686 \
 %endif
 %ifarch znver1
-        instruction-set=znver1 \
+	instruction-set=znver1 \
 %endif
 	install
 
@@ -482,7 +484,7 @@ echo ============================= install Boost.Build ==================
  ./b2 --prefix=%{buildroot}%{_prefix} install
  # Fix some permissions
  chmod +x %{buildroot}%{_datadir}/boost-build/src/tools/doxproc.py
- mkdir -p %{buildroot}%{_mandir}/man1 
+ mkdir -p %{buildroot}%{_mandir}/man1
  cp -a v2/doc/bjam.1 %{buildroot}%{_mandir}/man1/
  # Not a real file
  rm -f %{buildroot}%{_datadir}/boost-build/build/project.ann.py
