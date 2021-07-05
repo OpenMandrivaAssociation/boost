@@ -31,7 +31,7 @@ Version:	1.76.0
 Release:	0.%{beta}.1
 Source0:	https://dl.bintray.com/boostorg/beta/%{version}.%{beta}/source/boost_%{packver}_%(echo %{beta} |sed -e 's,eta,,g').tar.bz2
 %else
-Release:	1
+Release:	2
 Source0:	https://dl.bintray.com/boostorg/release/%{version}/source/boost_%{packver}.tar.bz2
 %endif
 License:	Boost
@@ -439,7 +439,8 @@ sed -e '1 i#ifndef Q_MOC_RUN' -e '$ a#endif' -i boost/type_traits/detail/has_bin
 %set_build_flags
 
 # interactive toolset detection
-toolset=$(echo %{__cc} | sed 's!/usr/bin/!!')
+#toolset=$(echo %{__cc} | sed 's!/usr/bin/!!')
+toolset=gcc
 
 cat > ./tools/build/src/user-config.jam << EOF
 using $toolset : : : <compileflags>"%{optflags}" <linkflags>"%{build_ldflags}" ;
