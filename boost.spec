@@ -438,9 +438,12 @@ sed -e '1 i#ifndef Q_MOC_RUN' -e '$ a#endif' -i boost/type_traits/detail/has_bin
 %build
 %set_build_flags
 
-# interactive toolset detection
-#toolset=$(echo %{__cc} | sed 's!/usr/bin/!!')
-toolset=gcc
+# (tpg) we use clang by default
+toolset=clang
+
+# (tpg) https://github.com/chriskohlhoff/asio/issues/860
+sed -i -e "s/define BOOST_ASIO_HAS_CO_AWAIT 1/define BOOST_ASIO_HAS_CO_AWAIT 0/g" boost/asio/detail/config.hpp
+sed -i -e "s/define BOOST_ASIO_HAS_STD_COROUTINE 1/define BOOST_ASIO_HAS_STD_COROUTINE 0/g" boost/asio/detail/config.hpp
 
 cat > ./tools/build/src/user-config.jam << EOF
 using $toolset : : : <compileflags>"%{optflags}" <linkflags>"%{build_ldflags}" ;
