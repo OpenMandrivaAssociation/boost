@@ -11,7 +11,7 @@
 # Doesn't work with dual python2/python3 bits
 %define _python_bytecompile_build 0
 
-%global optflags %{optflags} -O3 -fno-strict-aliasing -I%{_includedir}/libunwind
+%global optflags %{optflags} -O3 -fno-strict-aliasing -I%{_includedir}/libunwind -fno-semantic-interposition
 
 # (tpg) save 50 MiB
 %bcond_with docs
@@ -38,6 +38,8 @@ License:	Boost
 Group:		Development/C++
 Url:		http://boost.org/
 Source100:	%{name}.rpmlintrc
+
+Patch1:		boost-asio-clang.patch
 
 # Add a manual page for the sole executable, namely bjam, based on the
 # on-line documentation:
