@@ -18,7 +18,7 @@
 
 %define beta b1_rc1
 %define packver %(echo "%{version}" | sed -e "s/\\\./_/g")
-%ifarch %{ix86} %{arm}
+%ifarch %{ix86} %{arm} %{aarch64}
 %bcond_with numpy
 %else
 %bcond_without numpy
