@@ -16,7 +16,7 @@
 # (tpg) save 50 MiB
 %bcond_with docs
 
-%define beta b1_rc1
+%define beta beta1
 %define packver %(echo "%{version}" | sed -e "s/\\\./_/g")
 %ifarch %{ix86} %{arm} %{aarch64}
 %bcond_with numpy
