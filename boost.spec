@@ -16,7 +16,7 @@
 # (tpg) save 50 MiB
 %bcond_with docs
 
-%define beta beta1
+#define beta beta1
 %define packver %(echo "%{version}" | sed -e "s/\\\./_/g")
 %ifarch %{ix86} %{arm} %{aarch64}
 %bcond_with numpy
@@ -27,7 +27,7 @@
 Summary:	Portable C++ libraries
 Name:		boost
 Version:	1.77.0
-%if "%{beta}" != ""
+%if %{defined beta}
 Release:	0.%{beta}.1
 Source0:	https://boostorg.jfrog.io/artifactory/main/beta/%{version}.%{beta}/source/boost_%{packver}_%(echo %{beta} |sed -e 's,eta,,g').tar.bz2
 %else
@@ -38,8 +38,6 @@ License:	Boost
 Group:		Development/C++
 Url:		http://boost.org/
 Source100:	%{name}.rpmlintrc
-
-Patch1:		boost-asio-clang.patch
 
 # Add a manual page for the sole executable, namely bjam, based on the
 # on-line documentation:
