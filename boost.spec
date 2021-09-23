@@ -12,7 +12,7 @@
 %define _python_bytecompile_build 0
 
 %ifarch %{aarch64}
-%global optflags %{optflags} -O3 -fno-strict-aliasing -I%{_includedir}/libunwind -fPIC -fno-semantic-interposition -Wl,-z,-notext
+%global optflags %{optflags} -O3 -fno-strict-aliasing -I%{_includedir}/libunwind -fPIC -fno-semantic-interposition -Wl,-z,notext
 %else
 %global optflags %{optflags} -O3 -fno-strict-aliasing -I%{_includedir}/libunwind -fPIC -fno-semantic-interposition
 %endif
