@@ -35,7 +35,7 @@ Version:	1.78.0
 Release:	0.%{beta}.1
 Source0:	https://boostorg.jfrog.io/artifactory/main/beta/%{version}.%{beta}/source/boost_%{packver}_%(echo %{beta} |sed -e 's,eta,,g').tar.bz2
 %else
-Release:	2
+Release:	3
 Source0:	https://boostorg.jfrog.io/artifactory/main/release/%{version}/source/boost_%{packver}.tar.bz2
 %endif
 License:	Boost
