@@ -20,7 +20,7 @@
 # (tpg) save 50 MiB
 %bcond_with docs
 
-#define beta beta1
+%define beta beta1
 %define packver %(echo "%{version}" | sed -e "s/\\\./_/g")
 %ifarch %{ix86} %{arm} %{aarch64}
 %bcond_with numpy
@@ -30,12 +30,12 @@
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.78.0
+Version:	1.79.0
 %if %{defined beta}
 Release:	0.%{beta}.1
 Source0:	https://boostorg.jfrog.io/artifactory/main/beta/%{version}.%{beta}/source/boost_%{packver}_%(echo %{beta} |sed -e 's,eta,,g').tar.bz2
 %else
-Release:	4
+Release:	1
 Source0:	https://boostorg.jfrog.io/artifactory/main/release/%{version}/source/boost_%{packver}.tar.bz2
 %endif
 License:	Boost
