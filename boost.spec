@@ -22,7 +22,7 @@
 
 %define beta beta1
 %define packver %(echo "%{version}" | sed -e "s/\\\./_/g")
-%ifarch %{ix86} %{arm} %{aarch64}
+%ifarch %{ix86} %{arm}
 %bcond_with numpy
 %else
 %bcond_without numpy
