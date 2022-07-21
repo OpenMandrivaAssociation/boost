@@ -1,4 +1,4 @@
-%define libname %mklibname boost %{version}
+%define libname %mklibname boost
 %define libnamedevel %mklibname boost -d
 %define libnamestaticdevel %mklibname boost -d -s
 %define coredevel %mklibname boost-core -d
@@ -20,7 +20,7 @@
 # (tpg) save 50 MiB
 %bcond_with docs
 
-#define beta beta1
+%define beta beta1
 %define packver %(echo "%{version}" | sed -e "s/\\\./_/g")
 %ifarch %{ix86} %{arm}
 %bcond_with numpy
@@ -30,7 +30,7 @@
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.79.0
+Version:	1.80.0
 %if %{defined beta}
 Release:	0.%{beta}.1
 Source0:	https://boostorg.jfrog.io/artifactory/main/beta/%{version}.%{beta}/source/boost_%{packver}_%(echo %{beta} |sed -e 's,eta,,g').tar.bz2
@@ -119,22 +119,14 @@ C++ compilers -- on Windows, OSX, Linux and commercial UNIX systems.
 # (Anssi 01/2010) dashes are converted to underscores for macros ($lib2);
 # The sed script adds _ when library name ends in number.
 %{expand:%(for lib in %boostbinlibs; do lib2=${lib/-/_}; cat <<EOF
-%%global libname$lib2 %%mklibname boost_$(echo $lib | sed 's,[0-9]$,&_,') %{version}
-%%global old69name$lib2 %%mklibname boost_$(echo $lib | sed 's,[0-9]$,&_,') 1.69.0
-%%global old70name$lib2 %%mklibname boost_$(echo $lib | sed 's,[0-9]$,&_,') 1.70.0
-%%global old71name$lib2 %%mklibname boost_$(echo $lib | sed 's,[0-9]$,&_,') 1.71.0
-%%global old72name$lib2 %%mklibname boost_$(echo $lib | sed 's,[0-9]$,&_,') 1.72.0
-%%global old73name$lib2 %%mklibname boost_$(echo $lib | sed 's,[0-9]$,&_,') 1.73.0
+%%global libname$lib2 %%mklibname boost_$(echo $lib | sed 's,[0-9]$,&_,')
+%%global old79name$lib2 %%mklibname boost_$(echo $lib | sed 's,[0-9]$,&_,') 1.79.0
 %%package -n %%{libname$lib2}
 Summary:	Boost $lib shared library
 # no one should require this, but provided anyway for maximum compatibility:
 Provides:	boost = %{EVRD}
 Group:		System/Libraries
-Obsoletes:	%%{old69name$lib2} < %{EVRD}
-Obsoletes:	%%{old70name$lib2} < %{EVRD}
-Obsoletes:	%%{old71name$lib2} < %{EVRD}
-Obsoletes:	%%{old72name$lib2} < %{EVRD}
-Obsoletes:	%%{old73name$lib2} < %{EVRD}
+Obsoletes:	%%{old79name$lib2} < %{EVRD}
 EOF
 done)}
 # (Anssi 01/2010) splitted expand contents due to rpm bug failing build,
@@ -263,7 +255,7 @@ EOF
 done)}
 
 %define pyvernum %(echo %{py_ver}|sed -e 's,\\.,,g')
-%global libnamepython3 %mklibname boost_python%{pyvernum} %{version}
+%global libnamepython3 %mklibname boost_python%{pyvernum}
 %global devnamepython3 %mklibname -d boost_python%{pyvernum}
 %global oldlibnamepython39 %mklibname boost_python39 1.78.0
 %global olddevnamepython39 %mklibname -d boost_python39
@@ -311,7 +303,7 @@ Development files for the Boost Python 3 library.
 
 %if %{with numpy}
 # Numpy's python 2.x support has been discontinued -- no more numpy27
-%global libnamenumpy3 %mklibname boost_numpy%{pyvernum} %{version}
+%global libnamenumpy3 %mklibname boost_numpy%{pyvernum}
 %global devnamenumpy3 %mklibname -d boost_numpy%{pyvernum}
 %global oldlibnamenumpy39 %mklibname boost_numpy39 1.78.0
 %global olddevnamenumpy39 %mklibname -d boost_numpy39
@@ -498,14 +490,8 @@ echo ============================= build Boost.Build ==================
 echo ============================= install Boost.Build ==================
 (cd tools/build/
  ./b2 --prefix=%{buildroot}%{_prefix} install
- # Fix some permissions
- chmod +x %{buildroot}%{_datadir}/boost-build/src/tools/doxproc.py
  mkdir -p %{buildroot}%{_mandir}/man1
  cp -a v2/doc/bjam.1 %{buildroot}%{_mandir}/man1/
- # Not a real file
- rm -f %{buildroot}%{_datadir}/boost-build/build/project.ann.py
- # Empty file
- rm -f %{buildroot}%{_datadir}/boost-build/tools/doxygen/windows-paths-check.hpp
  # Let's symlink instead of shipping 2 copies of the same file
  ln -sf b2 %{buildroot}%{_bindir}/bjam
 )
@@ -643,5 +629,5 @@ rm -rf %{buildroot}/%{_libdir}/cmake/boost_numpy-%{version}/
 %doc LICENSE_1_0.txt
 %{_bindir}/bjam
 %{_bindir}/b2
-%{_datadir}/boost-build/
 %{_mandir}/man1/bjam.1*
+%{_datadir}/b2

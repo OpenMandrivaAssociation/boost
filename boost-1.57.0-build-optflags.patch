@@ -1,7 +1,7 @@
-diff -up boost_1_77_0/tools/build/src/tools/gcc.jam.9~ boost_1_77_0/tools/build/src/tools/gcc.jam
---- boost_1_77_0/tools/build/src/tools/gcc.jam.9~	2021-07-08 15:07:27.000000000 +0200
-+++ boost_1_77_0/tools/build/src/tools/gcc.jam	2021-07-10 18:38:46.029224963 +0200
-@@ -509,7 +509,7 @@ rule compile.fortran ( targets * : sourc
+diff -up boost_1_80_0/tools/build/src/tools/gcc.jam.8~ boost_1_80_0/tools/build/src/tools/gcc.jam
+--- boost_1_80_0/tools/build/src/tools/gcc.jam.8~	2022-07-07 04:17:31.000000000 +0200
++++ boost_1_80_0/tools/build/src/tools/gcc.jam	2022-07-14 13:40:40.345867681 +0200
+@@ -510,7 +510,7 @@ rule compile.fortran ( targets * : sourc
  
  actions compile.c++ bind PCH_FILE
  {
@@ -10,7 +10,7 @@ diff -up boost_1_77_0/tools/build/src/tools/gcc.jam.9~ boost_1_77_0/tools/build/
  }
  
  actions compile.c bind PCH_FILE
-@@ -519,7 +519,7 @@ actions compile.c bind PCH_FILE
+@@ -520,7 +520,7 @@ actions compile.c bind PCH_FILE
  
  actions compile.c++.preprocess bind PCH_FILE
  {
@@ -19,13 +19,15 @@ diff -up boost_1_77_0/tools/build/src/tools/gcc.jam.9~ boost_1_77_0/tools/build/
  }
  
  actions compile.c.preprocess bind PCH_FILE
-@@ -620,13 +620,13 @@ actions compile.c.pch
+@@ -623,15 +623,15 @@ actions compile.c.pch
  ###
  
  # Declare flags and action for compilation.
 -toolset.flags gcc.compile OPTIONS <optimization>off   : -O0 ;
 -toolset.flags gcc.compile OPTIONS <optimization>speed : -O3 ;
 -toolset.flags gcc.compile OPTIONS <optimization>space : -Os ;
+-toolset.flags gcc.compile OPTIONS <optimization>minimal : -O1 ;
+-toolset.flags gcc.compile OPTIONS <optimization>debug : -Og ;
 -
 -toolset.flags gcc.compile OPTIONS <inlining>off  : -fno-inline ;
 -toolset.flags gcc.compile OPTIONS <inlining>on   : -Wno-inline ;
@@ -33,6 +35,8 @@ diff -up boost_1_77_0/tools/build/src/tools/gcc.jam.9~ boost_1_77_0/tools/build/
 +toolset.flags gcc.compile OPTIONS <optimization>off   : ;
 +toolset.flags gcc.compile OPTIONS <optimization>speed : ;
 +toolset.flags gcc.compile OPTIONS <optimization>space : ;
++toolset.flags gcc.compile OPTIONS <optimization>minimal : ;
++toolset.flags gcc.compile OPTIONS <optimization>debug : ;
 +
 +toolset.flags gcc.compile OPTIONS <inlining>off  : ;
 +toolset.flags gcc.compile OPTIONS <inlining>on   : ;
