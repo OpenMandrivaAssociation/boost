@@ -20,7 +20,7 @@
 # (tpg) save 50 MiB
 %bcond_with docs
 
-%define beta beta1
+#define beta beta1
 %define packver %(echo "%{version}" | sed -e "s/\\\./_/g")
 %ifarch %{ix86} %{arm}
 %bcond_with numpy
@@ -71,7 +71,6 @@ Patch19:	boost-1.57.0-build-optflags.patch
 
 # Pull in various bimap fixes
 Patch24:	https://patch-diff.githubusercontent.com/raw/boostorg/bimap/pull/18.patch
-Patch26:	boost-1.73-locale-empty-vector.patch
 
 BuildRequires:	doxygen
 BuildRequires:	xsltproc
@@ -438,6 +437,10 @@ find examples -type d -exec chmod +rx {} \;
 # this fixed needed for kdepim4 and qt-gstreamer
 sed -e '1 i#ifndef Q_MOC_RUN' -e '$ a#endif' -i boost/type_traits/detail/has_binary_operator.hpp
 #sed -i 's!-m64!!g' tools/build/src/tools/gcc.jam
+
+%if "%{_lib}" != "lib"
+sed -i -e 's,/lib ,/%{_lib},g;s,/lib$,/%{_lib},' libs/locale/build/Jamfile.v2
+%endif
 
 %build
 %set_build_flags
