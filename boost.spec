@@ -35,7 +35,7 @@ Version:	1.80.0
 Release:	0.%{beta}.1
 Source0:	https://boostorg.jfrog.io/artifactory/main/beta/%{version}.%{beta}/source/boost_%{packver}_%(echo %{beta} |sed -e 's,eta,,g').tar.bz2
 %else
-Release:	1
+Release:	2
 Source0:	https://boostorg.jfrog.io/artifactory/main/release/%{version}/source/boost_%{packver}.tar.bz2
 %endif
 License:	Boost
@@ -71,6 +71,9 @@ Patch19:	boost-1.57.0-build-optflags.patch
 
 # Pull in various bimap fixes
 Patch24:	https://patch-diff.githubusercontent.com/raw/boostorg/bimap/pull/18.patch
+
+# Fix "SystemError: type Boost.Python.enum has the Py_TPFLAGS_HAVE_GC flag but has no traverse function"
+Patch25:	https://patch-diff.githubusercontent.com/raw/boostorg/python/pull/385.patch
 
 BuildRequires:	doxygen
 BuildRequires:	xsltproc
