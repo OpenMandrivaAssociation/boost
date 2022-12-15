@@ -30,12 +30,12 @@
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.80.0
+Version:	1.81.0
 %if %{defined beta}
 Release:	0.%{beta}.1
 Source0:	https://boostorg.jfrog.io/artifactory/main/beta/%{version}.%{beta}/source/boost_%{packver}_%(echo %{beta} |sed -e 's,eta,,g').tar.bz2
 %else
-Release:	3
+Release:	1
 Source0:	https://boostorg.jfrog.io/artifactory/main/release/%{version}/source/boost_%{packver}.tar.bz2
 %endif
 License:	Boost
@@ -71,9 +71,6 @@ Patch19:	boost-1.57.0-build-optflags.patch
 
 # Pull in various bimap fixes
 Patch24:	https://patch-diff.githubusercontent.com/raw/boostorg/bimap/pull/18.patch
-
-# Fix "SystemError: type Boost.Python.enum has the Py_TPFLAGS_HAVE_GC flag but has no traverse function"
-Patch25:	https://patch-diff.githubusercontent.com/raw/boostorg/python/pull/385.patch
 
 BuildRequires:	doxygen
 BuildRequires:	xsltproc
@@ -116,7 +113,7 @@ creating static and shared libraries, making pieces of executable, and other
 chores -- whether you're using GCC, MSVC, or a dozen more supported
 C++ compilers -- on Windows, OSX, Linux and commercial UNIX systems.
 
-%define boostbinlibs chrono context contract coroutine date_time fiber filesystem graph iostreams json locale log math prg_exec_monitor program_options random regex serialization stacktrace_basic stacktrace_addr2line stacktrace_noop system thread timer type_erasure unit_test_framework wave wserialization atomic container nowide
+%define boostbinlibs chrono context contract coroutine date_time fiber filesystem graph iostreams json locale log math prg_exec_monitor program_options random regex serialization stacktrace_basic stacktrace_addr2line stacktrace_noop system thread timer type_erasure unit_test_framework wave wserialization atomic container nowide url
 
 # (Anssi 01/2010) dashes are converted to underscores for macros ($lib2);
 # The sed script adds _ when library name ends in number.
@@ -440,10 +437,6 @@ find examples -type d -exec chmod +rx {} \;
 # this fixed needed for kdepim4 and qt-gstreamer
 sed -e '1 i#ifndef Q_MOC_RUN' -e '$ a#endif' -i boost/type_traits/detail/has_binary_operator.hpp
 #sed -i 's!-m64!!g' tools/build/src/tools/gcc.jam
-
-%if "%{_lib}" != "lib"
-sed -i -e 's,/lib ,/%{_lib},g;s,/lib$,/%{_lib},' libs/locale/build/Jamfile.v2
-%endif
 
 %build
 %set_build_flags
