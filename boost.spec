@@ -30,18 +30,22 @@
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.81.0
+Version:	1.82.0
 %if %{defined beta}
 Release:	0.%{beta}.1
 Source0:	https://boostorg.jfrog.io/artifactory/main/beta/%{version}.%{beta}/source/boost_%{packver}_%(echo %{beta} |sed -e 's,eta,,g').tar.bz2
 %else
-Release:	2
+Release:	1
 Source0:	https://boostorg.jfrog.io/artifactory/main/release/%{version}/source/boost_%{packver}.tar.bz2
 %endif
 License:	Boost
 Group:		Development/C++
 Url:		http://boost.org/
 Source100:	%{name}.rpmlintrc
+
+# Workaround for a compiler bug in clang 16.0.1
+# (throws an assertion at build time)
+Patch0:		boost-1.82.0-clang-16.0.1-bug-workaround.patch
 
 # Add a manual page for the sole executable, namely bjam, based on the
 # on-line documentation:
@@ -78,6 +82,7 @@ BuildRequires:	pkgconfig(libunwind)
 BuildRequires:	pkgconfig(expat)
 BuildRequires:	pkgconfig(icu-uc) >= 60.1
 BuildRequires:	pkgconfig(python3)
+BuildRequires:	pkgconfig(mariadb)
 %if %{with numpy}
 BuildRequires:	python-numpy-devel
 %endif
@@ -186,7 +191,7 @@ done)}
 # them up because there's a limit on how big a %%expand-ed statement
 # can get.
 %define develonly accumulators algorithm any archive asio assign attributes bimap bind circular_buffer compute convert describe dll dynamic_bitset exception flyweight format function functional fusion geometry hana integer lambda2 lexical_cast metaparse mpi mpl msm multi_array multi_index multiprecision optional parameter phoenix poly_collection predef preprocessor process range ratio signals2 smart_ptr spirit stacktrace stl_interfaces tr1 tti tuple type_traits units unordered utility uuid variant variant2 vmd xpressive
-%define develonly2 align beast callable_traits container_hash core gil hof leaf mp11 pfr qvm qvm_lite type_index sort endian coroutine2 winapi yap safe_numerics histogram outcome static_string
+%define develonly2 align beast callable_traits container_hash core gil hof leaf mp11 pfr qvm qvm_lite type_index sort endian coroutine2 winapi yap safe_numerics histogram outcome static_string mysql
 
 %{expand:%(for lib in %develonly; do lib2=${lib/-/_}; cat <<EOF
 %%global devname$lib2 %%mklibname -d boost_$lib
