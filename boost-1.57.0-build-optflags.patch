@@ -1,25 +1,34 @@
-diff -up boost_1_82_0/tools/build/src/tools/gcc.jam.8~ boost_1_82_0/tools/build/src/tools/gcc.jam
---- boost_1_82_0/tools/build/src/tools/gcc.jam.8~	2023-04-10 15:47:41.000000000 +0200
-+++ boost_1_82_0/tools/build/src/tools/gcc.jam	2023-04-14 19:38:57.060343589 +0200
-@@ -511,7 +511,7 @@ rule compile.fortran ( targets * : sourc
+diff -up boost_1_83_0/tools/build/src/tools/gcc.jam.8~ boost_1_83_0/tools/build/src/tools/gcc.jam
+--- boost_1_83_0/tools/build/src/tools/gcc.jam.8~	2023-08-08 23:02:57.000000000 +0200
++++ boost_1_83_0/tools/build/src/tools/gcc.jam	2023-08-11 20:36:15.407260842 +0200
+@@ -513,7 +513,7 @@ rule compile.fortran ( targets * : sourc
  
  actions compile.c++ bind PCH_FILE
  {
--    "$(CONFIG_COMMAND)" $(LANG) -ftemplate-depth-$(TEMPLATE_DEPTH) $(OPTIONS) $(USER_OPTIONS) -D$(DEFINES) -include"$(PCH_FILE:S=)" -I"$(INCLUDES)" -include"$(FORCE_INCLUDES)" -c -o "$(<)" "$(>:T)"
-+    "$(CONFIG_COMMAND)" $(LANG) $(OPTIONS) $(USER_OPTIONS) -D$(DEFINES) -include"$(PCH_FILE:S=)" -I"$(INCLUDES)" -include"$(FORCE_INCLUDES)" -c -o "$(<)" "$(>:T)"
+-    "$(CONFIG_COMMAND)" $(LANG) -ftemplate-depth-$(TEMPLATE_DEPTH) $(OPTIONS) $(USER_OPTIONS) -D$(DEFINES) $(INCLUDE-GCH)$(_)"$(PCH_FILE:S=)" $(INCLUDE-PCH)$(_)"$(PCH_FILE)" -I"$(INCLUDES)" -include$(_)"$(FORCE_INCLUDES)" -c -o "$(<)" "$(>:T)"
++    "$(CONFIG_COMMAND)" $(LANG) $(OPTIONS) $(USER_OPTIONS) -D$(DEFINES) $(INCLUDE-GCH)$(_)"$(PCH_FILE:S=)" $(INCLUDE-PCH)$(_)"$(PCH_FILE)" -I"$(INCLUDES)" -include$(_)"$(FORCE_INCLUDES)" -c -o "$(<)" "$(>:T)"
  }
  
  actions compile.c bind PCH_FILE
-@@ -521,7 +521,7 @@ actions compile.c bind PCH_FILE
+@@ -523,7 +523,7 @@ actions compile.c bind PCH_FILE
  
  actions compile.c++.preprocess bind PCH_FILE
  {
--    "$(CONFIG_COMMAND)" $(LANG) -ftemplate-depth-$(TEMPLATE_DEPTH) $(OPTIONS) $(USER_OPTIONS) -D$(DEFINES) -include"$(PCH_FILE:S=)" -I"$(INCLUDES)" -include"$(FORCE_INCLUDES)" "$(>:T)" -E >"$(<)"
-+    "$(CONFIG_COMMAND)" $(LANG) $(OPTIONS) $(USER_OPTIONS) -D$(DEFINES) -include"$(PCH_FILE:S=)" -I"$(INCLUDES)" -include"$(FORCE_INCLUDES)" "$(>:T)" -E >"$(<)"
+-    "$(CONFIG_COMMAND)" $(LANG) -ftemplate-depth-$(TEMPLATE_DEPTH) $(OPTIONS) $(USER_OPTIONS) -D$(DEFINES) $(INCLUDE-GCH)$(_)"$(PCH_FILE:S=)" $(INCLUDE-PCH)$(_)"$(PCH_FILE)" -I"$(INCLUDES)" -include$(_)"$(FORCE_INCLUDES)" "$(>:T)" -E >"$(<)"
++    "$(CONFIG_COMMAND)" $(LANG) $(OPTIONS) $(USER_OPTIONS) -D$(DEFINES) $(INCLUDE-GCH)$(_)"$(PCH_FILE:S=)" $(INCLUDE-PCH)$(_)"$(PCH_FILE)" -I"$(INCLUDES)" -include$(_)"$(FORCE_INCLUDES)" "$(>:T)" -E >"$(<)"
  }
  
  actions compile.c.preprocess bind PCH_FILE
-@@ -624,15 +624,15 @@ actions compile.c.pch
+@@ -614,7 +614,7 @@ toolset.flags gcc.compile INCLUDE-GCH :
+ 
+ actions compile.c++.pch
+ {
+-    "$(CONFIG_COMMAND)" -x c++-header -ftemplate-depth-$(TEMPLATE_DEPTH) $(OPTIONS) $(USER_OPTIONS) -D$(DEFINES) -I"$(INCLUDES)" -include$(_)"$(FORCE_INCLUDES)" -c -o "$(<)" "$(>:T)"
++    "$(CONFIG_COMMAND)" -x c++-header $(OPTIONS) $(USER_OPTIONS) -D$(DEFINES) -I"$(INCLUDES)" -include$(_)"$(FORCE_INCLUDES)" -c -o "$(<)" "$(>:T)"
+ }
+ 
+ actions compile.c.pch
+@@ -627,15 +627,15 @@ actions compile.c.pch
  ###
  
  # Declare flags and action for compilation.

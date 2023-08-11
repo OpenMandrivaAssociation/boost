@@ -1,10 +1,10 @@
-diff -up boost_1_82_0/boost/url/impl/segments_view.ipp.omv~ boost_1_82_0/boost/url/impl/segments_view.ipp
---- boost_1_82_0/boost/url/impl/segments_view.ipp.omv~	2023-04-14 21:41:11.131126628 +0200
-+++ boost_1_82_0/boost/url/impl/segments_view.ipp	2023-04-14 21:41:45.332429477 +0200
-@@ -27,10 +27,15 @@ segments_view(
+diff -up boost_1_83_0/libs/url/src/segments_view.cpp.1~ boost_1_83_0/libs/url/src/segments_view.cpp
+--- boost_1_83_0/libs/url/src/segments_view.cpp.1~	2023-08-11 20:45:15.450460837 +0200
++++ boost_1_83_0/libs/url/src/segments_view.cpp	2023-08-11 20:46:14.542902137 +0200
+@@ -28,10 +28,15 @@ segments_view(
  segments_view::
  segments_view(
-     string_view s)
+     core::string_view s)
 +#if 0
      : segments_view(
          parse_path(s).value(
