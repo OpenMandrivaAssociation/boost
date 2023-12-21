@@ -30,7 +30,7 @@
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.83.0
+Version:	1.84.0
 %if %{defined beta}
 Release:	0.%{beta}.1
 Source0:	https://boostorg.jfrog.io/artifactory/main/beta/%{version}.%{beta}/source/boost_%{packver}_%(echo %{beta} |sed -e 's,eta,,g').tar.bz2
@@ -38,6 +38,10 @@ Source0:	https://boostorg.jfrog.io/artifactory/main/beta/%{version}.%{beta}/sour
 Release:	1
 Source0:	https://boostorg.jfrog.io/artifactory/main/release/%{version}/source/boost_%{packver}.tar.bz2
 %endif
+Source1:	binary.template
+Source2:	headers.template
+Source3:	global-devel.specpart
+Source4:	global-devel.desc
 License:	Boost
 Group:		Development/C++
 Url:		http://boost.org/
@@ -117,146 +121,6 @@ takes care about compiling your sources with the right options,
 creating static and shared libraries, making pieces of executable, and other
 chores -- whether you're using GCC, MSVC, or a dozen more supported
 C++ compilers -- on Windows, OSX, Linux and commercial UNIX systems.
-
-%define boostbinlibs chrono context contract coroutine date_time fiber filesystem graph iostreams json locale log math prg_exec_monitor program_options random regex serialization stacktrace_basic stacktrace_addr2line stacktrace_noop system thread timer type_erasure unit_test_framework wave wserialization atomic container nowide url
-
-# (Anssi 01/2010) dashes are converted to underscores for macros ($lib2);
-# The sed script adds _ when library name ends in number.
-%{expand:%(for lib in %boostbinlibs; do lib2=${lib/-/_}; cat <<EOF
-%%global libname$lib2 %%mklibname boost_$(echo $lib | sed 's,[0-9]$,&_,')
-%%global old79name$lib2 %%mklibname boost_$(echo $lib | sed 's,[0-9]$,&_,') 1.79.0
-%%package -n %%{libname$lib2}
-Summary:	Boost $lib shared library
-# no one should require this, but provided anyway for maximum compatibility:
-Provides:	boost = %{EVRD}
-Group:		System/Libraries
-Obsoletes:	%%{old79name$lib2} < %{EVRD}
-EOF
-done)}
-# (Anssi 01/2010) splitted expand contents due to rpm bug failing build,
-# triggered by a too long expanded string.
-%{expand:%(for lib in %boostbinlibs; do lib2=${lib/-/_}; cat <<EOF
-%%description -n %%{libname$lib2}
-Boost is a collection of free peer-reviewed portable C++ source
-libraries. The emphasis is on libraries which work well with the C++
-Standard Library. This package contains the shared library needed for
-running programs dynamically linked against Boost $lib.
-EOF
-done)}
-%{expand:%(for lib in %boostbinlibs; do lib2=${lib/-/_}; cat <<EOF
-%%files -n %%{libname$lib2}
-%%doc LICENSE_1_0.txt
-%{_libdir}/libboost_$lib*.so.%(echo %{version} |cut -d. -f1)*
-EOF
-done)}
-
-%{expand:%(for lib in %boostbinlibs; do lib2=${lib/-/_}; cat <<EOF
-%%global devname$lib2 %%mklibname -d boost_$lib
-%%package -n %%{devname$lib2}
-Summary:	Development files for Boost $lib
-Group:		Development/C++
-Provides:	boost-$lib-devel = %{EVRD}
-Requires:	%{libname$lib2} = %{EVRD}
-Requires:	%{coredevel} = %{EVRD}
-EOF
-done)}
-# (Anssi 01/2010) splitted expand contents due to rpm bug failing build,
-# triggered by a too long expanded string.
-%{expand:%(for lib in %boostbinlibs; do lib2=${lib/-/_}; cat <<EOF
-%%description -n %%{devname$lib2}
-Boost is a collection of free peer-reviewed portable C++ source
-libraries. The emphasis is on libraries which work well with the C++
-Standard Library. This package contains the shared library needed for
-running programs dynamically linked against Boost $lib.
-EOF
-done)}
-%{expand:%(for lib in %boostbinlibs; do lib2=${lib/-/_}; cat <<EOF
-%%files -n %%{devname$lib2}
-%optional %{_libdir}/libboost_$lib*.so
-%optional %{_includedir}/boost/$lib
-%optional %{_includedir}/boost/$lib.h
-%optional %{_includedir}/boost/$lib.hpp
-%optional %{_includedir}/boost/${lib}_fwd.hpp
-%optional %{_includedir}/boost/${lib}_macro.hpp
-%if "$lib2" == "unit_test_framework"
-%{_includedir}/boost/test
-%{_libdir}/cmake/boost_test_exec_monitor-%{version}
-%endif
-%optional %{_libdir}/cmake/boost_$lib-%{version}
-%optional %{_libdir}/cmake/boost_${lib}_*-%{version}
-EOF
-done)}
-
-# There's no difference between develonly and develonly2. Just had to split
-# them up because there's a limit on how big a %%expand-ed statement
-# can get.
-%define develonly accumulators algorithm any archive asio assign attributes bimap bind circular_buffer compute convert describe dll dynamic_bitset exception flyweight format function functional fusion geometry hana integer lambda2 lexical_cast metaparse mpi mpl msm multi_array multi_index multiprecision optional parameter phoenix poly_collection predef preprocessor process range ratio signals2 smart_ptr spirit stacktrace stl_interfaces tr1 tti tuple type_traits units unordered utility uuid variant variant2 vmd xpressive
-%define develonly2 align beast callable_traits compat container_hash core gil hof leaf mp11 pfr qvm qvm_lite type_index sort endian coroutine2 winapi yap safe_numerics histogram outcome static_string mysql
-
-%{expand:%(for lib in %develonly; do lib2=${lib/-/_}; cat <<EOF
-%%global devname$lib2 %%mklibname -d boost_$lib
-%%package -n %%{devname$lib2}
-Summary:	Development files for Boost $lib
-Group:		Development/C++
-Provides:	boost-$lib-devel = %{EVRD}
-Requires:	%{coredevel} = %{EVRD}
-EOF
-done)}
-%{expand:%(for lib in %develonly; do lib2=${lib/-/_}; cat <<EOF
-%%description -n %%{devname$lib2}
-Boost is a collection of free peer-reviewed portable C++ source
-libraries. The emphasis is on libraries which work well with the C++
-Standard Library. This package contains the shared library needed for
-running programs dynamically linked against Boost $lib.
-EOF
-done)}
-%{expand:%(for lib in %develonly; do lib2=${lib/-/_}; cat <<EOF
-%%files -n %%{devname$lib2}
-%optional %{_includedir}/boost/$lib
-%optional %{_includedir}/boost/$lib.h
-%optional %{_includedir}/boost/$lib.hpp
-%optional %{_includedir}/boost/${lib}_fwd.hpp
-%optional %{_includedir}/boost/${lib}_macro.hpp
-%if "$lib" == "unordered"
-%{_includedir}/boost/unordered_map.hpp
-%{_includedir}/boost/unordered_set.hpp
-%endif
-%optional %{_libdir}/cmake/boost_$lib-%{version}
-%if "$lib" == "stacktrace_basic"
-%{_libdir}/cmake/boost_stacktrace_backtrace*-%{version}
-%{_libdir}/cmake/boost_stacktrace_windbg*-%{version}
-%endif
-EOF
-done)}
-
-%{expand:%(for lib in %develonly2; do lib2=${lib/-/_}; cat <<EOF
-%%global devname$lib2 %%mklibname -d boost_$lib
-%%package -n %%{devname$lib2}
-Summary:	Development files for Boost $lib
-Group:		Development/C++
-Provides:	boost-$lib-devel = %{EVRD}
-Requires:	%{coredevel} = %{EVRD}
-EOF
-done)}
-# (Anssi 01/2010) splitted expand contents due to rpm bug failing build,
-# triggered by a too long expanded string.
-%{expand:%(for lib in %develonly2; do lib2=${lib/-/_}; cat <<EOF
-%%description -n %%{devname$lib2}
-Boost is a collection of free peer-reviewed portable C++ source
-libraries. The emphasis is on libraries which work well with the C++
-Standard Library. This package contains the shared library needed for
-running programs dynamically linked against Boost $lib.
-EOF
-done)}
-%{expand:%(for lib in %develonly2; do lib2=${lib/-/_}; cat <<EOF
-%%files -n %%{devname$lib2}
-%optional %{_includedir}/boost/$lib
-%optional %{_includedir}/boost/$lib.h
-%optional %{_includedir}/boost/$lib.hpp
-%optional %{_includedir}/boost/${lib}_fwd.hpp
-%optional %{_libdir}/cmake/boost_$lib-%{version}
-EOF
-done)}
 
 %define pyvernum %(echo %{py_ver}|sed -e 's,\\.,,g')
 %global libnamepython3 %mklibname boost_python%{pyvernum}
@@ -354,25 +218,11 @@ Development files for the Boost NumPy 3 library.
 %package -n %{coredevel}
 Summary:	Core development files needed by all or most Boost components
 Group:		Development/C++
+BuildArch:	noarch
+Obsoletes:	%{mklibname -d boost_attributes} < %{EVRD}
 
 %description -n %{coredevel}
 Core development files needed by all or most Boost components.
-
-%package -n %{libnamedevel}
-Summary:	The libraries and headers needed for Boost development
-Group:		Development/C++
-Requires:	%{expand:%(for lib in %boostbinlibs %develonly %develonly2; do echo -n "%%{devname${lib/-/_}} = %{version}-%{release} "; done)}
-Requires:	%{devnamepython3} = %{EVRD}
-Requires:	%{coredevel} = %{EVRD}
-Obsoletes:	%{mklibname boost 1}-devel < %{EVRD}
-Provides:	%{name}-devel = %{EVRD}
-Provides:	lib%{name}-devel = %{EVRD}
-
-%description -n %{libnamedevel}
-Boost is a collection of free peer-reviewed portable C++ source
-libraries. The emphasis is on libraries which work well with the C++
-Standard Library. This package contains headers and shared library
-symlinks needed for Boost development.
 
 %if %{with docs}
 %package -n %{libnamedevel}-doc
@@ -414,6 +264,95 @@ Boost is a collection of free peer-reviewed portable C++ source
 libraries. The emphasis is on libraries which work well with the C++
 Standard Library. This package contains examples, installed in the
 same place as the documentation.
+
+%define extra_devfiles_unordered \
+%{_includedir}/boost/unordered_map.hpp \
+%{_includedir}/boost/unordered_set.hpp
+
+%define extra_devfiles_unit_test_framework \
+%{_includedir}/boost/test \
+%{_libdir}/cmake/boost_test_exec_monitor-%{version}
+
+%define extra_files_serialization \
+%{_libdir}/libboost_wserialization.so.*
+
+%define extra_devfiles_serialization \
+%{_libdir}/libboost_wserialization.so \
+%{_libdir}/cmake/boost_wserialization-%{version}
+
+%define extra_files_stacktrace \
+%{_libdir}/libboost_stacktrace_addr2line.so.* \
+%{_libdir}/libboost_stacktrace_basic.so.* \
+%{_libdir}/libboost_stacktrace_noop.so.*
+
+%define extra_devfiles_stacktrace \
+%{_libdir}/libboost_stacktrace_addr2line.so \
+%{_libdir}/libboost_stacktrace_basic.so \
+%{_libdir}/libboost_stacktrace_noop.so \
+%{_libdir}/cmake/boost_stacktrace_addr2line-%{version} \
+%{_libdir}/cmake/boost_stacktrace_basic-%{version} \
+%{_libdir}/cmake/boost_stacktrace_noop-%{version}
+
+%define extra_files_math \
+%{_libdir}/libboost_math_c99.so.%{version} \
+%{_libdir}/libboost_math_c99f.so.%{version} \
+%{_libdir}/libboost_math_c99l.so.%{version} \
+%{_libdir}/libboost_math_tr1.so.%{version} \
+%{_libdir}/libboost_math_tr1f.so.%{version} \
+%{_libdir}/libboost_math_tr1l.so.%{version}
+
+%define extra_devfiles_math \
+%{_libdir}/cmake/boost_math_c99-%{version} \
+%{_libdir}/cmake/boost_math_c99f-%{version} \
+%{_libdir}/cmake/boost_math_c99l-%{version} \
+%{_libdir}/cmake/boost_math_tr1-%{version} \
+%{_libdir}/cmake/boost_math_tr1f-%{version} \
+%{_libdir}/cmake/boost_math_tr1l-%{version} \
+%{_libdir}/libboost_math_c99.so \
+%{_libdir}/libboost_math_c99f.so \
+%{_libdir}/libboost_math_c99l.so \
+%{_libdir}/libboost_math_tr1.so \
+%{_libdir}/libboost_math_tr1f.so \
+%{_libdir}/libboost_math_tr1l.so
+
+%define extra_files_unit_test_framework \
+%{_libdir}/libboost_prg_exec_monitor.so.%{version}
+
+%define extra_devfiles_unit_test_framework \
+%{_includedir}/boost/test \
+%{_libdir}/libboost_prg_exec_monitor.so \
+%{_libdir}/cmake/boost_prg_exec_monitor-%{version} \
+%{_libdir}/cmake/boost_test_exec_monitor-%{version}
+
+%define extra_files_log \
+%{_libdir}/libboost_log_setup.so.%{version}
+
+%define extra_devfiles_log \
+%{_libdir}/libboost_log_setup.so
+
+%define extra_devfiles_qvm \
+%{_includedir}/boost/qvm_lite.hpp
+
+%define extra_reqprov_serialization \
+Obsoletes: %{mklibname boost_wserialization} < %{EVRD}
+
+%define extra_reqprov_devserialization \
+Obsoletes: %{mklibname -d boost_wserialization} < %{EVRD}
+
+%define extra_reqprov_devqvm \
+Obsoletes: %{mklibname -d boost_qvm_lite} < %{EVRD}
+
+%define extra_reqprov_devstacktrace \
+Obsoletes: %{mklibname -d boost_stacktrace_noop} < %{EVRD} \
+Obsoletes: %{mklibname -d boost_stacktrace_basic} < %{EVRD} \
+Obsoletes: %{mklibname -d boost_stacktrace_addr2line} < %{EVRD}
+
+%define extra_reqprov_devunit_test_framework \
+Obsoletes: %{mklibname -d boost_prg_exec_monitor} < %{EVRD}
+
+%define extra_reqprov_devmath \
+Obsoletes: %{mklibname -d boost_tr1} < %{EVRD}
+
 
 %prep
 %autosetup -p1 -n boost_%{packver}
@@ -504,72 +443,96 @@ echo ============================= install Boost.Build ==================
 rm -rf %{buildroot}/%{_libdir}/cmake/boost_numpy-%{version}/
 %endif
 
+LIBPKGS=""
+DEVPKGS=""
+cd %{buildroot}%{_includedir}/boost
+for i in *; do
+	[ -d "$i" ] || continue
+	[ "$i" = "test" ] && i=unit_test_framework # Libraries named differently from headers
+
+	# Binary package...
+	[ -e %{buildroot}%{_libdir}/libboost_${i}.so ] && binary=true || binary=false
+	if $binary; then
+		sed -e "s,@NAME@,$i,g" %{S:1} >%{specpartsdir}/$i.specpart
+		EXTRAREQ="Requires: %%{lib$i} = %{EVRD}"
+		NOARCH=""
+		LIBPKGS="$LIBPKGS %{mklibname boost_$i}"
+	elif [ "$i" = "stacktrace" -o "$i" = "math" ]; then
+		# Binaries exist, but aren't named libboost_stacktrace
+		sed -e "s,@NAME@,$i,g" -e '/^%%{_libdir}/d' %{S:1} >%{specpartsdir}/$i.specpart
+		EXTRAREQ="Requires: %%{lib$i} = %{EVRD}"
+		NOARCH=""
+		LIBPKGS="$LIBPKGS %{mklibname boost_$i}"
+	else
+		EXTRAREQ=""
+		NOARCH="BuildArch: noarch"
+	fi
+
+	# Devel package
+	sed -e "s,@NAME@,$i,g;s,@EXTRAREQ@,$EXTRAREQ,;s,@NOARCH@,$NOARCH," %{S:2} >>%{specpartsdir}/$i.specpart
+	for j in %{_libdir}/libboost_$i.so \
+		%{_includedir}/boost/$i \
+		%{_includedir}/boost/$i.h \
+		%{_includedir}/boost/$i.hpp \
+		%{_includedir}/boost/${i}_fwd.hpp \
+		%{_includedir}/boost/${i}_macro.hpp \
+		%{_libdir}/cmake/boost_${i}-%{version} \
+		%{_libdir}/cmake/boost_${i}_*-%{version}; do
+		if [ -e %{buildroot}${j} ]; then
+			echo $j >>%{specpartsdir}/$i.specpart
+		fi
+	done
+	DEVPKGS="$DEVPKGS %{mklibname -d boost_$i}"
+done
+
+cp %{S:3} %{specpartsdir}/global-devel.specpart
+
+for i in $DEVPKGS; do
+	echo "Requires:	$i = %{EVRD}" >>%{specpartsdir}/global-devel.specpart
+done
+
+cat %{S:4} >>%{specpartsdir}/global-devel.specpart
+
+
 %files -n %{coredevel}
 %dir %{_includedir}/boost
 %{_includedir}/boost/aligned_storage.hpp
-%{_includedir}/boost/make_default.hpp
-%{_includedir}/boost/any.hpp
 %{_includedir}/boost/array.hpp
-%{_includedir}/boost/assert.hpp
-%{_includedir}/boost/assert
 %{_includedir}/boost/blank.hpp
-%{_includedir}/boost/cstdfloat.hpp
-%{_includedir}/boost/make_unique.hpp
-%{_includedir}/boost/polymorphic_cast.hpp
-%{_includedir}/boost/polymorphic_pointer_cast.hpp
 %{_includedir}/boost/blank_fwd.hpp
 %{_includedir}/boost/call_traits.hpp
 %{_includedir}/boost/cast.hpp
 %{_includedir}/boost/cerrno.hpp
 %{_includedir}/boost/checked_delete.hpp
-%{_includedir}/boost/compatibility
 %{_includedir}/boost/compressed_pair.hpp
-%{_includedir}/boost/concept
 %{_includedir}/boost/concept_archetype.hpp
-%{_includedir}/boost/concept_check.hpp
-%{_includedir}/boost/concept_check
-%{_includedir}/boost/config.hpp
-%{_includedir}/boost/config
 %{_includedir}/boost/crc.hpp
 %{_includedir}/boost/cregex.hpp
+%{_includedir}/boost/cstdfloat.hpp
 %{_includedir}/boost/cstdint.hpp
 %{_includedir}/boost/cstdlib.hpp
 %{_includedir}/boost/current_function.hpp
 %{_includedir}/boost/cxx11_char_types.hpp
-%{_includedir}/boost/detail
 %{_includedir}/boost/enable_shared_from_this.hpp
 %{_includedir}/boost/exception_ptr.hpp
 %{_includedir}/boost/foreach.hpp
 %{_includedir}/boost/foreach_fwd.hpp
 %{_includedir}/boost/function_equal.hpp
 %{_includedir}/boost/function_output_iterator.hpp
-%{_includedir}/boost/function_types
 %{_includedir}/boost/generator_iterator.hpp
 %{_includedir}/boost/get_pointer.hpp
-%{_includedir}/boost/heap
-%{_includedir}/boost/icl
 %{_includedir}/boost/implicit_cast.hpp
 %{_includedir}/boost/indirect_reference.hpp
 %{_includedir}/boost/integer_traits.hpp
-%{_includedir}/boost/interprocess
-%{_includedir}/boost/intrusive
 %{_includedir}/boost/intrusive_ptr.hpp
-%{_includedir}/boost/io
-%{_includedir}/boost/io_fwd.hpp
 %{_includedir}/boost/is_placeholder.hpp
-%{_includedir}/boost/iterator.hpp
-%{_includedir}/boost/iterator
 %{_includedir}/boost/iterator_adaptors.hpp
-%{_includedir}/boost/lambda
 %{_includedir}/boost/limits.hpp
-%{_includedir}/boost/local_function.hpp
-%{_includedir}/boost/local_function
-%{_includedir}/boost/lockfree
-%{_includedir}/boost/logic
+%{_includedir}/boost/make_default.hpp
 %{_includedir}/boost/make_shared.hpp
+%{_includedir}/boost/make_unique.hpp
 %{_includedir}/boost/mem_fn.hpp
 %{_includedir}/boost/memory_order.hpp
-%{_includedir}/boost/move
 %{_includedir}/boost/multi_index_container.hpp
 %{_includedir}/boost/multi_index_container_fwd.hpp
 %{_includedir}/boost/next_prior.hpp
@@ -578,20 +541,14 @@ rm -rf %{buildroot}/%{_libdir}/cmake/boost_numpy-%{version}/
 %{_includedir}/boost/nondet_random.hpp
 %{_includedir}/boost/none.hpp
 %{_includedir}/boost/none_t.hpp
-%{_includedir}/boost/numeric
 %{_includedir}/boost/operators.hpp
 %{_includedir}/boost/operators_v1.hpp
-%{_includedir}/boost/pending
 %{_includedir}/boost/pointee.hpp
 %{_includedir}/boost/pointer_cast.hpp
 %{_includedir}/boost/pointer_to_other.hpp
-%{_includedir}/boost/polygon
-%{_includedir}/boost/pool
+%{_includedir}/boost/polymorphic_cast.hpp
+%{_includedir}/boost/polymorphic_pointer_cast.hpp
 %{_includedir}/boost/progress.hpp
-%{_includedir}/boost/property_map
-%{_includedir}/boost/property_tree
-%{_includedir}/boost/proto
-%{_includedir}/boost/ptr_container
 %{_includedir}/boost/rational.hpp
 %{_includedir}/boost/ref.hpp
 %{_includedir}/boost/scope_exit.hpp
@@ -600,7 +557,6 @@ rm -rf %{buildroot}/%{_libdir}/cmake/boost_numpy-%{version}/
 %{_includedir}/boost/shared_array.hpp
 %{_includedir}/boost/shared_container_iterator.hpp
 %{_includedir}/boost/shared_ptr.hpp
-%{_includedir}/boost/statechart
 %{_includedir}/boost/static_assert.hpp
 %{_includedir}/boost/swap.hpp
 %{_includedir}/boost/throw_exception.hpp
@@ -608,15 +564,12 @@ rm -rf %{buildroot}/%{_libdir}/cmake/boost_numpy-%{version}/
 %{_includedir}/boost/token_iterator.hpp
 %{_includedir}/boost/tokenizer.hpp
 %{_includedir}/boost/type.hpp
-%{_includedir}/boost/typeof
 %{_includedir}/boost/version.hpp
 %{_includedir}/boost/visit_each.hpp
 %{_includedir}/boost/weak_ptr.hpp
 %{_libdir}/cmake/Boost-%{version}
 %{_libdir}/cmake/BoostDetectToolset-%{version}.cmake
 %{_libdir}/cmake/boost_headers-%{version}
-
-%files -n %{libnamedevel}
 
 %if %{with docs}
 %files -n %{libnamedevel}-doc

@@ -1,0 +1,7 @@
+%description -n %{libnamedevel}
+Boost is a collection of free peer-reviewed portable C++ source
+libraries. The emphasis is on libraries which work well with the C++
+Standard Library. This package contains headers and shared library
+symlinks needed for Boost development.
+
+%files -n %{libnamedevel}

@@ -1,0 +1,19 @@
+%define dev@NAME@ %mklibname -d boost_@NAME@
+
+%package -n %{dev@NAME@}
+Summary:	Development files for the Boost @NAME@ library
+Group:		Development/C++
+Provides:	boost-@NAME@-devel = %{EVRD}
+Requires:	%{coredevel} = %{EVRD}
+%{?extra_reqprov_dev@NAME@:%{extra_reqprov_dev@NAME@}}
+@NOARCH@
+@EXTRAREQ@
+
+%description -n %{dev@NAME@}
+Boost is a collection of free peer-reviewed portable C++ source
+libraries. The emphasis is on libraries which work well with the C++
+Standard Library. This package contains the shared library needed for
+running programs dynamically linked against Boost @NAME@
+
+%files -n %{dev@NAME@}
+%{?extra_devfiles_@NAME@:%{extra_devfiles_@NAME@}}

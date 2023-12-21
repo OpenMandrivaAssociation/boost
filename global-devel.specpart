@@ -1,0 +1,8 @@
+%package -n %{libnamedevel}
+Summary:	The libraries and headers needed for Boost development
+Group:		Development/C++
+Requires:	%{devnamepython3} = %{EVRD}
+Requires:	%{coredevel} = %{EVRD}
+Obsoletes:	%{mklibname boost 1}-devel < %{EVRD}
+Provides:	%{name}-devel = %{EVRD}
+Provides:	lib%{name}-devel = %{EVRD}

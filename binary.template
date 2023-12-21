@@ -1,0 +1,18 @@
+%define lib@NAME@ %mklibname boost_@NAME@
+%package -n %{lib@NAME@}
+Summary:	Boost @NAME@ shared library
+Group:		System/Libraries
+%{?extra_reqprov_@NAME@:%{extra_reqprov_@NAME@}}
+
+%description -n %{lib@NAME@}
+The Boost @NAME@ library.
+
+Boost is a collection of free, peer-reviewed portable C++ source
+libraries. The emphasis is on libraries which work well with the C++
+Standard Library. This package contains the shared library needed for
+running programs dynamically linked against Boost @NAME@.
+
+%files -n %{lib@NAME@}
+%license LICENSE_1_0.txt
+%{_libdir}/libboost_@NAME@.so.%{version}
+%{?extra_files_@NAME@:%{extra_files_@NAME@}}
