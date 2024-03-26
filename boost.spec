@@ -360,7 +360,7 @@ Obsoletes: %{mklibname -d boost_tr1} < %{EVRD}
 # endianness, but windres on non-x86 is broken and windres generally
 # doesn't make all that much sense on a real OS...
 %ifnarch %{x86_64}
-sed -i -e 's,windres,windres_does_not_exist,g' tools/build/src/tools/clang-linux.jam
+sed -i -e 's,windres,windres_does_not_exist,g' tools/build/src/tools/*.jam tools/build/src/engine/build.sh
 %endif
 
 # Examples etc. get copied -- so drop patch backup files
