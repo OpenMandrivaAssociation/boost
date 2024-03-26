@@ -355,6 +355,13 @@ Obsoletes: %{mklibname -d boost_tr1} < %{EVRD}
 
 %prep
 %autosetup -p1 -n boost_%{packver}
+# For some reason the build system likes using windres to determine
+# endianness, but windres on non-x86 is broken and windres generally
+# doesn't make all that much sense on a real OS...
+%ifnarch %{x86_64}
+sed -i -e 's,windres,windres_does_not_exist,g' tools/build/src/tools/clang-linux.jam
+%endif
+
 # Examples etc. get copied -- so drop patch backup files
 find . -name "*~" |xargs rm
 %if !%{with numpy}
