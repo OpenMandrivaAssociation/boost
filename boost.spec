@@ -79,6 +79,7 @@ Patch19:	boost-1.57.0-build-optflags.patch
 # Pull in various bimap fixes
 Patch24:	https://patch-diff.githubusercontent.com/raw/boostorg/bimap/pull/18.patch
 
+BuildRequires:	which
 BuildRequires:	doxygen
 BuildRequires:	xsltproc
 BuildRequires:	pkgconfig(libunwind)
