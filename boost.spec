@@ -30,8 +30,8 @@
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.85.0
-Release:	%{?beta:0.%{beta}.}2
+Version:	1.86.0
+Release:	%{?beta:0.%{beta}.}1
 %if %{defined beta}
 Source0:	https://boostorg.jfrog.io/artifactory/main/beta/%{version}.%{beta}/source/boost_%{packver}_%(echo %{beta} |sed -e 's,eta,,g').tar.bz2
 %else
@@ -45,10 +45,6 @@ License:	Boost
 Group:		Development/C++
 Url:		http://boost.org/
 Source100:	%{name}.rpmlintrc
-
-# Workaround for a compiler bug in clang 16.0.1
-# (throws an assertion at build time)
-Patch0:		boost-1.82.0-clang-16.0.1-bug-workaround.patch
 
 # Add a manual page for the sole executable, namely bjam, based on the
 # on-line documentation:
@@ -71,7 +67,6 @@ Patch12:	boost-1.50.0-polygon.patch
 Patch15:	boost-1.50.0-pool.patch
 
 Patch17:	boost-1.57.0-python-libpython_dep.patch
-Patch18:	boost-1.57.0-python-abi_letters.patch
 # https://bugzilla.redhat.com/show_bug.cgi?id=1190039
 Patch19:	boost-1.57.0-build-optflags.patch
 #Patch21:	boost-unrecognized-option.patch
@@ -283,14 +278,17 @@ same place as the documentation.
 %define extra_files_stacktrace \
 %{_libdir}/libboost_stacktrace_addr2line.so.* \
 %{_libdir}/libboost_stacktrace_basic.so.* \
+%{_libdir}/libboost_stacktrace_from_exception.so.* \
 %{_libdir}/libboost_stacktrace_noop.so.*
 
 %define extra_devfiles_stacktrace \
 %{_libdir}/libboost_stacktrace_addr2line.so \
 %{_libdir}/libboost_stacktrace_basic.so \
+%{_libdir}/libboost_stacktrace_from_exception.so \
 %{_libdir}/libboost_stacktrace_noop.so \
 %{_libdir}/cmake/boost_stacktrace_addr2line-%{version} \
 %{_libdir}/cmake/boost_stacktrace_basic-%{version} \
+%{_libdir}/cmake/boost_stacktrace_from_exception-%{version} \
 %{_libdir}/cmake/boost_stacktrace_noop-%{version}
 
 %define extra_files_math \
@@ -408,7 +406,7 @@ EOF
 
 # And python 3...
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
-	--prefix=%{_prefix} --libdir=%{_libdir} --layout=system \
+	--prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir} --layout=system \
 	-sICU_PATH=%{_libdir} \
 	linkflags="%{build_ldflags} -lstdc++ -lm" \
 %ifarch %{ix86}
@@ -427,7 +425,7 @@ echo ============================= build Boost.Build ==================
 
 %install
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
-	--prefix=%{buildroot}%{_prefix} --libdir=%{buildroot}%{_libdir} \
+	--prefix=%{buildroot}%{_prefix} --bindir=%{buildroot}%{_bindir} --libdir=%{buildroot}%{_libdir} \
 	debug-symbols=on pch=off python=%{py3_ver} \
 %ifarch %{ix86}
 	instruction-set=i686 \
@@ -439,7 +437,7 @@ echo ============================= build Boost.Build ==================
 
 echo ============================= install Boost.Build ==================
 (cd tools/build/
- ./b2 --prefix=%{buildroot}%{_prefix} install
+ ./b2 --prefix=%{buildroot}%{_prefix} --bindir=%{buildroot}%{_bindir} install
  mkdir -p %{buildroot}%{_mandir}/man1
  cp -a v2/doc/bjam.1 %{buildroot}%{_mandir}/man1/
  # Let's symlink instead of shipping 2 copies of the same file
