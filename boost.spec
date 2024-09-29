@@ -275,21 +275,29 @@ same place as the documentation.
 %{_libdir}/libboost_wserialization.so \
 %{_libdir}/cmake/boost_wserialization-%{version}
 
-%define extra_files_stacktrace \
+%global extra_files_stacktrace \
 %{_libdir}/libboost_stacktrace_addr2line.so.* \
 %{_libdir}/libboost_stacktrace_basic.so.* \
-%{_libdir}/libboost_stacktrace_from_exception.so.* \
 %{_libdir}/libboost_stacktrace_noop.so.*
 
-%define extra_devfiles_stacktrace \
+%ifarch %{ix86} %{x86_64}
+%global extra_files_stacktrace %{extra_files_stacktrace} \
+%{_libdir}/libboost_stacktrace_from_exception.so.*
+%endif
+
+%global extra_devfiles_stacktrace \
 %{_libdir}/libboost_stacktrace_addr2line.so \
 %{_libdir}/libboost_stacktrace_basic.so \
-%{_libdir}/libboost_stacktrace_from_exception.so \
 %{_libdir}/libboost_stacktrace_noop.so \
 %{_libdir}/cmake/boost_stacktrace_addr2line-%{version} \
 %{_libdir}/cmake/boost_stacktrace_basic-%{version} \
-%{_libdir}/cmake/boost_stacktrace_from_exception-%{version} \
 %{_libdir}/cmake/boost_stacktrace_noop-%{version}
+
+%ifarch %{ix86} %{x86_64}
+%global extra_devfiles_stacktrace %{extra_devfiles_stacktrace} \
+%{_libdir}/libboost_stacktrace_from_exception.so \
+%{_libdir}/cmake/boost_stacktrace_from_exception-%{version}
+%endif
 
 %define extra_files_math \
 %{_libdir}/libboost_math_c99.so.%{version} \
