@@ -43,7 +43,7 @@ Source3:	global-devel.specpart
 Source4:	global-devel.desc
 License:	Boost
 Group:		Development/C++
-Url:		http://boost.org/
+Url:		https://boost.org/
 Source100:	%{name}.rpmlintrc
 
 # Add a manual page for the sole executable, namely bjam, based on the
