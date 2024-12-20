@@ -31,7 +31,7 @@
 Summary:	Portable C++ libraries
 Name:		boost
 Version:	1.87.0
-Release:	%{?beta:0.%{beta}.}1
+Release:	%{?beta:0.%{beta}.}2
 %if %{defined beta}
 Source0:	https://boostorg.jfrog.io/artifactory/main/beta/%{version}.%{beta}/source/boost_%{packver}_%(echo %{beta} |sed -e 's,eta,,g').tar.bz2
 %else
@@ -73,6 +73,10 @@ Patch19:	boost-1.57.0-build-optflags.patch
 
 # Pull in various bimap fixes
 Patch24:	https://patch-diff.githubusercontent.com/raw/boostorg/bimap/pull/18.patch
+
+# Make libzypp great again
+# https://github.com/openSUSE/libzypp/issues/596
+Patch25:	boost-1.87.0-hack-for-libzypp-compatibility.patch
 
 BuildRequires:	which
 BuildRequires:	doxygen

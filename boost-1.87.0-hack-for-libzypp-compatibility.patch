@@ -1,0 +1,60 @@
+diff -up boost_1_87_0/boost/smart_ptr/atomic_shared_ptr.hpp.omv~ boost_1_87_0/boost/smart_ptr/atomic_shared_ptr.hpp
+diff -up boost_1_87_0/boost/smart_ptr/intrusive_ptr.hpp.omv~ boost_1_87_0/boost/smart_ptr/intrusive_ptr.hpp
+--- boost_1_87_0/boost/smart_ptr/intrusive_ptr.hpp.omv~	2024-12-20 23:06:26.828727366 +0100
++++ boost_1_87_0/boost/smart_ptr/intrusive_ptr.hpp	2024-12-20 23:06:39.551355248 +0100
+@@ -283,6 +283,7 @@ template<class T, class U> intrusive_ptr
+     return r;
+ }
+ 
++#ifndef BOOST_POINTERS_NO_IOSTREAM
+ // operator<<
+ 
+ template<class Y> std::ostream & operator<< (std::ostream & os, intrusive_ptr<Y> const & p)
+@@ -290,6 +291,7 @@ template<class Y> std::ostream & operato
+     os << p.get();
+     return os;
+ }
++#endif
+ 
+ // hash_value
+ 
+diff -up boost_1_87_0/boost/smart_ptr/local_shared_ptr.hpp.omv~ boost_1_87_0/boost/smart_ptr/local_shared_ptr.hpp
+--- boost_1_87_0/boost/smart_ptr/local_shared_ptr.hpp.omv~	2024-12-20 23:07:02.001860975 +0100
++++ boost_1_87_0/boost/smart_ptr/local_shared_ptr.hpp	2024-12-20 23:07:11.594737317 +0100
+@@ -598,6 +598,7 @@ template<class T> inline typename local_
+     return p.get();
+ }
+ 
++#ifndef BOOST_POINTERS_NO_IOSTREAM
+ // operator<<
+ 
+ template<class E, class T, class Y> std::basic_ostream<E, T> & operator<< ( std::basic_ostream<E, T> & os, local_shared_ptr<Y> const & p )
+@@ -605,6 +606,7 @@ template<class E, class T, class Y> std:
+     os << p.get();
+     return os;
+ }
++#endif
+ 
+ // get_deleter
+ 
+diff -up boost_1_87_0/boost/smart_ptr/scoped_ptr.hpp.omv~ boost_1_87_0/boost/smart_ptr/scoped_ptr.hpp
+diff -up boost_1_87_0/boost/smart_ptr/shared_ptr.hpp.omv~ boost_1_87_0/boost/smart_ptr/shared_ptr.hpp
+--- boost_1_87_0/boost/smart_ptr/shared_ptr.hpp.omv~	2024-12-20 23:05:52.050005115 +0100
++++ boost_1_87_0/boost/smart_ptr/shared_ptr.hpp	2024-12-20 23:06:21.890117140 +0100
+@@ -773,6 +773,7 @@ template<class T> inline typename shared
+     return p.get();
+ }
+ 
++#ifndef BOOST_POINTERS_NO_IOSTREAM
+ // operator<<
+ 
+ template<class Y> std::ostream & operator<< (std::ostream & os, shared_ptr<Y> const & p)
+@@ -780,6 +781,7 @@ template<class Y> std::ostream & operato
+     os << p.get();
+     return os;
+ }
++#endif
+ 
+ // get_deleter
+ 
+diff -up boost_1_87_0/boost/smart_ptr/weak_ptr.hpp.omv~ boost_1_87_0/boost/smart_ptr/weak_ptr.hpp
