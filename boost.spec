@@ -76,7 +76,9 @@ Patch24:	https://patch-diff.githubusercontent.com/raw/boostorg/bimap/pull/18.pat
 
 # Make libzypp great again
 # https://github.com/openSUSE/libzypp/issues/596
-Patch25:	boost-1.87.0-hack-for-libzypp-compatibility.patch
+#Patch25:	boost-1.87.0-hack-for-libzypp-compatibility.patch
+# Probably a better fix for the same problem:
+Patch25:	https://github.com/boostorg/smart_ptr/commit/e7433ba54596da97cb7859455cd37ca140305a9c.patch
 
 BuildRequires:	which
 BuildRequires:	doxygen
