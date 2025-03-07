@@ -31,7 +31,7 @@
 Summary:	Portable C++ libraries
 Name:		boost
 Version:	1.87.0
-Release:	%{?beta:0.%{beta}.}3
+Release:	%{?beta:0.%{beta}.}4
 %if %{defined beta}
 Source0:	https://boostorg.jfrog.io/artifactory/main/beta/%{version}.%{beta}/source/boost_%{packver}_%(echo %{beta} |sed -e 's,eta,,g').tar.bz2
 %else
@@ -45,6 +45,9 @@ License:	Boost
 Group:		Development/C++
 Url:		https://boost.org/
 Source100:	%{name}.rpmlintrc
+
+# Fix typo in thread/future.hpp
+Patch0:		boost-1.87.0-fix-typo-in-thread-future.hpp.patch
 
 # Add a manual page for the sole executable, namely bjam, based on the
 # on-line documentation:

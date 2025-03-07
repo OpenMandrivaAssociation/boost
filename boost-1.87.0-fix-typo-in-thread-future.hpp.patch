@@ -1,0 +1,12 @@
+diff -up boost_1_87_0/boost/thread/future.hpp.omv~ boost_1_87_0/boost/thread/future.hpp
+--- boost_1_87_0/boost/thread/future.hpp.omv~	2025-03-07 20:36:32.789858439 +0100
++++ boost_1_87_0/boost/thread/future.hpp	2025-03-07 20:36:52.949360347 +0100
+@@ -4668,7 +4668,7 @@ namespace detail
+       }
+       run_it& operator=(BOOST_THREAD_RV_REF(run_it) x) BOOST_NOEXCEPT {
+         if (this != &x) {
+-          that_=x.that;
++          that_=x.that_;
+           x.that_.reset();
+         }
+         return *this;
