@@ -31,7 +31,7 @@
 Summary:	Portable C++ libraries
 Name:		boost
 Version:	1.87.0
-Release:	%{?beta:0.%{beta}.}4
+Release:	%{?beta:0.%{beta}.}5
 %if %{defined beta}
 Source0:	https://boostorg.jfrog.io/artifactory/main/beta/%{version}.%{beta}/source/boost_%{packver}_%(echo %{beta} |sed -e 's,eta,,g').tar.bz2
 %else
