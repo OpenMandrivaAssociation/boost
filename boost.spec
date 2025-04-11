@@ -30,12 +30,12 @@
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.87.0
-Release:	%{?beta:0.%{beta}.}5
+Version:	1.88.0
+Release:	%{?beta:0.%{beta}.}1
 %if %{defined beta}
-Source0:	https://boostorg.jfrog.io/artifactory/main/beta/%{version}.%{beta}/source/boost_%{packver}_%(echo %{beta} |sed -e 's,eta,,g').tar.bz2
+Source0:	https://archives.boost.io/release/%{version}/source/boost_%{packver}_%(echo %{beta} |sed -e 's,eta,,g').tar.bz2
 %else
-Source0:	https://boostorg.jfrog.io/artifactory/main/release/%{version}/source/boost_%{packver}.tar.bz2
+Source0:	https://archives.boost.io/release/%{version}/source/boost_%{packver}.tar.bz2
 %endif
 Source1:	binary.template
 Source2:	headers.template
@@ -45,9 +45,6 @@ License:	Boost
 Group:		Development/C++
 Url:		https://boost.org/
 Source100:	%{name}.rpmlintrc
-
-# Fix typo in thread/future.hpp
-Patch0:		boost-1.87.0-fix-typo-in-thread-future.hpp.patch
 
 # Add a manual page for the sole executable, namely bjam, based on the
 # on-line documentation:
@@ -76,12 +73,6 @@ Patch19:	boost-1.57.0-build-optflags.patch
 
 # Pull in various bimap fixes
 Patch24:	https://patch-diff.githubusercontent.com/raw/boostorg/bimap/pull/18.patch
-
-# Make libzypp great again
-# https://github.com/openSUSE/libzypp/issues/596
-#Patch25:	boost-1.87.0-hack-for-libzypp-compatibility.patch
-# Probably a better fix for the same problem:
-Patch25:	https://github.com/boostorg/smart_ptr/commit/e7433ba54596da97cb7859455cd37ca140305a9c.patch
 
 BuildRequires:	which
 BuildRequires:	doxygen
