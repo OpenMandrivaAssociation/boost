@@ -280,7 +280,7 @@ same place as the documentation.
 %{_libdir}/libboost_stacktrace_basic.so.* \
 %{_libdir}/libboost_stacktrace_noop.so.*
 
-%ifarch %{ix86} %{x86_64}
+%ifarch %{ix86} %{x86_64} %{aarch64}
 %global extra_files_stacktrace %{extra_files_stacktrace} \
 %{_libdir}/libboost_stacktrace_from_exception.so.*
 %endif
@@ -293,7 +293,7 @@ same place as the documentation.
 %{_libdir}/cmake/boost_stacktrace_basic-%{version} \
 %{_libdir}/cmake/boost_stacktrace_noop-%{version}
 
-%ifarch %{ix86} %{x86_64}
+%ifarch %{ix86} %{x86_64} %{aarch64}
 %global extra_devfiles_stacktrace %{extra_devfiles_stacktrace} \
 %{_libdir}/libboost_stacktrace_from_exception.so \
 %{_libdir}/cmake/boost_stacktrace_from_exception-%{version}
