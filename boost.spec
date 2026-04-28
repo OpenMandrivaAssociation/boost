@@ -30,8 +30,8 @@
 
 Summary:	Portable C++ libraries
 Name:		boost
-Version:	1.90.0
-Release:	%{?beta:0.%{beta}.}2
+Version:	1.91.0
+Release:	%{?beta:0.%{beta}.}1
 %if %{defined beta}
 Source0:	https://archives.boost.io/release/%{version}/source/boost_%{packver}_%(echo %{beta} |sed -e 's,eta,,g').tar.bz2
 %else
@@ -415,7 +415,6 @@ EOF
 # And python 3...
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
 	--prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir} --layout=system \
-	-sICU_PATH=%{_libdir} \
 	linkflags="%{build_ldflags} -lstdc++ -lm" \
 %ifarch %{ix86}
 	instruction-set=i686 \
@@ -601,4 +600,3 @@ cat %{S:4} >>%{specpartsdir}/global-devel.specpart
 %{_bindir}/b2
 %{_mandir}/man1/bjam.1*
 %{_datadir}/b2
-%{_datadir}/boost_predef
