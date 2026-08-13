@@ -278,7 +278,8 @@ same place as the documentation.
 %global extra_files_stacktrace \
 %{_libdir}/libboost_stacktrace_addr2line.so.* \
 %{_libdir}/libboost_stacktrace_basic.so.* \
-%{_libdir}/libboost_stacktrace_noop.so.*
+%{_libdir}/libboost_stacktrace_noop.so.* \
+%{_libdir}/libboost_stacktrace_dump.so.*
 
 %ifarch %{ix86} %{x86_64} %{aarch64}
 %global extra_files_stacktrace %{extra_files_stacktrace} \
@@ -289,9 +290,11 @@ same place as the documentation.
 %{_libdir}/libboost_stacktrace_addr2line.so \
 %{_libdir}/libboost_stacktrace_basic.so \
 %{_libdir}/libboost_stacktrace_noop.so \
+%{_libdir}/libboost_stacktrace_dump.so \
 %{_libdir}/cmake/boost_stacktrace_addr2line-%{version} \
 %{_libdir}/cmake/boost_stacktrace_basic-%{version} \
-%{_libdir}/cmake/boost_stacktrace_noop-%{version}
+%{_libdir}/cmake/boost_stacktrace_noop-%{version} \
+%{_libdir}/cmake/boost_stacktrace_dump-%{version}
 
 %ifarch %{ix86} %{x86_64} %{aarch64}
 %global extra_devfiles_stacktrace %{extra_devfiles_stacktrace} \
@@ -600,3 +603,4 @@ cat %{S:4} >>%{specpartsdir}/global-devel.specpart
 %{_bindir}/b2
 %{_mandir}/man1/bjam.1*
 %{_datadir}/b2
+%{_datadir}/boost_predef
