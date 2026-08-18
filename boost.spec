@@ -12,7 +12,9 @@
 %define _python_bytecompile_build 0
 
 %if %{cross_compiling}
-%global optflags %{optflags} -O3 -fno-strict-aliasing -fPIC -fno-semantic-interposition
+# Same libunwind layout as native, but under the target sysroot. Host
+# /usr/include/libunwind would be the wrong architecture.
+%global optflags %{optflags} -O3 -fno-strict-aliasing -I%{_prefix}/%{_target_platform}%{_includedir}/libunwind -fPIC -fno-semantic-interposition
 %else
 %ifarch %{aarch64}
 %global optflags %{optflags} -O3 -fno-strict-aliasing -I%{_includedir}/libunwind -fPIC -fno-semantic-interposition -Wl,-z,notext
@@ -439,10 +441,20 @@ EOF
 ./bootstrap.sh --with-toolset=$toolset --with-icu --prefix=%{_prefix} --libdir=%{_libdir} \
 %if %{with python}
 	--with-python=%{__python}
+%else
+	--without-libraries=python
 %endif
 
 # Host b2, target libraries (user-config.jam supplies -target/--sysroot when cross).
+# bootstrap.sh still auto-detects host python unless --without-libraries=python,
+# and --without-mpi does not drop graph_parallel (MPI-only).
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
+%if ! %{with python}
+	--without-python \
+%endif
+%if %{cross_compiling}
+	--without-graph_parallel \
+%endif
 	--prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir} --layout=system \
 	linkflags="%{build_ldflags} -lstdc++ -lm" \
 %ifarch %{ix86}
@@ -457,14 +469,21 @@ EOF
 %endif
 	target-os=linux
 
-
-# Taken from the Fedora .src.rpm.
+%if ! %{cross_compiling}
+# Taken from the Fedora .src.rpm. Host b2; not installed into the target RPM.
 echo ============================= build Boost.Build ==================
 (cd tools/build/
  ./bootstrap.sh --with-toolset=$toolset)
+%endif
 
 %install
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
+%if ! %{with python}
+	--without-python \
+%endif
+%if %{cross_compiling}
+	--without-graph_parallel \
+%endif
 	--prefix=%{buildroot}%{_prefix} --bindir=%{buildroot}%{_bindir} --libdir=%{buildroot}%{_libdir} \
 	debug-symbols=on pch=off \
 %if %{with python}
