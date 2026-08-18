@@ -431,7 +431,7 @@ sed -i -e "s/define BOOST_ASIO_HAS_STD_COROUTINE 1/define BOOST_ASIO_HAS_STD_COR
 
 cat > ./tools/build/src/user-config.jam << EOF
 %if %{cross_compiling}
-using $toolset : : clang : <compileflags>"-target %{_target_platform} --sysroot %{_prefix}/%{_target_platform} %{optflags}" <linkflags>"-target %{_target_platform} --sysroot %{_prefix}/%{_target_platform} %{build_ldflags}" ;
+using $toolset : : clang++ : <compileflags>"-target %{_target_platform} --sysroot %{_prefix}/%{_target_platform} %{optflags}" <linkflags>"-target %{_target_platform} --sysroot %{_prefix}/%{_target_platform} %{build_ldflags} -lstdc++ -lm" ;
 %else
 using $toolset : : : <compileflags>"%{optflags}" <linkflags>"%{build_ldflags}" ;
 using python : %{py3_ver} : %{__python3} : %{py3_incdir} : %{_libdir} : : : ;
@@ -477,6 +477,9 @@ echo ============================= build Boost.Build ==================
 %endif
 
 %install
+# Same toolset properties as %build so b2 copies rather than relinking
+# without -lstdc++ (user-config uses clang++ but install still needs the
+# extra linkflags the build step passed on the command line).
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
 %if ! %{with python}
 	--without-python \
@@ -485,6 +488,8 @@ echo ============================= build Boost.Build ==================
 	--without-graph_parallel \
 %endif
 	--prefix=%{buildroot}%{_prefix} --bindir=%{buildroot}%{_bindir} --libdir=%{buildroot}%{_libdir} \
+	--layout=system \
+	linkflags="%{build_ldflags} -lstdc++ -lm" \
 	debug-symbols=on pch=off \
 %if %{with python}
 	python=%{py3_ver} \
@@ -495,6 +500,8 @@ echo ============================= build Boost.Build ==================
 %ifarch znver1
 	instruction-set=znver1 \
 %endif
+	threading=multi variant=release \
+	target-os=linux \
 	install
 
 %if ! %{cross_compiling}
