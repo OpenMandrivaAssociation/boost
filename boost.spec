@@ -11,10 +11,14 @@
 # Doesn't work with dual python2/python3 bits
 %define _python_bytecompile_build 0
 
+%if %{cross_compiling}
+%global optflags %{optflags} -O3 -fno-strict-aliasing -fPIC -fno-semantic-interposition
+%else
 %ifarch %{aarch64}
 %global optflags %{optflags} -O3 -fno-strict-aliasing -I%{_includedir}/libunwind -fPIC -fno-semantic-interposition -Wl,-z,notext
 %else
 %global optflags %{optflags} -O3 -fno-strict-aliasing -I%{_includedir}/libunwind -fPIC -fno-semantic-interposition
+%endif
 %endif
 
 # (tpg) save 50 MiB
@@ -22,16 +26,24 @@
 
 #define beta beta1
 %define packver %(echo "%{version}" | sed -e "s/\\\./_/g")
+%if %{cross_compiling}
+# Boost.Python/NumPy need a matching target interpreter and numpy; skip them
+# when bootstrapping. Systemtap only needs the header-only Asio bits.
+%bcond_with python
+%bcond_with numpy
+%else
+%bcond_without python
 %ifarch %{ix86} %{arm}
 %bcond_with numpy
 %else
 %bcond_without numpy
 %endif
+%endif
 
 Summary:	Portable C++ libraries
 Name:		boost
 Version:	1.92.0
-Release:	%{?beta:0.%{beta}.}1
+Release:	%{?beta:0.%{beta}.}2
 %if %{defined beta}
 Source0:	https://archives.boost.io/release/%{version}/source/boost_%{packver}_%(echo %{beta} |sed -e 's,eta,,g').tar.bz2
 %else
@@ -80,7 +92,9 @@ BuildRequires:	xsltproc
 BuildRequires:	pkgconfig(libunwind)
 BuildRequires:	pkgconfig(expat)
 BuildRequires:	pkgconfig(icu-uc) >= 60.1
+%if %{with python}
 BuildRequires:	pkgconfig(python3)
+%endif
 BuildRequires:	pkgconfig(mariadb)
 %if %{with numpy}
 BuildRequires:	python-numpy-devel
@@ -101,6 +115,8 @@ Standard Library. This package contains only the shared libraries
 needed for running programs using Boost.
 
 # build section Taken from the Fedora .src.rpm.
+# Host b2 must not be packaged into a target RPM.
+%if ! %{cross_compiling}
 %package build
 Summary:	Cross platform build system for C++ projects
 Group:		Development/C++
@@ -116,7 +132,9 @@ takes care about compiling your sources with the right options,
 creating static and shared libraries, making pieces of executable, and other
 chores -- whether you're using GCC, MSVC, or a dozen more supported
 C++ compilers -- on Windows, OSX, Linux and commercial UNIX systems.
+%endif
 
+%if %{with python}
 %define pyvernum %(echo %{py_ver}|sed -e 's,\\.,,g')
 %global libnamepython3 %mklibname boost_python%{pyvernum}
 %global devnamepython3 %mklibname -d boost_python%{pyvernum}
@@ -163,6 +181,7 @@ Development files for the Boost Python 3 library.
 %{_includedir}/boost/python.hpp
 %{_libdir}/libboost_python3*.so
 %{_libdir}/cmake/boost_python-%{version}
+%endif
 
 %if %{with numpy}
 # Numpy's python 2.x support has been discontinued -- no more numpy27
@@ -409,13 +428,20 @@ sed -i -e "s/define BOOST_ASIO_HAS_CO_AWAIT 1/define BOOST_ASIO_HAS_CO_AWAIT 0/g
 sed -i -e "s/define BOOST_ASIO_HAS_STD_COROUTINE 1/define BOOST_ASIO_HAS_STD_COROUTINE 0/g" boost/asio/detail/config.hpp
 
 cat > ./tools/build/src/user-config.jam << EOF
+%if %{cross_compiling}
+using $toolset : : clang : <compileflags>"-target %{_target_platform} --sysroot %{_prefix}/%{_target_platform} %{optflags}" <linkflags>"-target %{_target_platform} --sysroot %{_prefix}/%{_target_platform} %{build_ldflags}" ;
+%else
 using $toolset : : : <compileflags>"%{optflags}" <linkflags>"%{build_ldflags}" ;
 using python : %{py3_ver} : %{__python3} : %{py3_incdir} : %{_libdir} : : : ;
+%endif
 EOF
 
-./bootstrap.sh --with-toolset=$toolset --with-icu --prefix=%{_prefix} --libdir=%{_libdir} --with-python=%{__python}
+./bootstrap.sh --with-toolset=$toolset --with-icu --prefix=%{_prefix} --libdir=%{_libdir} \
+%if %{with python}
+	--with-python=%{__python}
+%endif
 
-# And python 3...
+# Host b2, target libraries (user-config.jam supplies -target/--sysroot when cross).
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
 	--prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir} --layout=system \
 	linkflags="%{build_ldflags} -lstdc++ -lm" \
@@ -425,7 +451,11 @@ EOF
 %ifarch znver1
 	instruction-set=znver1 \
 %endif
-	threading=multi debug-symbols=on pch=off variant=release python=%{py3_ver}
+	threading=multi debug-symbols=on pch=off variant=release \
+%if %{with python}
+	python=%{py3_ver} \
+%endif
+	target-os=linux
 
 
 # Taken from the Fedora .src.rpm.
@@ -436,7 +466,10 @@ echo ============================= build Boost.Build ==================
 %install
 ./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
 	--prefix=%{buildroot}%{_prefix} --bindir=%{buildroot}%{_bindir} --libdir=%{buildroot}%{_libdir} \
-	debug-symbols=on pch=off python=%{py3_ver} \
+	debug-symbols=on pch=off \
+%if %{with python}
+	python=%{py3_ver} \
+%endif
 %ifarch %{ix86}
 	instruction-set=i686 \
 %endif
@@ -445,6 +478,7 @@ echo ============================= build Boost.Build ==================
 %endif
 	install
 
+%if ! %{cross_compiling}
 echo ============================= install Boost.Build ==================
 (cd tools/build/
  ./b2 --prefix=%{buildroot}%{_prefix} --bindir=%{buildroot}%{_bindir} install
@@ -453,6 +487,7 @@ echo ============================= install Boost.Build ==================
  # Let's symlink instead of shipping 2 copies of the same file
  ln -sf b2 %{buildroot}%{_bindir}/bjam
 )
+%endif
 
 %if !%{with numpy}
 rm -rf %{buildroot}/%{_libdir}/cmake/boost_numpy-%{version}/
@@ -597,6 +632,7 @@ cat %{S:4} >>%{specpartsdir}/global-devel.specpart
 %files examples
 %doc examples/*
 
+%if ! %{cross_compiling}
 %files build
 %doc LICENSE_1_0.txt
 %{_bindir}/bjam
@@ -604,3 +640,4 @@ cat %{S:4} >>%{specpartsdir}/global-devel.specpart
 %{_mandir}/man1/bjam.1*
 %{_datadir}/b2
 %{_datadir}/boost_predef
+%endif
