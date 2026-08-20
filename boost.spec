@@ -45,7 +45,7 @@
 Summary:	Portable C++ libraries
 Name:		boost
 Version:	1.92.0
-Release:	%{?beta:0.%{beta}.}2
+Release:	%{?beta:0.%{beta}.}3
 %if %{defined beta}
 Source0:	https://archives.boost.io/release/%{version}/source/boost_%{packver}_%(echo %{beta} |sed -e 's,eta,,g').tar.bz2
 %else
@@ -88,6 +88,10 @@ Patch19:	boost-1.57.0-build-optflags.patch
 # Pull in various bimap fixes
 Patch24:	https://patch-diff.githubusercontent.com/raw/boostorg/bimap/pull/18.patch
 
+%if %{cross_compiling}
+# Host driver for libraries/install. Distinct from python-b2 (Backblaze).
+BuildRequires:	boost-build
+%endif
 BuildRequires:	which
 BuildRequires:	doxygen
 BuildRequires:	xsltproc
@@ -117,8 +121,8 @@ Standard Library. This package contains only the shared libraries
 needed for running programs using Boost.
 
 # build section Taken from the Fedora .src.rpm.
-# Host b2 must not be packaged into a target RPM.
-%if ! %{cross_compiling}
+# When cross-compiling, the engine is rebuilt with the target compiler so
+# the packaged b2 is a target ELF (host b2 is only used to build Boost).
 %package build
 Summary:	Cross platform build system for C++ projects
 Group:		Development/C++
@@ -134,7 +138,6 @@ takes care about compiling your sources with the right options,
 creating static and shared libraries, making pieces of executable, and other
 chores -- whether you're using GCC, MSVC, or a dozen more supported
 C++ compilers -- on Windows, OSX, Linux and commercial UNIX systems.
-%endif
 
 %if %{with python}
 %define pyvernum %(echo %{py_ver}|sed -e 's,\\.,,g')
@@ -302,7 +305,7 @@ same place as the documentation.
 %{_libdir}/libboost_stacktrace_noop.so.* \
 %{_libdir}/libboost_stacktrace_dump.so.*
 
-%ifarch %{ix86} %{x86_64} %{aarch64}
+%ifarch %{ix86} %{x86_64} %{aarch64} %{riscv}
 %global extra_files_stacktrace %{extra_files_stacktrace} \
 %{_libdir}/libboost_stacktrace_from_exception.so.*
 %endif
@@ -311,16 +314,11 @@ same place as the documentation.
 %{_libdir}/libboost_stacktrace_addr2line.so \
 %{_libdir}/libboost_stacktrace_basic.so \
 %{_libdir}/libboost_stacktrace_noop.so \
-%{_libdir}/libboost_stacktrace_dump.so \
-%{_libdir}/cmake/boost_stacktrace_addr2line-%{version} \
-%{_libdir}/cmake/boost_stacktrace_basic-%{version} \
-%{_libdir}/cmake/boost_stacktrace_noop-%{version} \
-%{_libdir}/cmake/boost_stacktrace_dump-%{version}
+%{_libdir}/libboost_stacktrace_dump.so
 
-%ifarch %{ix86} %{x86_64} %{aarch64}
+%ifarch %{ix86} %{x86_64} %{aarch64} %{riscv}
 %global extra_devfiles_stacktrace %{extra_devfiles_stacktrace} \
-%{_libdir}/libboost_stacktrace_from_exception.so \
-%{_libdir}/cmake/boost_stacktrace_from_exception-%{version}
+%{_libdir}/libboost_stacktrace_from_exception.so
 %endif
 
 %define extra_files_math \
@@ -332,12 +330,6 @@ same place as the documentation.
 %{_libdir}/libboost_math_tr1l.so.%{version}
 
 %define extra_devfiles_math \
-%{_libdir}/cmake/boost_math_c99-%{version} \
-%{_libdir}/cmake/boost_math_c99f-%{version} \
-%{_libdir}/cmake/boost_math_c99l-%{version} \
-%{_libdir}/cmake/boost_math_tr1-%{version} \
-%{_libdir}/cmake/boost_math_tr1f-%{version} \
-%{_libdir}/cmake/boost_math_tr1l-%{version} \
 %{_libdir}/libboost_math_c99.so \
 %{_libdir}/libboost_math_c99f.so \
 %{_libdir}/libboost_math_c99l.so \
@@ -438,17 +430,23 @@ using python : %{py3_ver} : %{__python3} : %{py3_incdir} : %{_libdir} : : : ;
 %endif
 EOF
 
+%if %{cross_compiling}
+# Host driver only -- never run the target engine (no qemu).
+# BuildRequires: boost-build installs Boost.Build as /usr/bin/b2 (not python-b2).
+HOST_B2=/usr/bin/b2
+%else
 ./bootstrap.sh --with-toolset=$toolset --with-icu --prefix=%{_prefix} --libdir=%{_libdir} \
 %if %{with python}
 	--with-python=%{__python}
 %else
 	--without-libraries=python
 %endif
+HOST_B2=$PWD/b2
+%endif
 
-# Host b2, target libraries (user-config.jam supplies -target/--sysroot when cross).
 # bootstrap.sh still auto-detects host python unless --without-libraries=python,
 # and --without-mpi does not drop graph_parallel (MPI-only).
-./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
+$HOST_B2 --user-config=tools/build/src/user-config.jam toolset=clang -d+2 -q %{?_smp_mflags} --without-mpi \
 %if ! %{with python}
 	--without-python \
 %endif
@@ -469,18 +467,28 @@ EOF
 %endif
 	target-os=linux
 
-%if ! %{cross_compiling}
-# Taken from the Fedora .src.rpm. Host b2; not installed into the target RPM.
+%if %{cross_compiling}
+# Compile-only target engine for the package. Do not execute this binary.
+echo ============================= build target Boost.Build engine ==================
+(cd tools/build/src/engine
+ ./build.sh clang --cxx="%{__cxx}" --cxxflags="-pthread %{optflags} %{build_ldflags} -lstdc++ -lm")
+%else
+# Taken from the Fedora .src.rpm. Host b2.
 echo ============================= build Boost.Build ==================
 (cd tools/build/
  ./bootstrap.sh --with-toolset=$toolset)
 %endif
 
 %install
+%if %{cross_compiling}
+HOST_B2=/usr/bin/b2
+%else
+HOST_B2=$PWD/b2
+%endif
 # Same toolset properties as %build so b2 copies rather than relinking
 # without -lstdc++ (user-config uses clang++ but install still needs the
 # extra linkflags the build step passed on the command line).
-./b2 -d+2 -q %{?_smp_mflags} --without-mpi \
+$HOST_B2 --user-config=tools/build/src/user-config.jam toolset=clang -d+2 -q %{?_smp_mflags} --without-mpi \
 %if ! %{with python}
 	--without-python \
 %endif
@@ -504,16 +512,18 @@ echo ============================= build Boost.Build ==================
 	target-os=linux \
 	install
 
-%if ! %{cross_compiling}
 echo ============================= install Boost.Build ==================
 (cd tools/build/
- ./b2 --prefix=%{buildroot}%{_prefix} --bindir=%{buildroot}%{_bindir} install
+ $HOST_B2 --user-config=src/user-config.jam toolset=clang --prefix=%{buildroot}%{_prefix} --bindir=%{buildroot}%{_bindir} install
  mkdir -p %{buildroot}%{_mandir}/man1
  cp -a v2/doc/bjam.1 %{buildroot}%{_mandir}/man1/
+%if %{cross_compiling}
+ # Target ELF from %build; do not run it.
+ install -m755 src/engine/b2 %{buildroot}%{_bindir}/b2
+%endif
  # Let's symlink instead of shipping 2 copies of the same file
  ln -sf b2 %{buildroot}%{_bindir}/bjam
 )
-%endif
 
 %if !%{with numpy}
 rm -rf %{buildroot}/%{_libdir}/cmake/boost_numpy-%{version}/
@@ -551,12 +561,16 @@ for i in *; do
 		%{_includedir}/boost/$i.h \
 		%{_includedir}/boost/$i.hpp \
 		%{_includedir}/boost/${i}_fwd.hpp \
-		%{_includedir}/boost/${i}_macro.hpp \
-		%{_libdir}/cmake/boost_${i}-%{version} \
-		%{_libdir}/cmake/boost_${i}_*-%{version}; do
+		%{_includedir}/boost/${i}_macro.hpp; do
 		if [ -e %{buildroot}${j} ]; then
 			echo $j >>%{specpartsdir}/$i.specpart
 		fi
+	done
+	# cmake configs live under the buildroot; do not glob the host
+	for j in %{buildroot}%{_libdir}/cmake/boost_${i}-%{version} \
+		%{buildroot}%{_libdir}/cmake/boost_${i}_*-%{version}; do
+		[ -e "$j" ] || continue
+		echo "${j#%{buildroot}}" >>%{specpartsdir}/$i.specpart
 	done
 	DEVPKGS="$DEVPKGS %{mklibname -d boost_$i}"
 done
@@ -658,7 +672,6 @@ cat %{S:4} >>%{specpartsdir}/global-devel.specpart
 %files examples
 %doc examples/*
 
-%if ! %{cross_compiling}
 %files build
 %doc LICENSE_1_0.txt
 %{_bindir}/bjam
@@ -666,4 +679,3 @@ cat %{S:4} >>%{specpartsdir}/global-devel.specpart
 %{_mandir}/man1/bjam.1*
 %{_datadir}/b2
 %{_datadir}/boost_predef
-%endif
