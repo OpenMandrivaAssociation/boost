@@ -303,23 +303,15 @@ same place as the documentation.
 %{_libdir}/libboost_stacktrace_addr2line.so.* \
 %{_libdir}/libboost_stacktrace_basic.so.* \
 %{_libdir}/libboost_stacktrace_noop.so.* \
-%{_libdir}/libboost_stacktrace_dump.so.*
-
-%ifarch %{ix86} %{x86_64} %{aarch64} %{riscv}
-%global extra_files_stacktrace %{extra_files_stacktrace} \
+%{_libdir}/libboost_stacktrace_dump.so.* \
 %{_libdir}/libboost_stacktrace_from_exception.so.*
-%endif
 
 %global extra_devfiles_stacktrace \
 %{_libdir}/libboost_stacktrace_addr2line.so \
 %{_libdir}/libboost_stacktrace_basic.so \
 %{_libdir}/libboost_stacktrace_noop.so \
-%{_libdir}/libboost_stacktrace_dump.so
-
-%ifarch %{ix86} %{x86_64} %{aarch64} %{riscv}
-%global extra_devfiles_stacktrace %{extra_devfiles_stacktrace} \
+%{_libdir}/libboost_stacktrace_dump.so \
 %{_libdir}/libboost_stacktrace_from_exception.so
-%endif
 
 %define extra_files_math \
 %{_libdir}/libboost_math_c99.so.%{version} \
