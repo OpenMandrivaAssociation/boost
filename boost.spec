@@ -415,7 +415,12 @@ cat > ./tools/build/src/user-config.jam << EOF
 %if %{cross_compiling}
 using $toolset : : clang++ : <compileflags>"-target %{_target_platform} --sysroot %{_prefix}/%{_target_platform} %{optflags}" <linkflags>"-target %{_target_platform} --sysroot %{_prefix}/%{_target_platform} %{build_ldflags} -lstdc++ -lm" ;
 %else
+%ifarch aarch64
+# b2 guesses --target=arm64-pc-linux. compiler-rt is installed for the real triple.
+using $toolset : : : <triple>%{_target_platform} <compileflags>"%{optflags}" <linkflags>"%{build_ldflags}" ;
+%else
 using $toolset : : : <compileflags>"%{optflags}" <linkflags>"%{build_ldflags}" ;
+%endif
 using python : %{py3_ver} : %{__python3} : %{py3_incdir} : %{_libdir} : : : ;
 %endif
 EOF
@@ -440,7 +445,7 @@ $HOST_B2 --user-config=tools/build/src/user-config.jam toolset=clang -d+2 -q %{?
 %if ! %{with python}
 	--without-python \
 %endif
-%if %{cross_compiling}
+%if %{cross_compiling} || "%{_arch}" == "aarch64"
 	--without-graph_parallel \
 %endif
 	--prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir} --layout=system \
@@ -482,7 +487,7 @@ $HOST_B2 --user-config=tools/build/src/user-config.jam toolset=clang -d+2 -q %{?
 %if ! %{with python}
 	--without-python \
 %endif
-%if %{cross_compiling}
+%if %{cross_compiling} || "%{_arch}" == "aarch64"
 	--without-graph_parallel \
 %endif
 	--prefix=%{buildroot}%{_prefix} --bindir=%{buildroot}%{_bindir} --libdir=%{buildroot}%{_libdir} \
