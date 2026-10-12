@@ -35,11 +35,9 @@
 %bcond_with numpy
 %else
 %bcond_without python
-%ifarch %{ix86} %{arm}
+# NumPy is still built for Python 3.14. Ship Boost.Python for 3.15
+# first; enable NumPy again once python-numpy is rebuilt.
 %bcond_with numpy
-%else
-%bcond_without numpy
-%endif
 %endif
 
 Summary:	Portable C++ libraries
