@@ -45,7 +45,7 @@
 Summary:	Portable C++ libraries
 Name:		boost
 Version:	1.92.0
-Release:	%{?beta:0.%{beta}.}3
+Release:	%{?beta:0.%{beta}.}4
 %if %{defined beta}
 Source0:	https://archives.boost.io/release/%{version}/source/boost_%{packver}_%(echo %{beta} |sed -e 's,eta,,g').tar.bz2
 %else
