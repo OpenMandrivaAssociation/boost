@@ -35,15 +35,14 @@
 %bcond_with numpy
 %else
 %bcond_without python
-# NumPy is still built for Python 3.14. Ship Boost.Python for 3.15
-# first; enable NumPy again once python-numpy is rebuilt.
-%bcond_with numpy
+# python-numpy 2.5.4 is built for Python 3.15.
+%bcond_without numpy
 %endif
 
 Summary:	Portable C++ libraries
 Name:		boost
 Version:	1.92.0
-Release:	%{?beta:0.%{beta}.}4
+Release:	%{?beta:0.%{beta}.}5
 %if %{defined beta}
 Source0:	https://archives.boost.io/release/%{version}/source/boost_%{packver}_%(echo %{beta} |sed -e 's,eta,,g').tar.bz2
 %else
