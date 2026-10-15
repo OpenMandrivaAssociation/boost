@@ -42,7 +42,7 @@
 Summary:	Portable C++ libraries
 Name:		boost
 Version:	1.92.0
-Release:	%{?beta:0.%{beta}.}5
+Release:	%{?beta:0.%{beta}.}6
 %if %{defined beta}
 Source0:	https://archives.boost.io/release/%{version}/source/boost_%{packver}_%(echo %{beta} |sed -e 's,eta,,g').tar.bz2
 %else
@@ -138,8 +138,15 @@ C++ compilers -- on Windows, OSX, Linux and commercial UNIX systems.
 
 %if %{with python}
 %define pyvernum %(echo %{py_ver}|sed -e 's,\\.,,g')
-%global libnamepython3 %mklibname boost_python%{pyvernum}
-%global devnamepython3 %mklibname -d boost_python%{pyvernum}
+# Unversioned RPM names so a Python upgrade replaces these packages
+# instead of leaving lib64boost_pythonNNN installed (that pins
+# lib64boost-core-devel to the old release). The DSO stays versioned.
+%global libnamepython3 %mklibname boost_python
+%global devnamepython3 %mklibname -d boost_python
+%global oldlibnamepython315 %mklibname boost_python315
+%global olddevnamepython315 %mklibname -d boost_python315
+%global oldlibnamepython314 %mklibname boost_python314
+%global olddevnamepython314 %mklibname -d boost_python314
 %global oldlibnamepython39 %mklibname boost_python39 1.78.0
 %global olddevnamepython39 %mklibname -d boost_python39
 %global oldlibnamepython3 %mklibname boost_python38 1.74.0
@@ -152,6 +159,10 @@ Summary:	Boost Python 3 shared library
 Group:		System/Libraries
 Provides:	boost-python = %{EVRD}
 Provides:	boost-python3 = %{EVRD}
+Provides:	%{oldlibnamepython315} = %{EVRD}
+Provides:	%{oldlibnamepython314} = %{EVRD}
+Obsoletes:	%{oldlibnamepython315} < %{EVRD}
+Obsoletes:	%{oldlibnamepython314} < %{EVRD}
 Obsoletes:	%{oldlibnamepython39} < %{EVRD}
 Obsoletes:	%{oldlibnamepython3} < %{EVRD}
 Obsoletes:	%{olderlibnamepython3} < %{EVRD}
@@ -169,6 +180,12 @@ Requires:	python >= 3.0
 Provides:	boost-python311-devel = %{EVRD}
 Provides:	boost-python3-devel = %{EVRD}
 Provides:	boost-python-devel = %{EVRD}
+Provides:	%{olddevnamepython315} = %{EVRD}
+Provides:	%{olddevnamepython314} = %{EVRD}
+# 1.92.0-5 and older also shipped a noarch package under this name.
+Obsoletes:	%{devnamepython3} < %{EVRD}
+Obsoletes:	%{olddevnamepython315} < %{EVRD}
+Obsoletes:	%{olddevnamepython314} < %{EVRD}
 Obsoletes:	%{olddevnamepython39} < %{EVRD}
 Obsoletes:	%{olddevnamepython3} < %{EVRD}
 Obsoletes:	%{olderdevnamepython3} < %{EVRD}
@@ -526,6 +543,12 @@ cd %{buildroot}%{_includedir}/boost
 for i in *; do
 	[ -d "$i" ] || continue
 	[ "$i" = "test" ] && i=unit_test_framework # Libraries named differently from headers
+
+%if %{with python}
+	# Packaged explicitly as %{libnamepython3}. The header directory
+	# would otherwise become a second, noarch %{devnamepython3}.
+	[ "$i" = "python" ] && continue
+%endif
 
 	# Binary package...
 	[ -e %{buildroot}%{_libdir}/libboost_${i}.so ] && binary=true || binary=false
